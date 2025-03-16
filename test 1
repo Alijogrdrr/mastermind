@@ -1,0 +1,23 @@
+import tkinter as tk
+
+fenetre = tk.Tk()
+
+####################################################
+# PARTIE 1 : GESTION GRAPHIQUE DE LA PAGE D'ACCEUIL
+####################################################
+
+fenetre.title("Page d'acceuil")
+fenetre.minsize(500,500)
+canvas_rose=tk.Canvas(fenetre,background="pink")
+canvas_rose.pack(side="top", fill="both", expand=True)  # prend toute la largeur disponible
+#céation titre de la page
+#label=tk.Label(canvas_rose,text="Bienvenue sur le\nMastermind",bg="yellow",font=("Arial",50))
+#label.pack(side="top") #sa place dans la fenetre
+canvas_rose.create_text((100, 100), fill="red", text="Un petit\ntexte")
+
+
+
+
+
+
+fenetre.mainloop()
