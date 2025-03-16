@@ -1,0 +1,22 @@
+import tkinter as tk
+
+# Création de la fenêtre principale
+fenetre = tk.Tk()
+fenetre.title("mastermind")
+
+# Créer le cadre pour les carrés
+frame = tk.Frame(fenetre)
+frame.pack(fill="both", expand=True)  # Remplir toute la fenêtre
+
+# Créer les carrés avec pack
+canevas_gauche = tk.Canvas(frame, background="pink")
+canevas_gauche.pack(side="left", fill="both", expand=True)  # Prend toute la largeur disponible
+
+canevas_central = tk.Canvas(frame, background="purple")
+canevas_central.pack(side="left", fill="both", expand=True)  # Prend toute la largeur disponible
+
+canevas_droit = tk.Canvas(frame, background="pink")
+canevas_droit.pack(side="left", fill="both", expand=True)  # Prend toute la largeur disponible
+
+# Affichage de la fenêtre
+fenetre.mainloop()
