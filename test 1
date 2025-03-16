@@ -1,0 +1,18 @@
+import tkinter as tk
+
+root = tk.Tk()
+root.title("")
+root.state('zoomed')
+
+frame = tk.Frame(root)
+frame.place(relx=0.5, rely=0.5, anchor="center")
+
+frame_gauche= tk.Frame(frame,bg="lightgray",width=100)
+frame_gauche.grid(row=0,column=0,rowspan=2,sticky="nsew")
+frame_droite=tk.Frame(frame,bg="lightgray",width=100)
+frame_droite.grid(row=0,column=2,rowspan=2,sticky="nsew")
+# Création du Canvas avec une taille fixe
+canvas = tk.Canvas(frame, width=350, height=650, bg="lightblue")
+canvas.grid(row=0,column=1,rowspan=2,sticky="nsew")
+
+root.mainloop()
