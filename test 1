@@ -4,19 +4,30 @@ import tkinter as tk
 fenetre = tk.Tk()
 fenetre.title("mastermind")
 
-# Créer le cadre pour les carrés
-frame = tk.Frame(fenetre)
-frame.pack(fill="both", expand=True)  # Remplir toute la fenêtre
+fenetre.state("zoomed")  # Ouvre la fenêtre en plein écran, parce que sinon c'est pas la bonne taille a chaque fois
 
-# Créer les carrés avec pack
-canevas_gauche = tk.Canvas(frame, background="pink")
-canevas_gauche.pack(side="left", fill="both", expand=True)  # Prend toute la largeur disponible
+# Configuration des colonnes 
+fenetre.grid_columnconfigure(0, weight=1, minsize=100)  # ici (nom de a colone 0 1 ou 2, weight c'est la taille 1=petit 5=grand, minsize= taille min )
+fenetre.grid_columnconfigure(1, weight=8, minsize=300)  # grid_columnconfigure C'est une fonction de Tkinter qui permet de configurer les colonnes d'une grille (grid).
+fenetre.grid_columnconfigure(2, weight=1, minsize=100)
 
-canevas_central = tk.Canvas(frame, background="purple")
-canevas_central.pack(side="left", fill="both", expand=True)  # Prend toute la largeur disponible
+# Configuration de la ligne
+fenetre.grid_rowconfigure(0, weight=1, minsize=200) 
+#ici on met 0 parce qu'il y a qu'une seule ligne, 1 parce qu'on a pas besoin qu'elle soit plus grande qu'une aure ligne
 
-canevas_droit = tk.Canvas(frame, background="pink")
-canevas_droit.pack(side="left", fill="both", expand=True)  # Prend toute la largeur disponible
+# Création des carrés collés les uns aux autres
+canevas_gauche = tk.Canvas(fenetre, background="pink")
+canevas_gauche.grid(row=0, column=0, rowspan=2,sticky="nsew" )  
+#row=0 : place le widget dans la première ligne.
+#column=0 : place le widget dans la première colonne.
+#rowspan=2 : fait occuper au widget deux lignes.
+#sticky="nsew" : fait en sorte que le rectangle s'étende dans toutes les directions.
+
+canevas_central = tk.Canvas(fenetre, background="purple")
+canevas_central.grid(row=0, column=1,rowspan=2, sticky="nsew")
+
+canevas_droit = tk.Canvas(fenetre, background="pink")
+canevas_droit.grid(row=0, column=2, rowspan=2, sticky="nsew") 
 
 # Affichage de la fenêtre
 fenetre.mainloop()
