@@ -31,3 +31,7 @@ canevas_droit.grid(row=0, column=2, rowspan=2, sticky="nsew")
 
 # Affichage de la fenêtre
 fenetre.mainloop()
+
+
+#creer la boucle des 7 couleurs
+For i in range (7):
