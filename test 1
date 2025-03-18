@@ -34,25 +34,28 @@ fenetre.mainloop()
 
 
 #creer la boucle des 7 couleurs
-from tkinter import * 
-   
+from tkinter import *
+
 root = Tk()
 root.geometry("200x220")
 frame = Frame(root)
 frame.pack()
- 
-label = Label(root,text = "A list of Grocery items.")  
-label.pack()  
-   
-listbox = Listbox(root)  
-   
-listbox.insert(1,"pink")
-listbox.insert(2, "blue") 
-listbox.insert(3, "red")
-listbox.insert(4, "green")
-listbox.insert(5, "dark")  
-listbox.insert(6, "orange")
-listbox.insert(7, "yelow")
 
-listbox.pack()  
+label = Label(root,text = "liste des couleurs")
+label.pack()
+  
+couleur = Listbox(root)
+
+couleur.insert(1,"pink")
+couleur.insert(2, "blue")
+couleur.insert(3, "red")
+couleur.insert(4, "green")
+couleur.insert(5, "black") 
+couleur.insert(6, "orange")
+couleur.insert(7, "yelow")
+
+couleur.pack()
 root.mainloop()
+
+for i in range (4):
+    if 
