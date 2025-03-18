@@ -9,7 +9,13 @@ def recommencer():
     victoire.mainloop()
 
 buttonrecommencer = tk.Button(victoire, text= "Cliques ici pour recommencer", font = ("helvetica","30"), command = recommencer)#création boutton recommencer
+buttonrecommencer.grid()
 victoire.mainloop() #lancement boucle principale
 
 
 
+#création label des scores
+labelscore = tk.Label(boucle_principale, text="Ton score", column = 0, row = 0, font = ("helvetica", "30"))
+#et quand on aura gagné une partie on pourra mettre juste après 
+labelscore.config(text= "ton score est de 1")
+labelscore.grid()
