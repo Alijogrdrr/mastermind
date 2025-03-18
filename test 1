@@ -1,0 +1,5 @@
+import tkinter as tk
+
+victoire = tk.Tk() # Création de la fenêtre victoire
+labelvictoire = tk.Label(victoire, text="Bravo tu as gagné !", font = ("helvetica", "30")) # dit que c'est gagné
+labelvictoire.grid(column=1, row=1) # positionnement du texte
