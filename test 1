@@ -1,16 +1,21 @@
 import tkinter as tk
 
-victoire = tk.Tk() # Création de la fenêtre victoire
-labelvictoire = tk.Label(victoire, text="Bravo tu as gagné !", font = ("helvetica", "30"), bg= "SteelBlue2", fg= "khaki1",padx=20, pady=20, borderwidth=5, relief="groove")
-labelvictoire.grid() # positionnement du texte
-
 def recommencer():
     """renvoie sur la première fenêtre pour recommencer la partie"""
-    victoire.mainloop()
+    fenetrevictoire.mainloop()
 
-buttonrecommencer = tk.Button(victoire, text= "Cliques ici pour recommencer", font = ("helvetica","30"), command = recommencer)#création boutton recommencer
+# Fonction appelée qd on clique sur le bouton "Arrêter de jouer"
+def stopjeu():
+        print("Arrêt du jeu")
+        fenetrevictoire.quit()
+
+fenetrevictoire = tk.Tk() # Création de la fenêtre victoire
+labelfenetrevictoire = tk.Label(fenetrevictoire, text="Bravo tu as gagné !", font = ("helvetica", "30"), bg= )
+labelfenetrevictoire.grid() # positionnement du texte
+
+buttonrecommencer = tk.Button(fenetrevictoire, text= "Cliques ici pour recommencer", font = ("helvetica","30"), command = recommencer)#création boutton recommencer
 buttonrecommencer.grid()
-victoire.mainloop() #lancement boucle principale
+fenetrevictoire.mainloop() #lancement boucle principale
 
 
 
