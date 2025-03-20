@@ -32,30 +32,50 @@ canevas_droit.grid(row=0, column=2, rowspan=2, sticky="nsew")
 # Affichage de la fenêtre
 fenetre.mainloop()
 
+# gerer toute la partie fenetre couleur:
+import tkinter as tk
 
-#creer la boucle des 7 couleurs
-from tkinter import *
+# Fonction pour appliquer un filtre en fonction de la couleur choisie
+def appliquer_filtre(couleur):
+    """Applique un filtre en fonction de la couleur choisie."""
+    if couleur == "pink":
+        print("Filtre Rose appliqué")
+    elif couleur == "blue":
+        print("Filtre Bleu appliqué")
+    elif couleur == "red":
+        print("Filtre Rouge appliqué")
+    elif couleur == "green":
+        print("Filtre Vert appliqué")
+    elif couleur == "black":
+        print("Filtre Noir appliqué")
+    elif couleur == "orange":
+        print("Filtre Orange appliqué")
+    elif couleur == "yellow":
+        print("Filtre Jaune appliqué")
 
-root = Tk()
-root.geometry("200x220")
-frame = Frame(root)
+# Création de la fenêtre principale
+fenetre = tk.Tk()
+fenetre.title("UVSQolor")
+
+# Création du cadre et du cadre pour les couleurs
+frame = tk.Frame(fenetre)
 frame.pack()
 
-label = Label(root,text = "liste des couleurs")
+label = tk.Label(frame, text="Liste des couleurs")
 label.pack()
-  
-couleur = Listbox(root)
 
-couleur.insert(1,"pink")
+# Liste des couleurs dans la Listbox
+couleur = tk.Listbox(frame)
+couleur.insert(1, "pink")
 couleur.insert(2, "blue")
 couleur.insert(3, "red")
 couleur.insert(4, "green")
-couleur.insert(5, "black") 
+couleur.insert(5, "black")
 couleur.insert(6, "orange")
-couleur.insert(7, "yelow")
+couleur.insert(7, "yellow")
+ 
 
-couleur.pack()
-root.mainloop()
 
-for i in range (4):
-    if 
+#ici je dois ajouter des choses ca marche pas 
+
+fenetre.mainloop()
