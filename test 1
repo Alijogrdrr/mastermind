@@ -1,3 +1,5 @@
+#PARTIE UN LES TROIC PARTIES DE L'ECRAN:
+
 import tkinter as tk
 
 # Création de la fenêtre principale
@@ -29,53 +31,52 @@ canevas_central.grid(row=0, column=1,rowspan=2, sticky="nsew")
 canevas_droit = tk.Canvas(fenetre, background="pink")
 canevas_droit.grid(row=0, column=2, rowspan=2, sticky="nsew") 
 
-# Affichage de la fenêtre
 fenetre.mainloop()
 
-# gerer toute la partie fenetre couleur:
-import tkinter as tk
-
-# Fonction pour appliquer un filtre en fonction de la couleur choisie
-def appliquer_filtre(couleur):
-    """Applique un filtre en fonction de la couleur choisie."""
-    if couleur == "pink":
-        print("Filtre Rose appliqué")
-    elif couleur == "blue":
-        print("Filtre Bleu appliqué")
-    elif couleur == "red":
-        print("Filtre Rouge appliqué")
-    elif couleur == "green":
-        print("Filtre Vert appliqué")
-    elif couleur == "black":
-        print("Filtre Noir appliqué")
-    elif couleur == "orange":
-        print("Filtre Orange appliqué")
-    elif couleur == "yellow":
-        print("Filtre Jaune appliqué")
-
-# Création de la fenêtre principale
-fenetre = tk.Tk()
-fenetre.title("UVSQolor")
-
-# Création du cadre et du cadre pour les couleurs
-frame = tk.Frame(fenetre)
-frame.pack()
-
-label = tk.Label(frame, text="Liste des couleurs")
-label.pack()
-
-# Liste des couleurs dans la Listbox
-couleur = tk.Listbox(frame)
-couleur.insert(1, "pink")
-couleur.insert(2, "blue")
-couleur.insert(3, "red")
-couleur.insert(4, "green")
-couleur.insert(5, "black")
-couleur.insert(6, "orange")
-couleur.insert(7, "yellow")
- 
 
 
-#ici je dois ajouter des choses ca marche pas 
+
+
+
+
+
+#PARTIE DEUX, LES COULEURS:
+
+from tkinter import *
+
+fenetre = Tk()
+
+# je vais creer un canevas
+canvas = Canvas(fenetre, width=400, height=200, bg="white")
+canvas.pack()
+
+couleurs = ["green", "blue", "pink", "yellow", "orange", "black", "white"]
+ronds = []
+
+for i in range(4):  # je prends 4 parce qu'il y a 4 rond au mastermind
+    rond = canvas.create_oval(50 + i * 100, 75, 100 + i * 100, 125, fill="grey")
+    ronds.append(rond)
+
+index_rond = 0
+# Création d'un cadre pour les boutons
+cadre1 = Frame(fenetre)
+cadre1.pack()
+
+def colorer_rond(couleur):
+    global index_rond
+    if index_rond < len(ronds):
+        canvas.itemconfig(ronds[index_rond], fill=couleur)
+        index_rond += 1
+
+
+# Ajout de boutons correspondant aux couleurs
+for couleur in couleurs:
+    bouton = Button(cadre1, text=couleur, bg=couleur, command=lambda c=couleur: colorer_rond(c))
+    bouton.pack(side=LEFT)
 
 fenetre.mainloop()
+
+
+
+
+
