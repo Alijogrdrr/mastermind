@@ -16,7 +16,7 @@ def ouvrir_fenetre_inscription():
     Cette fonction est associé au bouton_incription 
     et permet l'ouverture de la page d'inscription quand l'utilisateur clic sur ce bouton
     """
-    couleur_fond="blue"
+    couleur_fond="pink"
     #permet de detruir les widgets de la page precedente
     for widget in fenetre.winfo_children():#A REGARDER
         widget.destroy()
@@ -28,19 +28,41 @@ def ouvrir_fenetre_inscription():
     fenetre.configure(bg=couleur_fond)
 
     #creation du champs d'entree
-    champs=tk.Entry(fenetre)
-    champs.pack()
-    texte_entree.config(text="Vous avez entree:{texte}")
+    champs_pseudo=tk.Entry(fenetre)
+    champs_pseudo.pack()
+    champs_mdp=tk.Entry(fenetre)
+    champs_mdp.pack()
 
     #bouton valider
-    def affiche_text():
-        texte=champs.get()
-    
+    def enregistre():
+        pseudo_joueur=champs_pseudo.get()
+        mdp_joueur=champs_mdp.get()
+        profil_joueur=[pseudo_joueur,mdp_joueur]
+        """
+        Cette fonction recupere le pseudo et le mot de passe du joueur (2str),
+        pour ensuite l'ajouter dans la base de données
+        """
+        joueur=profil_joueur
+        with open('profils.txt','r',encoding='utf-8') as fichier:
+            utilisateurs=fichier.read().split()
+            profil_joueur=";".join(profil_joueur)
+            with open('profils.txt','a',encoding='utf-8') as fichier:
+                fichier.write('\n'+profil_joueur)
+                fichier.close()
+                print(joueur)
+        for widget in fenetre.winfo_children():#A REGARDER
+            widget.destroy()
+        titre=tk.Label(fenetre,text="Page d'inscription",bg=couleur_fond,fg="black",font=("Arial",90))
+        titre.pack(side="top")
+        titre2=tk.Label(fenetre,text="Félicitation ! Vous êtes bien inscrit",bg=couleur_fond,fg="black",font=("Arial",50))
+        titre2.pack()  
+        bouton_jouer=tk.Button(fenetre,text="Lancer le jeu !",font=("Arial",15),bg="#141769",fg="white")
+        bouton_jouer.pack()
 
-    bouton_valider=tk.Button(fenetre,text="Valider",font=("Arial",15),bg="#141769",fg="white")
-    bouton_valider.pack(fenetre)
-    texte_entree=tk.Label(fenetre,text="")
-    texte_entree.pack()
+
+    bouton_valider=tk.Button(fenetre,text="Valider",font=("Arial",15),bg="#141769",fg="white",command=enregistre)
+    bouton_valider.pack()
+
     
 
 
@@ -57,12 +79,13 @@ def ouvrir_fenetre_inscription():
 
 
 
+
 def ouvrir_fenetre_connexion():
     """
-    Cette fonction est associé au bouton_connexion 
+    Cette fonction est associé au bouton_incription 
     et permet l'ouverture de la page de connexion quand l'utilisateur clic sur ce bouton
     """
-    couleur_fond="blue"
+    couleur_fond="pink"
     #permet de detruir les widgets de la page precedente
     for widget in fenetre.winfo_children():#A REGARDER
         widget.destroy()
@@ -74,20 +97,40 @@ def ouvrir_fenetre_connexion():
     fenetre.configure(bg=couleur_fond)
 
     #creation du champs d'entree
-    champs=tk.Entry(fenetre)
-    champs.pack()
-    texte_entree.config(text="Vous avez entree:{texte}")
+    champs_pseudo=tk.Entry(fenetre)
+    champs_pseudo.pack()
+    champs_mdp=tk.Entry(fenetre)
+    champs_mdp.pack()
 
     #bouton valider
-    def affiche_text():
-        texte=champs.get()
+    def verification():
+        pseudo_joueur=champs_pseudo.get()
+        mdp_joueur=champs_mdp.get()
+        with open('profils.txt','r',encoding='utf-8') as fichier:
+            utilisateurs=fichier.read().split()
+            for elem in utilisateurs:
+                if str(pseudo_joueur+";"+mdp_joueur) == elem:
+                    print('le profil est dans la base de données')
+                    for widget in fenetre.winfo_children():#A REGARDER
+                        widget.destroy()
+                    titre=tk.Label(fenetre,text="Page de connexion",bg=couleur_fond,fg="black",font=("Arial",90))
+                    titre.pack(side="top")
+                    titre2=tk.Label(fenetre,text="Félicitation ! Vous êtes bien connecté",bg=couleur_fond,fg="black",font=("Arial",50))
+                    titre2.pack()  
+                    bouton_jouer=tk.Button(fenetre,text="Lancer le jeu !",font=("Arial",15),bg="#141769",fg="white")
+                    bouton_jouer.pack()
+                    return True
+            titre3=tk.Label(fenetre,text="Votre compte n'existe pas\nRéessayer ou inscrivez-vous",bg=couleur_fond,fg="black",font=("Arial",50))
+            titre3.pack()
+
+
+    bouton_valider=tk.Button(fenetre,text="Valider",font=("Arial",15),bg="#141769",fg="white",command=verification)
+    bouton_valider.pack()
+
     
 
-    bouton_valider=tk.Button(fenetre,text="Valider",font=("Arial",15),bg="#141769",fg="white")
-    bouton_valider.pack(fenetre)
-    texte_entree=tk.Label(fenetre,text="")
-    texte_entree.pack()
-    
+
+
 
 
 
@@ -143,6 +186,12 @@ bouton_fermeture.pack()
 
 
 
+
+
+####TACHES A FAIRE
+#boutton retour sur les page inscription et connexion
+#boutton qui renvoie a la page d'inscription quand la connexion n'a pas reussi (si c'est possible)
+#gerer l'aspect visuel
 
 
 
