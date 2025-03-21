@@ -47,17 +47,18 @@ from tkinter import *
 fenetre = Tk()
 
 # je vais creer un canevas
-canvas = Canvas(fenetre, width=400, height=200, bg="white")
+canvas = Canvas(fenetre, width=400, height=200, bg="white") #bg c'est l'ariere plan
 canvas.pack()
 
-couleurs = ["green", "blue", "pink", "yellow", "orange", "black", "white"]
-ronds = []
+couleurs = ["green", "blue", "pink", "yellow", "orange", "grey", "white"]
+ronds = [] # la en gros je cree une liste pour stocker les ronds
 
 for i in range(4):  # je prends 4 parce qu'il y a 4 rond au mastermind
-    rond = canvas.create_oval(50 + i * 100, 75, 100 + i * 100, 125, fill="grey")
+    rond = canvas.create_oval(50 + i * 100, 75, 100 + i * 100, 125, fill="white")
     ronds.append(rond)
 
 index_rond = 0
+
 # Création d'un cadre pour les boutons
 cadre1 = Frame(fenetre)
 cadre1.pack()
@@ -75,8 +76,3 @@ for couleur in couleurs:
     bouton.pack(side=LEFT)
 
 fenetre.mainloop()
-
-
-
-
-
