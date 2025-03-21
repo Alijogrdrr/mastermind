@@ -3,6 +3,9 @@ import tkinter as tk
 
 
 
+
+
+
 ####################################################
 # PARTIE 1 : GESTION DE LA PAGE INSCRIPTION
 ####################################################
@@ -148,10 +151,124 @@ def ouvrir_fenetre_connexion():
 ####################################################
 
 
+
+def fermer_fenetre():
+    """
+    Cette fonction est associé au bouton_fermeture 
+    et permet la fermeture de la page quand l'utilisateur clic sur ce bouton
+    """
+    fenetre.destroy()#permet de fermer la fenetre
+    return fenetre
+    
+    
+
+####################################################
+# PARTIE 4 : GESTION FOND JEU
+####################################################
+
+
+def ouvrir_jeu_solo():
+    for widget in fenetre.winfo_children():#A REGARDER
+        widget.destroy() # Ouvre la fenêtre en plein écran, parce que sinon c'est pas la bonne taille a chaque fois
+        
+    # Configuration des colonnes 
+    fenetre.grid_columnconfigure(0, weight=1, minsize=100)
+    fenetre.grid_columnconfigure(1, weight=8, minsize=300)
+    fenetre.grid_columnconfigure(2, weight=1, minsize=100)
+
+    # Configuration de la ligne
+    fenetre.grid_rowconfigure(0, weight=1, minsize=200)
+
+    # Création des Canvas
+    canvas_gauche = tk.Canvas(fenetre, background="#C18543")
+    canvas_gauche.grid(row=0, column=0, rowspan=2, sticky="nsew")
+
+    canvas_central = tk.Canvas(fenetre, background="#8D5416")
+    canvas_central.grid(row=0, column=1, rowspan=2, sticky="nsew")
+
+    canvas_droit = tk.Canvas(fenetre, background="#C18543")
+    canvas_droit.grid(row=0, column=2, rowspan=2, sticky="nsew")
+
+    # Dimensions du canvas central
+    canvas_largeur = 1000  # Largeur totale
+    canvas_hauteur = 700   # Hauteur totale
+    canvas_central.config(width=canvas_largeur, height=canvas_hauteur)
+
+    # Calcul des tailles de la grille
+    ligne_hauteur = canvas_hauteur / 11
+    colonne_largeur = canvas_largeur / 10
+
+    # Dessin des rectangles et des cercles
+    for i in range(11):
+        # Coordonnées du rectangle (occupant 80% à droite)
+        rect_x1 = colonne_largeur * 2
+        rect_x2 = colonne_largeur * 10
+        rect_y1 = i * ligne_hauteur + 10
+        rect_y2 = (i + 1) * ligne_hauteur - 10
+
+        # Dessine le rectangle
+        canvas_central.create_rectangle(rect_x1, rect_y1, rect_x2, rect_y2, outline="black")
+
+        # Dessine les 4 cercles alignés sur la gauche du rectangle
+        for j in range(4):
+            circle_x1 = colonne_largeur * 2.2 + j * colonne_largeur
+            circle_x2 = circle_x1 + 30
+            circle_y1 = rect_y1 + 5
+            circle_y2 = rect_y1 + 35
+            canvas_central.create_oval(circle_x1, circle_y1, circle_x2, circle_y2, outline="black")
+    
+    # je vais creer un canevas
+    canvas = tk.Canvas(canvas_droit, width=450, height=200, bg="white") #bg c'est l'ariere plan
+    canvas.pack()
+
+    couleurs = ["green", "blue", "pink", "yellow", "orange", "grey", "white"]
+    ronds = [] # la en gros je cree une liste pour stocker les ronds
+
+    for i in range(4):  # je prends 4 parce qu'il y a 4 rond au mastermind
+        rond = canvas.create_oval(50 + i * 100, 75, 100 + i * 100, 125, fill="white")
+        ronds.append(rond)
+
+    index_rond = 0
+
+    # Création d'un cadre pour les boutons
+    cadre1 = tk.Frame(canvas_droit)
+    cadre1.pack()
+
+    def colorer_rond(couleur):
+        global index_rond
+        if index_rond < len(ronds):
+            canvas.itemconfig(ronds[index_rond], fill=couleur)
+            index_rond += 1
+
+
+    # Ajout de boutons correspondant aux couleurs
+    for couleur in couleurs:
+        bouton = tk.Button(cadre1, text=couleur, bg=couleur, command=lambda c=couleur: colorer_rond(c))
+        bouton.pack(side="left")
+
+   
+    # Affichage de la fenêtre
+    fenetre.mainloop()
+
+
+
+def ouvrir_fenetre_jeu_duo():
+    print("hey")
+    return bouton_joueur_duo
+
+
+
+
+
+####################################################
+# PARTIE 6 : Page principale
+####################################################
+
+
 fenetre = tk.Tk()
 fenetre.state("zoomed")#permet d'ouvrire la page directement en grand ecran
 fenetre.title("Page d'acceuil")
-couleur_fond="#141769"
+couleur_fond="#F3B065"
 couleur_boutons="white"
 fenetre.configure(bg=couleur_fond)
 
@@ -163,32 +280,23 @@ titre_page.pack(side="top") #sa place dans la fenetre
 
 
 #creation des boutons
-
 cadre=tk.Frame(fenetre,bg=couleur_fond)#cadre où sont les 2 boutons (inscription et connexion)
 cadre.pack(expand=True)
 
-
-def fermer_fenetre():
-    """
-    Cette fonction est associé au bouton_fermeture 
-    et permet la fermeture de la page quand l'utilisateur clic sur ce bouton
-    """
-    fenetre.destroy()#permet de fermer la fenetre
-    return fenetre
-    
-
-
-bouton_inscription=tk.Button(cadre,text="Inscription",command=ouvrir_fenetre_inscription,font=("Arial",50),bg=couleur_boutons,fg=couleur_fond)
+bouton_inscription=tk.Button(cadre,text="Inscription",command=ouvrir_fenetre_inscription,font=("Arial",20),bg=couleur_boutons,fg=couleur_fond)
 bouton_inscription.pack(side="left",padx=100)
 
-bouton_connexion=tk.Button(cadre,text="Connexion",command=ouvrir_fenetre_connexion,font=("Arial",50),bg=couleur_boutons,fg=couleur_fond)
+bouton_connexion=tk.Button(cadre,text="Connexion",command=ouvrir_fenetre_connexion,font=("Arial",20),bg=couleur_boutons,fg=couleur_fond)
 bouton_connexion.pack(side="left",padx=100)
 
-bouton_fermeture=tk.Button(fenetre,text="Fermer la fenetre",command=fermer_fenetre,font=("Arial",15),bg=couleur_boutons,fg=couleur_fond)
+bouton_joueur_solo=tk.Button(cadre,text="jouer en solo",command=ouvrir_jeu_solo,font=("Arial",20),bg=couleur_boutons,fg=couleur_fond)
+bouton_joueur_solo.pack(side="left",padx=100)
+
+bouton_joueur_duo=tk.Button(cadre,text="jouer en duo",command=ouvrir_fenetre_jeu_duo,font=("Arial",20),bg=couleur_boutons,fg=couleur_fond)
+bouton_joueur_duo.pack(side="left",padx=100)
+
+bouton_fermeture=tk.Button(fenetre,text="Fermer la fenetre",command=fermer_fenetre,font=("Arial",20),bg=couleur_boutons,fg=couleur_fond)
 bouton_fermeture.pack()
-
-
-
 
 
 
