@@ -195,9 +195,91 @@ bouton_fermeture.pack()
 #boutton qui renvoie a la page d'inscription quand la connexion n'a pas reussi (si c'est possible)
 #gerer l'aspect visuel
 
+fenetre.mainloop()
 
 
 
 
+
+###################################################
+#Partie Alix G
+###################################################
+
+#PARTIE UN LES TROIC PARTIES DE L'ECRAN:
+
+import tkinter as tk
+
+# Création de la fenêtre principale
+fenetre = tk.Tk()
+fenetre.title("mastermind")
+
+fenetre.state("zoomed")  # Ouvre la fenêtre en plein écran, parce que sinon c'est pas la bonne taille a chaque fois
+
+# Configuration des colonnes 
+fenetre.grid_columnconfigure(0, weight=1, minsize=100)  # ici (nom de a colone 0 1 ou 2, weight c'est la taille 1=petit 5=grand, minsize= taille min )
+fenetre.grid_columnconfigure(1, weight=8, minsize=300)  # grid_columnconfigure C'est une fonction de Tkinter qui permet de configurer les colonnes d'une grille (grid).
+fenetre.grid_columnconfigure(2, weight=1, minsize=100)
+
+# Configuration de la ligne
+fenetre.grid_rowconfigure(0, weight=1, minsize=200) 
+#ici on met 0 parce qu'il y a qu'une seule ligne, 1 parce qu'on a pas besoin qu'elle soit plus grande qu'une aure ligne
+
+# Création des carrés collés les uns aux autres
+canevas_gauche = tk.Canvas(fenetre, background="pink")
+canevas_gauche.grid(row=0, column=0, rowspan=2,sticky="nsew" )  
+#row=0 : place le widget dans la première ligne.
+#column=0 : place le widget dans la première colonne.
+#rowspan=2 : fait occuper au widget deux lignes.
+#sticky="nsew" : fait en sorte que le rectangle s'étende dans toutes les directions.
+
+canevas_central = tk.Canvas(fenetre, background="purple")
+canevas_central.grid(row=0, column=1,rowspan=2, sticky="nsew")
+
+canevas_droit = tk.Canvas(fenetre, background="pink")
+canevas_droit.grid(row=0, column=2, rowspan=2, sticky="nsew") 
+
+fenetre.mainloop()
+
+
+
+
+
+
+
+
+#PARTIE DEUX, LES COULEURS:
+
+from tkinter import *
+
+fenetre = Tk()
+
+# je vais creer un canevas
+canvas = Canvas(fenetre, width=400, height=200, bg="white") #bg c'est l'ariere plan
+canvas.pack()
+
+couleurs = ["green", "blue", "pink", "yellow", "orange", "grey", "white"]
+ronds = [] # la en gros je cree une liste pour stocker les ronds
+
+for i in range(4):  # je prends 4 parce qu'il y a 4 rond au mastermind
+    rond = canvas.create_oval(50 + i * 100, 75, 100 + i * 100, 125, fill="white")
+    ronds.append(rond)
+
+index_rond = 0
+
+# Création d'un cadre pour les boutons
+cadre1 = Frame(fenetre)
+cadre1.pack()
+
+def colorer_rond(couleur):
+    global index_rond
+    if index_rond < len(ronds):
+        canvas.itemconfig(ronds[index_rond], fill=couleur)
+        index_rond += 1
+
+
+# Ajout de boutons correspondant aux couleurs
+for couleur in couleurs:
+    bouton = Button(cadre1, text=couleur, bg=couleur, command=lambda c=couleur: colorer_rond(c))
+    bouton.pack(side=LEFT)
 
 fenetre.mainloop()
