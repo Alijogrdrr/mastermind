@@ -15,7 +15,7 @@ def stopjeu():
 fenetrevictoire = tk.Tk()
 fenetrevictoire.title("C'est gagné !")
 fenetrevictoire.geometry("400x300")
-fenetrevictoire.config(bg="#alc4fd")
+fenetrevictoire.config(bg="blue")
 
 labelvictoire = tk.Label(fenetrevictoire, text="Bravo tu as gagné !", font = ("helvetica", "30"), bg="#a1c4fd" )
 labelvictoire.pack(pady=50)      #pour laisser un peu d'espace autour du texte
