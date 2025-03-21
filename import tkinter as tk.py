@@ -28,11 +28,11 @@ canvas_central.grid(row=0, column=1,rowspan=2, sticky="nsew")
 
 canvas_droit = tk.Canvas(fenetre, background="black")
 canvas_droit.grid(row=0, column=2, rowspan=2, sticky="nsew") 
-for i in range (0,9):
-    canvas_central.create_rectangle(470,60+i*70,110,20+i*70,outline="black")
-for i in range (0,9):
+for i in range (0,11):
+    canvas_central.create_rectangle(470,42+i*60,110,8+i*60,outline="black")
+for i in range (0,11):
     for j in range(0,4):
-        canvas_central.create_oval(122+100*j,58+i*70,158+100*j,22+i*70)
+        canvas_central.create_oval(122+100*j,39+i*60,152+100*j,11+i*60)
 
 # Affichage de la fenêtre
 fenetre.mainloop()
