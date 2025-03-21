@@ -40,7 +40,7 @@ def ouvrir_fenetre_inscription():
         profil_joueur=[pseudo_joueur,mdp_joueur]
         """
         Cette fonction recupere le pseudo et le mot de passe du joueur (2str),
-        pour ensuite l'ajouter dans la base de données
+        pour ensuite les ajouter dans la base de donnée
         """
         joueur=profil_joueur
         with open('profils.txt','r',encoding='utf-8') as fichier:
@@ -82,7 +82,7 @@ def ouvrir_fenetre_inscription():
 
 def ouvrir_fenetre_connexion():
     """
-    Cette fonction est associé au bouton_incription 
+    Cette fonction est associé au bouton_connexion 
     et permet l'ouverture de la page de connexion quand l'utilisateur clic sur ce bouton
     """
     couleur_fond="pink"
@@ -104,6 +104,10 @@ def ouvrir_fenetre_connexion():
 
     #bouton valider
     def verification():
+        """
+        Cette fonction recupere le pseudo et le mot de passe du joueur (2str),
+        pour ensuite verifier qu'il est bien dans la base de données
+        """
         pseudo_joueur=champs_pseudo.get()
         mdp_joueur=champs_mdp.get()
         with open('profils.txt','r',encoding='utf-8') as fichier:
@@ -153,7 +157,7 @@ fenetre.configure(bg=couleur_fond)
 
 
 #céation titre de la page
-titre_page=tk.Label(fenetre,text="Bienvenue sur le\nMastermind !",bg=couleur_fond,fg="white",font=("Arial",90))
+titre_page=tk.Label(fenetre,text="Bienvenue sur le\nMastermind !",bg=couleur_fond,fg="white",font=("Impact",90))
 titre_page.pack(side="top") #sa place dans la fenetre
 
 
@@ -174,11 +178,11 @@ def fermer_fenetre():
     
 
 
-bouton_inscription=tk.Button(cadre,text="Inscription",command=ouvrir_fenetre_inscription,font=("Arial",30),bg=couleur_boutons,fg=couleur_fond)
-bouton_inscription.pack(side="left",padx=50)
+bouton_inscription=tk.Button(cadre,text="Inscription",command=ouvrir_fenetre_inscription,font=("Arial",50),bg=couleur_boutons,fg=couleur_fond)
+bouton_inscription.pack(side="left",padx=100)
 
-bouton_connexion=tk.Button(cadre,text="Connexion",command=ouvrir_fenetre_connexion,font=("Arial",30),bg=couleur_boutons,fg=couleur_fond)
-bouton_connexion.pack(side="left",padx=50)
+bouton_connexion=tk.Button(cadre,text="Connexion",command=ouvrir_fenetre_connexion,font=("Arial",50),bg=couleur_boutons,fg=couleur_fond)
+bouton_connexion.pack(side="left",padx=100)
 
 bouton_fermeture=tk.Button(fenetre,text="Fermer la fenetre",command=fermer_fenetre,font=("Arial",15),bg=couleur_boutons,fg=couleur_fond)
 bouton_fermeture.pack()
@@ -192,6 +196,7 @@ bouton_fermeture.pack()
 #boutton retour sur les page inscription et connexion
 #boutton qui renvoie a la page d'inscription quand la connexion n'a pas reussi (si c'est possible)
 #gerer l'aspect visuel
+#boutton reles du jeu
 
 
 
