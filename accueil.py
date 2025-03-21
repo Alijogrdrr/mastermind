@@ -62,7 +62,7 @@ def ouvrir_fenetre_inscription():
 
     bouton_valider=tk.Button(fenetre,text="Valider",font=("Arial",15),bg="#141769",fg="white",command=enregistre)
     bouton_valider.pack()
-
+.
     
 
 
