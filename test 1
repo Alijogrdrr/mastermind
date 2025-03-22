@@ -1,18 +1,171 @@
 import tkinter as tk
+import random
+from collections import Counter
 
-root = tk.Tk()
-root.title("")
-root.state('zoomed')
+# Palette de couleurs harmonieuse et moderne
+BACKGROUND_COLOR = "#2c3e50"
+RECTANGLE_COLOR = "#34495e"
+BUTTON_COLOR = "#2980b9"
+BUTTON_TEXT_COLOR = "white"
+TEXT_COLOR = "white"
+# Les cercles de saisie sont initialement transparents
+CIRCLE_DEFAULT_COLOR = ""
+FEEDBACK_COLORS = {
+    "correct": "#e74c3c",   # rouge
+    "misplaced": "#3498db", # bleu
+    "wrong": "#ecf0f1"      # (non utilisé dans le feedback agrégé)
+}
 
-frame = tk.Frame(root)
-frame.place(relx=0.5, rely=0.5, anchor="center")
+class MastermindGame:
+    def __init__(self, mode="human"):
+        self.mode = mode
+        self.colors = ["red", "green", "blue", "yellow", "purple", "orange"]
+        self.secret_code = []
+        self.current_row = 0
+        self.current_circle = 0
+        # 11 lignes : en mode humain, la ligne 0 sert de code secret, les lignes 1 à 10 pour les propositions
+        self.guesses = [[] for _ in range(11)]
+        
+        self.create_widgets()
+        
+        if self.mode == "machine":
+            self.secret_code = [random.choice(self.colors) for _ in range(4)]
+        
+        self.root.mainloop()
+        
+    def create_widgets(self):
+        self.root = tk.Tk()
+        self.root.title("Mastermind")
+        self.root.configure(bg=BACKGROUND_COLOR)
+        self.root.resizable(False, False)
+        
+        self.canvas = tk.Canvas(self.root, width=600, height=500, bg=BACKGROUND_COLOR, highlightthickness=0)
+        self.canvas.pack(side="left", padx=20, pady=20)
+        
+        self.side_panel = tk.Frame(self.root, bg=BACKGROUND_COLOR)
+        self.side_panel.pack(side="right", padx=10)
+        
+        # Boutons de couleurs
+        for color in self.colors:
+            btn = tk.Button(self.side_panel, bg=color, width=10, relief="flat",
+                            command=lambda c=color: self.add_color(c))
+            btn.pack(pady=5)
+        
+        # Boutons d'actions
+        tk.Button(self.side_panel, text="Vérifier", bg=BUTTON_COLOR, fg=BUTTON_TEXT_COLOR, relief="flat",
+                  command=self.verify_guess).pack(pady=10)
+        tk.Button(self.side_panel, text="Annuler", bg=BUTTON_COLOR, fg=BUTTON_TEXT_COLOR, relief="flat",
+                  command=self.undo_color).pack(pady=5)
+        
+        self.draw_board()
+        
+    def draw_board(self):
+        self.rectangles = []
+        self.circles = []
+        for i in range(11):
+            y1 = 10 + i * 40
+            rect = self.canvas.create_rectangle(10, y1, 410, y1 + 30, fill=RECTANGLE_COLOR, outline="", width=0)
+            self.rectangles.append(rect)
+            
+            row_circles = []
+            for j in range(4):
+                x = 50 + j * 80
+                circle = self.canvas.create_oval(x-10, y1+5, x+10, y1+25, fill=CIRCLE_DEFAULT_COLOR, outline="black")
+                row_circles.append(circle)
+            self.circles.append(row_circles)
+    
+    def add_color(self, color):
+        if self.current_circle >= 4:
+            return
+        self.canvas.itemconfig(self.circles[self.current_row][self.current_circle], fill=color)
+        self.guesses[self.current_row].append(color)
+        self.current_circle += 1
+        
+    def undo_color(self):
+        if self.current_circle == 0:
+            return
+        self.current_circle -= 1
+        self.canvas.itemconfig(self.circles[self.current_row][self.current_circle], fill=CIRCLE_DEFAULT_COLOR)
+        self.guesses[self.current_row].pop()
+    
+    def draw_feedback(self, row, red_count, blue_count):
+        y1 = 10 + row * 40
+        x_start = 430  # Position de départ pour la zone de feedback
+        peg_spacing = 15
+        peg_radius = 5
+        # Affichage des pions rouges pour les bonnes positions
+        for i in range(red_count):
+            cx = x_start + i * peg_spacing
+            cy = y1 + 15
+            self.canvas.create_oval(cx-peg_radius, cy-peg_radius, cx+peg_radius, cy+peg_radius,
+                                    fill=FEEDBACK_COLORS["correct"], outline="")
+        # Affichage des pions bleus pour les bonnes couleurs mal placées
+        for i in range(blue_count):
+            cx = x_start + (red_count + i) * peg_spacing
+            cy = y1 + 15
+            self.canvas.create_oval(cx-peg_radius, cy-peg_radius, cx+peg_radius, cy+peg_radius,
+                                    fill=FEEDBACK_COLORS["misplaced"], outline="")
+    
+    def verify_guess(self):
+        # En mode humain, la première ligne sert à saisir le code secret.
+        if self.mode == "human" and self.current_row == 0:
+            if len(self.guesses[0]) != 4:
+                return
+            self.secret_code = self.guesses[0][:]
+            # Récupérer les coordonnées de la première ligne et recouvrir la ligne avec un rectangle de fond
+            x1, y1, x2, y2 = self.canvas.coords(self.rectangles[0])
+            self.canvas.create_rectangle(x1, y1, x2, y2, fill=BACKGROUND_COLOR, outline=BACKGROUND_COLOR)
+            # Recouvrir les cercles de la première ligne avec la couleur de fond
+            for circle in self.circles[0]:
+                self.canvas.itemconfig(circle, fill=BACKGROUND_COLOR, outline=BACKGROUND_COLOR)
+            self.current_row = 1
+            self.current_circle = 0
+            return
+        
+        if len(self.guesses[self.current_row]) != 4:
+            return
+        
+        guess = self.guesses[self.current_row]
+        secret = self.secret_code
+        
+        exact = sum(1 for a, b in zip(guess, secret) if a == b)
+        secret_count = Counter(secret)
+        guess_count = Counter(guess)
+        total_matches = sum(min(secret_count[color], guess_count[color]) for color in secret_count)
+        misplaced = total_matches - exact
+        
+        self.draw_feedback(self.current_row, exact, misplaced)
+        
+        if exact == 4:
+            self.show_result("Gagné !")
+            return
+        
+        if self.current_row >= 10:
+            self.show_result("Perdu ! Le code était : " + " ".join(self.secret_code))
+            return
+        
+        self.current_row += 1
+        self.current_circle = 0
+    
+    def show_result(self, message):
+        popup = tk.Toplevel(self.root, bg=BACKGROUND_COLOR)
+        popup.title("Résultat")
+        popup.resizable(False, False)
+        tk.Label(popup, text=message, bg=BACKGROUND_COLOR, fg=TEXT_COLOR, font=("Helvetica", 16)).pack(padx=20, pady=20)
+        tk.Button(popup, text="Recommencer", bg=BUTTON_COLOR, fg=BUTTON_TEXT_COLOR, relief="flat",
+                  command=lambda: [popup.destroy(), self.root.destroy(), start_interface()]).pack(pady=10)
 
-frame_gauche= tk.Frame(frame,bg="lightgray",width=100)
-frame_gauche.grid(row=0,column=0,rowspan=2,sticky="nsew")
-frame_droite=tk.Frame(frame,bg="lightgray",width=100)
-frame_droite.grid(row=0,column=2,rowspan=2,sticky="nsew")
-# Création du Canvas avec une taille fixe
-canvas = tk.Canvas(frame, width=350, height=650, bg="lightblue")
-canvas.grid(row=0,column=1,rowspan=2,sticky="nsew")
+def start_interface():
+    start_root = tk.Tk()
+    start_root.title("Choix du mode")
+    start_root.configure(bg=BACKGROUND_COLOR)
+    start_root.resizable(False, False)
+    tk.Label(start_root, text="Choisissez le mode de jeu", bg=BACKGROUND_COLOR, fg=TEXT_COLOR, font=("Helvetica", 16)).pack(padx=20, pady=20)
+    tk.Button(start_root, text="Je choisis les couleurs", bg=BUTTON_COLOR, fg=BUTTON_TEXT_COLOR, relief="flat",
+              command=lambda: [start_root.destroy(), MastermindGame(mode="human")]).pack(pady=10)
+    tk.Button(start_root, text="La machine choisit aléatoirement", bg=BUTTON_COLOR, fg=BUTTON_TEXT_COLOR, relief="flat",
+              command=lambda: [start_root.destroy(), MastermindGame(mode="machine")]).pack(pady=10)
+    start_root.mainloop()
 
-root.mainloop()
+if __name__ == "__main__":
+    start_interface()
