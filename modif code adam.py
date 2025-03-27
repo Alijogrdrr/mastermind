@@ -41,6 +41,22 @@ button_diameter = 20  # Diamètre des petits boutons
 button_offset_x = 20  # Espacement horizontal entre les cercles
 button_offset_y = 60  # Espacement vertical entre les lignes de cercles
 
+def couleur_petits_boutons():
+    fill = None
+    for i in range (couleur_code_secret):
+        if couleur_code_secret[i] == couleur_choisie[i]:
+            fill = "black"
+        elif couleur_code_secret[i] in couleurs_choisies:
+            fill = "white"
+        else:
+            fill = None
+
+import random
+def couleur_code_secret():
+    canvas_central.oval(row = 1, fill = random.choice(couleurs))
+    couleurs = ["green", "blue", "pink", "yellow", "orange", "grey", "white"]
+    return couleurs
+
 # Positionner les cercles blancs pour les aligner avec les cercles du canvas central
 for i in range(0, 11):
     for j in range(0, 4):
@@ -50,16 +66,6 @@ for i in range(0, 11):
         canvas_central.create_oval(x_position, y_position, x_position + button_diameter, y_position + button_diameter, fill= couleur_petits_boutons())
 
 
-
-def couleur_petits_boutons():
-    fill = None
-    for i in range (liste_code_secret):
-        if couleur_code_secret[i] == couleur_choisie[i]:
-            fill = "black"
-        elif couleur_code_secret[i] in liste_couleurs_choisies:
-            fill = "white"
-        else:
-            fill = None
 
 
 # Affichage de la fenêtre
