@@ -47,7 +47,20 @@ for i in range(0, 11):
         # Calculer la position verticale des cercles blancs pour les aligner avec les cercles du canevas central
         y_position = 39 + i * 60 + (button_diameter // 2) - 33  # Aligné avec le centre des cercles dans les rectangles
         x_position = 50 + j * (button_diameter + button_offset_x)  # Décalage horizontal
-        canvas_central.create_oval(x_position, y_position, x_position + button_diameter, y_position + button_diameter, fill="white")
+        canvas_central.create_oval(x_position, y_position, x_position + button_diameter, y_position + button_diameter, fill= couleur_petits_boutons())
+
+
+
+def couleur_petits_boutons():
+    fill = None
+    for i in range (liste_code_secret):
+        if couleur_code_secret[i] == couleur_choisie[i]:
+            fill = "black"
+        elif couleur_code_secret[i] in liste_couleurs_choisies:
+            fill = "white"
+        else:
+            fill = None
+
 
 # Affichage de la fenêtre
 fenetre.mainloop()
