@@ -1,11 +1,20 @@
 import tkinter as tk
+import random
 
 
-    
 
-####################################################
-# PARTIE 4 : GESTION FOND JEU
-####################################################
+
+##################variables global#################
+nb_essai=0 #cette variable est modifier a chaque essai (servira peut etre plus tard)
+index_rond = 0
+couleurs = ["green", "blue", "pink", "yellow", "orange", "purple"]
+essai=[]#liste de 4 elements avec les couleur des rond de la ligne que l'on est entre de remplir
+code_secret=[] #comptient 4 couleurs parmis "couleurs" generrer aléatoirement et sera le code a deviner
+
+
+##############################################################################################
+# PARTIE 1 : CREATION DE LA FENETRE + CANVAS
+##############################################################################################
 
 fenetre = tk.Tk()
 fenetre.update()
@@ -17,7 +26,21 @@ hauteur_fenetre = int(fenetre.winfo_height())
 print(largeur_fenetre,hauteur_fenetre)
 
 
-# Dimensions du canvas central
+#generation du code secret 
+
+def couleur_code_secret():
+    """
+    Cette fonction sert a generer un code culeur qui sera le code couleur que l'utilistaeur devrait trouver
+    """
+    global couleurs
+    global code_secret
+    code_secret.append(random.choice(couleurs))
+    print("Les coulurs a deviner dans cet ordre sont:", code_secret)
+
+couleur_code_secret()
+
+
+#creation du canvas central
 canvas=tk.Canvas(fenetre,width=4/8*largeur_fenetre,height=hauteur_fenetre,highlightthickness=5,highlightbackground="pink")
 canvas.update()
 canvas.pack()
@@ -28,8 +51,21 @@ hauteur_canvas=int(canvas.cget('height'))
 print(largeur_canvas,hauteur_canvas)
 
 
+
+# je vais creer le canevas droit
+canvas_droit = tk.Canvas(fenetre, width=1/8*largeur_fenetre, height=hauteur_fenetre)
+canvas_droit.place(x=largeur_fenetre-(1.5/8*largeur_fenetre),)
+
+
+
+
+##############################################################################################
+# PARTIE 2 : CREATION DE LA GRILLE DU JEU + RONDS
+##############################################################################################
+
+
 #creation du grand rectangle global du plateau de jeu (prennant 4/5 du canvas centre decallé a droite)
-rectangle=canvas.create_rectangle(1/5*largeur_canvas,1/12*hauteur_canvas ,largeur_canvas,11/12*hauteur_canvas ,width=4, outline="black",fill="gray")
+rectangle=canvas.create_rectangle(1/5*largeur_canvas,1/12*hauteur_canvas ,largeur_canvas,11/12*hauteur_canvas ,width=4, outline="black",fill="grey")
 
 #coordonnées pour les 9 lignes a tracer a l'interieur du recangle
 ligne_x1=0 #je les fait aller jusqu'au bout du canvas pour avoir la partie pour mettre les resultats de la ligne
@@ -42,9 +78,9 @@ for lignes in range(11):
     canvas.create_line(ligne_x1, ligne_y, ligne_x2, ligne_y, width=4, fill="black")
     ligne_y+=1/12*hauteur_canvas
 
- #je cree une liste pour stocker les ronds
-ronds = [[],[],[],[],[],[],[],[],[],[]]
 
+#je cree une liste pour stocker les ronds
+ronds = [[],[],[],[],[],[],[],[],[],[]]
 
 #coordonnées pour les cercles
 cercle_y1=1/12*hauteur_canvas+5
@@ -55,7 +91,7 @@ for i in range(10):
     cercle_x1=1/5*largeur_canvas +50 #le 50 sert a faire des rond et non des oval, car les cases sont rectagulaire et non carré
     cercle_x2=2/5*largeur_canvas-50
     for j in range (4):
-        rond=canvas.create_oval(cercle_x1,cercle_y1,cercle_x2,cercle_y2,width=3,fill="gray")
+        rond=canvas.create_oval(cercle_x1,cercle_y1,cercle_x2,cercle_y2,width=3,fill="grey")
         ronds[i].append(rond)
         cercle_x1+=1/5*largeur_canvas
         cercle_x2+=1/5*largeur_canvas
@@ -64,41 +100,138 @@ for i in range(10):
 
     
 print(ronds)
-####################################################
-# PARTIE 4 : GESTION FOND choisir couleur
-####################################################
 
-#variables
-nb_essai=0
-index_rond = 0
-couleurs = ["green", "blue", "pink", "yellow", "orange", "grey", "white"]
+#je cree une liste pour stocker les ronds
+petits_ronds = [[],[],[],[],[],[],[],[],[],[]] #contient 4 elem dans chaque sous liste
 
+#coordonnées pour les petit cercles de verification
 
-def verifie_couleur():
-    global nb_essai
-    nb_essai+=1
-    print(nb_essai)
-    
-
-# je vais creer un canevas
-canvas_droit = tk.Canvas(fenetre, width=1/8*largeur_fenetre, height=hauteur_fenetre)
-canvas_droit.place(x=largeur_fenetre-(1.5/8*largeur_fenetre),)
+petit_cercle_y1=1/12*hauteur_canvas+3                             #une ligne du canvas 
+petit_cercle_y2=1/12*hauteur_canvas+1/2*(1/12*hauteur_canvas)-3   #une ligne du canvas + une demi-ligne
 
 
-def colorer_rond(couleur):
-    global index_rond
-    global nb_essai
-    if index_rond < len(ronds[nb_essai]):
-        canvas.itemconfig(ronds[nb_essai][index_rond], fill=couleur)
-        index_rond += 1
+#position des cercles de verification pour chaque ligne
+for i in range(10):
+    petit_cercle_x1=25
+    petit_cercle_x2=1/2*(1/5*largeur_canvas)-25
+    for j in range (2):#boucle pour les 2 ronds du haut du rectangle
+        rond_verification=canvas.create_oval(petit_cercle_x1,petit_cercle_y1,petit_cercle_x2,petit_cercle_y2,width=1,fill="white")
+        petits_ronds[i].append(rond_verification)
+        petit_cercle_x1+=1/2*(1/5*largeur_canvas)
+        petit_cercle_x2+=1/2*(1/5*largeur_canvas)
+    #on remet les X au bord du canvas et on descend les Y
+    petit_cercle_x1=25                       
+    petit_cercle_x2=1/2*(1/5*largeur_canvas)-25
+    petit_cercle_y1+=1/2*(1/12*hauteur_canvas)
+    petit_cercle_y2+=1/2*(1/12*hauteur_canvas)
+    for j in range (2):#boucle pour les 2 ronds du bas du rectangle
+        rond_verification=canvas.create_oval(petit_cercle_x1,petit_cercle_y1,petit_cercle_x2,petit_cercle_y2,width=1,fill="white")
+        petit_cercle_x1+=1/2*(1/5*largeur_canvas)
+        petit_cercle_x2+=1/2*(1/5*largeur_canvas)
+    petit_cercle_y1+=1/2*(1/12*hauteur_canvas)
+    petit_cercle_y2+=1/2*(1/12*hauteur_canvas)
+
+
+##############################################################################################
+# PARTIE 3 : AJOUT DES BOUTONS DANS LE CANVAS DROIT
+##############################################################################################
 
 
 # Ajout de boutons correspondant aux couleurs
 for couleur in couleurs:
     bouton = tk.Button(canvas_droit, text=couleur, bg=couleur, command=lambda c=couleur: colorer_rond(c),font=("Arial",30))   #???
     bouton.pack(pady=10)
-bouton = tk.Button(canvas_droit, text="Valider", command=verifie_couleur,font=("Arial",30),relief="solid")  
-bouton.pack(pady=10)
+bouton_valider = tk.Button(canvas_droit, text="Valider", command=verifie_couleur,font=("Arial",30),relief="solid")  
+bouton_valider.pack(pady=10)
+bouton_annuler = tk.Button(canvas_droit, text="Annuler", command=lambda c="grey": colorer_rond(c),font=("Arial",30),relief="solid")  
+bouton_annuler.pack(pady=10)
+
+
+###############################################################################################
+# PARTIE 4 : GESTION DU CHANGEMENT DE COULEUR DES RONDS
+###############################################################################################
+
+
+
+
+
+def colorer_rond(couleur):
+    """
+    Cette fonction prend en parametre la couleur du bouton qui a ete cliquer et
+    change le couleur des rond correspondant
+    """
+    global index_rond
+    global nb_essai
+    global essai
+    if couleur=="grey":
+        if essai!=[]:
+            essai.pop()
+            index_rond-=1
+            canvas.itemconfig(ronds[nb_essai][index_rond], fill="grey") #changement de la couleur du rond
+        else:
+            index_rond-=1
+    elif index_rond < len(ronds[nb_essai]):
+        essai.append(couleur)
+        canvas.itemconfig(ronds[nb_essai][index_rond], fill=couleur) #changement de la couleur du rond
+        index_rond += 1
+
+
+
+
+
+###############################################################################################
+# PARTIE 4 : GESTION DE LA VERIFICATION DES COULEUR RENTREES
+###############################################################################################
+
+
+
+
+def verifie_couleur():
+    """
+    Cette fonction permet de verifier apres l'appuis du bouton valider, si les coueleur existe/sont a la bonne place/ou sont presente
+    """
+    global nb_essai
+    global code_secret
+    liste_placement=[0,0,0]#liste_placement[0]= les couleurs bien placees,   liste_placement[1]= les couleurs presentes mais mal placee,   liste_placement[2]= les couleurs pas presentes
+    #########  METTRE UN IF POUR ETRE SUR QUE LA LIGNE EST COMPLETEE
+    #if len(essai)!=4:###### Marche pas
+        #erreur=tk.Label(fenetre,text="Attention vous ne pouvez pas valider\nsans avoir remplie toute la ligne",fg="red",font=("Impact",15))
+        #erreur.pack(side="right")
+    for i in range(4):
+        if essai[i]==code_secret[i]:#verifie si cette couleur est a la comme place
+            canvas.itemconfig(ronds[nb_essai][index_rond], fill="grey") #changement de la couleur du rond
+        elif essai[i]!=code_secret[i] and essai[i] in code_secret:#regarde si cette couleur est dans la liste mais pas a la bonne place
+            canvas.itemconfig(ronds[nb_essai][index_rond], fill="grey") #changement de la couleur du rond
+        else:#sinon cette couleur est pas presente
+            canvas.itemconfig(ronds[nb_essai][index_rond], fill="grey") #changement de la couleur du rond
+    nb_essai+=1
+    print(liste_placement)
+
+
+
+
+
+    #partie coloration des ronds
+    fill = None
+    for i in range (couleur_code_secret):
+        if couleur_code_secret[i] == essai[i]:
+            fill = "black"
+        elif couleur_code_secret[i] in essai:
+            fill = "white"
+        else:
+            fill = None
+
+
+
+# Positionner les cercles blancs pour les aligner avec les cercles du canvas central
+for i in range(0, 11):
+    for j in range(0, 4):
+        # Calculer la position verticale des cercles blancs pour les aligner avec les cercles du canevas central
+        y_position = 39 + i * 60 + (button_diameter // 2) - 33  # Aligné avec le centre des cercles dans les rectangles
+        x_position = 50 + j * (button_diameter + button_offset_x)  # Décalage horizontal
+        canvas.create_oval(x_position, y_position, x_position + button_diameter, y_position + button_diameter, fill= couleur_petits_boutons())
+
+
    
    
 # Affichage de la fenêtre
