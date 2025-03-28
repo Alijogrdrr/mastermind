@@ -1,10 +1,22 @@
 def couleur_code_secret_2():
+    global couleur
     """
-    Cette fonction sert a faire choisir un code couleur qui sera le code couleur que l'utilistaeur devrait trouver
+    Permet à l'utilisateur de choisir un code couleur qu'il devra deviner plus tard.
     """
-    global couleurs
-    global code_secret
-    code_secret.append(random.choice(couleurs))
-    print("Les couleurs a deviner dans cet ordre sont:", code_secret)
+    code_secret = []
 
-couleur_code_secret_2()
+    print("Couleurs disponibles :", ", ".join(couleurs))
+    while True:
+        couleur = input("Choisissez une couleur (ou tapez 'fin' pour terminer) : ").lower()
+        if couleur == "fin":
+            break
+        elif couleur in couleurs:
+            code_secret.append(couleur)
+        else:
+            print("Couleur invalide, veuillez choisir parmi :", ", ".join(couleurs))
+    
+    print("Les couleurs à deviner dans cet ordre sont :", code_secret)
+    return code_secret
+
+# Exécution de la fonction
+code_secret = couleur_code_secret_2()
