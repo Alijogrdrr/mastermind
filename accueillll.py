@@ -107,7 +107,7 @@ def ouvrir_fenetre_connexion():
 ####################################################
 
 def ouvrir_fenetre_Duo():
-    """Ouvre la fenêtre du mode Duo pour choisir un code couleur secret"""
+    #Ouvre la fenêtre du mode Duo pour choisir un code couleur secret
     fenetre_Duo = tk.Toplevel(fenetre)
     fenetre_Duo.title("Mode Deux Joueurs")
     fenetre_Duo.geometry("800x600")
@@ -118,9 +118,13 @@ def ouvrir_fenetre_Duo():
 
     couleurs_disponibles = ["Rouge", "Bleu", "Vert", "Jaune", "Orange", "Violet"]
     code_secret = []
+    def lancer_jeu():
+        # Fonction appelée lorsque le jeu commence
+        print("Le jeu commence avec le code :", code_secret)
+        fenetre_Duo.destroy()
 
     def ajouter_couleur():
-        """Ajoute une couleur au code secret"""
+        #Ajoute une couleur au code secret
         if len(code_secret) < 4:
             couleur_choisie = combo.get()
             if couleur_choisie:
@@ -139,6 +143,10 @@ def ouvrir_fenetre_Duo():
     bouton_ajouter = tk.Button(fenetre_Duo, text="Ajouter", command=ajouter_couleur, font=("Arial", 16), bg="white")
     bouton_ajouter.pack(pady=10)
 
+    # Bouton pour lancer le jeu (désactivé au départ)
+    bouton_lancer = tk.Button(fenetre_Duo, text="Lancer le jeu", font=("Arial", 16), bg="green", fg="white", state="disabled", command=lancer_jeu)
+    bouton_lancer.pack(pady=20)
+
     liste_couleurs = tk.Label(fenetre_Duo, text="Code secret : ", bg="pink", font=("Arial", 16))
     liste_couleurs.pack(pady=10)
 
@@ -147,7 +155,7 @@ def ouvrir_fenetre_Duo():
 ####################################################
 
 def retour_accueil():
-    """Revient à l'écran d'accueil"""
+    #Revenir à l'écran d'accueil
     for widget in fenetre.winfo_children():
         widget.destroy()
     
@@ -168,3 +176,20 @@ bouton_fermeture = tk.Button(fenetre, text="Fermer", command=fermer_fenetre, fon
 bouton_fermeture.pack()
 
 fenetre.mainloop()
+
+
+
+fenetre.geometry("800x600")
+fenetre.configure(bg="#141769")
+
+titre = tk.Label(fenetre, text="Mastermind", font=("Impact", 50), fg="#4AF5F3", bg="#141769")
+titre.pack(pady=50)
+
+# Ajout d'une bordure lumineuse
+titre.config(highlightbackground="#4AF5F3", highlightthickness=5)
+
+fenetre.mainloop()
+
+
+titre_page = tk.Label(fenetre, text="Bienvenue sur le\nMastermind !", bg=couleur_fond, fg="white", font=("Poppins", 60))
+titre_page.pack(side="top")
