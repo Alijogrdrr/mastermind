@@ -9,13 +9,13 @@ from tkinter import ttk
 fenetre = tk.Tk()
 fenetre.state("zoomed")  # Ouvre en plein écran
 fenetre.title("Mastermind")
-couleur_fond = "#9B59B6"
+couleur_fond = "pink"
 couleur_boutons = "white"
 fenetre.configure(bg=couleur_fond)
 
 # Création du titre de la page
 
-titre = tk.Label(fenetre, text="Mastermind", font=("Impact", 50), fg="black", bg="#9B59B6")
+titre = tk.Label(fenetre, text="Mastermind", font=("Impact", 50), fg="black", bg="pink")
 titre.pack(pady=50)
 
 # Ajout d'une bordure lumineuse
@@ -61,7 +61,7 @@ def ouvrir_fenetre_inscription():
                 fichier.write(f'\n{pseudo};{mdp}')
             retour_accueil()
 
-    bouton_valider = tk.Button(fenetre, text="Valider", font=("Arial", 15), bg="#141769", fg="white", command=enregistrer)
+    bouton_valider = tk.Button(fenetre, text="Valider", font=("Arial", 15), bg="black", fg="white", command=enregistrer)
     bouton_valider.pack()
 
     bouton_retour = tk.Button(fenetre, text="Retour", font=("Arial", 15), bg="red", fg="white", command=retour_accueil)
