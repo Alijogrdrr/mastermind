@@ -5,12 +5,13 @@ import random
 
 
 ##################variables global#################
-nb_essai=0 #cette variable est modifier a chaque essai (servira peut etre plus tard)
+nb_essai=9 #cette variable est modifier a chaque essai (servira peut etre plus tard)
 index_rond = 0
 couleurs = ["green", "blue", "pink", "yellow", "orange", "purple"]
 essai=[]#liste de 4 elements avec les couleur des rond de la ligne que l'on est entre de remplir
 code_secret=[] #comptient 4 couleurs parmis "couleurs" generrer aléatoirement et sera le code a deviner
-
+liste_ronds=[] #liste contenant les ronds
+liste_petit_ronds=[] #liste contenant les petits ronds
 
 ##############################################################################################
 # PARTIE 1 : CREATION DE LA FENETRE + CANVAS
@@ -88,6 +89,7 @@ cercle_y2=2/12*hauteur_canvas-5
 
 #dessin des 4 cercles d'une ligne
 for i in range(10):
+    
     cercle_x1=1/5*largeur_canvas +50 #le 50 sert a faire des rond et non des oval, car les cases sont rectagulaire et non carré
     cercle_x2=2/5*largeur_canvas-50
     for j in range (4):
@@ -97,9 +99,8 @@ for i in range(10):
         cercle_x2+=1/5*largeur_canvas
     cercle_y1+=1/12*hauteur_canvas
     cercle_y2+=1/12*hauteur_canvas
-
-    
-print(ronds)
+for elem in ronds:#sert a renverser la liste
+    liste_ronds.insert(0,elem)
 
 #je cree une liste pour stocker les ronds
 petits_ronds = [[],[],[],[],[],[],[],[],[],[]] #contient 4 elem dans chaque sous liste
@@ -130,22 +131,8 @@ for i in range(10):
         petit_cercle_x2+=1/2*(1/5*largeur_canvas)
     petit_cercle_y1+=1/2*(1/12*hauteur_canvas)
     petit_cercle_y2+=1/2*(1/12*hauteur_canvas)
-
-
-##############################################################################################
-# PARTIE 3 : AJOUT DES BOUTONS DANS LE CANVAS DROIT
-##############################################################################################
-
-
-# Ajout de boutons correspondant aux couleurs
-for couleur in couleurs:
-    bouton = tk.Button(canvas_droit, text=couleur, bg=couleur, command=lambda c=couleur: colorer_rond(c),font=("Arial",30))   #???
-    bouton.pack(pady=10)
-bouton_valider = tk.Button(canvas_droit, text="Valider", command=verifie_couleur,font=("Arial",30),relief="solid")  
-bouton_valider.pack(pady=10)
-bouton_annuler = tk.Button(canvas_droit, text="Annuler", command=lambda c="grey": colorer_rond(c),font=("Arial",30),relief="solid")  
-bouton_annuler.pack(pady=10)
-
+for elem in petits_ronds:#sert a renverser la liste
+    liste_petit_ronds.insert(0,elem)
 
 ###############################################################################################
 # PARTIE 4 : GESTION DU CHANGEMENT DE COULEUR DES RONDS
@@ -189,6 +176,7 @@ def colorer_rond(couleur):
 def verifie_couleur():
     """
     Cette fonction permet de verifier apres l'appuis du bouton valider, si les coueleur existe/sont a la bonne place/ou sont presente
+    et modifie la couleur 
     """
     global nb_essai
     global code_secret
@@ -199,42 +187,36 @@ def verifie_couleur():
         #erreur.pack(side="right")
     for i in range(4):
         if essai[i]==code_secret[i]:#verifie si cette couleur est a la comme place
-            canvas.itemconfig(ronds[nb_essai][index_rond], fill="grey") #changement de la couleur du rond
+            canvas.itemconfig(petits_ronds[nb_essai][index_rond], fill="grey") #changement de la couleur du rond
         elif essai[i]!=code_secret[i] and essai[i] in code_secret:#regarde si cette couleur est dans la liste mais pas a la bonne place
-            canvas.itemconfig(ronds[nb_essai][index_rond], fill="grey") #changement de la couleur du rond
+            canvas.itemconfig(petits_ronds[nb_essai][index_rond], fill="grey") #changement de la couleur du rond
         else:#sinon cette couleur est pas presente
-            canvas.itemconfig(ronds[nb_essai][index_rond], fill="grey") #changement de la couleur du rond
-    nb_essai+=1
+            canvas.itemconfig(petits_ronds[nb_essai][index_rond], fill="grey") #changement de la couleur du rond
+    nb_essai-=1
     print(liste_placement)
 
 
 
 
 
-    #partie coloration des ronds
-    fill = None
-    for i in range (couleur_code_secret):
-        if couleur_code_secret[i] == essai[i]:
-            fill = "black"
-        elif couleur_code_secret[i] in essai:
-            fill = "white"
-        else:
-            fill = None
+
+##############################################################################################
+# PARTIE 3 : AJOUT DES BOUTONS DANS LE CANVAS DROIT
+##############################################################################################
 
 
-
-# Positionner les cercles blancs pour les aligner avec les cercles du canvas central
-for i in range(0, 11):
-    for j in range(0, 4):
-        # Calculer la position verticale des cercles blancs pour les aligner avec les cercles du canevas central
-        y_position = 39 + i * 60 + (button_diameter // 2) - 33  # Aligné avec le centre des cercles dans les rectangles
-        x_position = 50 + j * (button_diameter + button_offset_x)  # Décalage horizontal
-        canvas.create_oval(x_position, y_position, x_position + button_diameter, y_position + button_diameter, fill= couleur_petits_boutons())
-
+# Ajout de boutons correspondant aux couleurs
+for couleur in couleurs:
+    bouton = tk.Button(canvas_droit, text=couleur, bg=couleur, command=lambda c=couleur: colorer_rond(c),font=("Arial",30))   #???
+    bouton.pack(pady=10)
+bouton_valider = tk.Button(canvas_droit, text="Valider", command=verifie_couleur,font=("Arial",30),relief="solid")  
+bouton_valider.pack(pady=10)
+bouton_annuler = tk.Button(canvas_droit, text="Annuler", command=lambda c="grey": colorer_rond(c),font=("Arial",30),relief="solid")  
+bouton_annuler.pack(pady=10)
 
    
    
-# Affichage de la fenêtre
+#Affichage de la fenêtre
 fenetre.mainloop()
 
 
