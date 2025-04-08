@@ -234,12 +234,6 @@ def colorer_petits_ronds(code_secret, essai):
     global nb_essai
     liste_placement = [0, 0, 0]  # [bien placé, mal placé, pas présent]
 
-    # Vérifie si la ligne est complète avant de commencer la vérification
-    if len(essai) != 4:
-        print("La ligne n'est pas complète.")
-        return
-
-    # Appelle la fonction de vérification
     verifie_couleur()
     verifie_couleur2()
 
