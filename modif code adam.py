@@ -42,7 +42,7 @@ button_offset_x = 20  # Espacement horizontal entre les cercles
 button_offset_y = 60  # Espacement vertical entre les lignes de cercles
 
 def couleur_petits_boutons():
-    fill = None
+    fill = None   #au départ il n'y a pas de couleur
     for i in range (couleur_code_secret):
         if couleur_code_secret[i] == couleur_choisie[i]:
             fill = "black"
