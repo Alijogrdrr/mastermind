@@ -226,31 +226,22 @@ bouton_annuler.pack(pady=10)
 ##############################################################################################
 # PARTIE 4 : Colorer les petits boutons
 ##############################################################################################
-def colorer_petits_ronds(code_secret, essai):
-    """Cette fonction colorie les petits ronds pour indiquer :
-    - Noir : si la couleur est correcte et bien placée
-    - Blanc : si la couleur est présente mais mal placée
-    - Gris : si la couleur n'est pas présente"""
-    global nb_essai
-    liste_placement = [0, 0, 0]  # [bien placé, mal placé, pas présent]
-
-    verifie_couleur()
-    verifie_couleur2()
-
-    for i in range(4):
-        if essai[i] == code_secret[i]:
-            # Correct et bien placé, rond noir
-            canvas.itemconfig(petits_ronds[nb_essai][i], fill="black")
-            liste_placement[0] += 1
-        elif essai[i] in code_secret:
-            # Correct mais mal placé, rond blanc
-            canvas.itemconfig(petits_ronds[nb_essai][i], fill="white")
-            liste_placement[1] += 1
+def colorer_petits_ronds(code_secret,couleur):
+    verifie_couleur
+    for petits_ronds in range (4):
+        if couleur[petits_ronds] in code_secret:
+            for couleur in code_secret:
+                if couleur[petits_ronds] == couleur:
+                    canvas.itemconfigure(petits_ronds, fill = "black")
+                else:
+                    canvas.itemconfigure(petits_ronds, fill = "white")
         else:
-            # Incorrect, rond gris
-            canvas.itemconfig(petits_ronds[nb_essai][i], fill="grey")
-            liste_placement[2] += 1
+           canvas.itemconfigure(petits_ronds, fill = "grey")
 
+colorer_petits_ronds(code_secret,couleur)
+
+
+colorer_petits_ronds(code_secret, essai)
    
 #Affichage de la fenêtre
 fenetre.mainloop()
