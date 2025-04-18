@@ -8,7 +8,7 @@ import random
 nb_essai=9 #cette variable est modifier a chaque essai (servira peut etre plus tard)
 index_rond = 0
 couleurs = ["green", "blue", "pink", "yellow", "orange", "purple"]
-essai=[]#liste de 4 elements avec les couleur des rond de la ligne que l'on est entre de remplir
+essai=[]#liste de 4 elements avec les couleurs des ronds de la ligne que l'on est entre de remplir
 code_secret=[] #comptient 4 couleurs parmis "couleurs" generrer aléatoirement et sera le code a deviner
 liste_ronds=[] #liste contenant les ronds
 liste_petit_ronds=[] #liste contenant les petits ronds
@@ -35,7 +35,7 @@ def couleur_code_secret():
     """
     global couleurs
     global code_secret
-    code_secret.append(random.choice(couleurs))
+    code_secret = [random.choice(couleurs) for _ in range(4)]  # Génère 4 couleurs aléatoires
     print("Les coulurs a deviner dans cet ordre sont:", code_secret)
 
 couleur_code_secret()
@@ -145,7 +145,7 @@ for elem in petits_ronds:#sert a renverser la liste
 def colorer_rond(couleur):
     """
     Cette fonction prend en parametre la couleur du bouton qui a ete cliquer et
-    change le couleur des rond correspondant
+    change le couleur des ronds correspondant
     """
     global index_rond
     global nb_essai
@@ -173,7 +173,6 @@ def verifie_couleur():
     global nb_essai
     global index_rond
     global essai
-    colorer_petits_ronds(code_secret, essai)
     essai=[]
     index_rond=0
     nb_essai-=1
@@ -186,23 +185,34 @@ def verifie_couleur2():
     """
     global nb_essai
     global code_secret
+    global essai
     liste_placement=[0,0,0]#liste_placement[0]= les couleurs bien placees,   liste_placement[1]= les couleurs presentes mais mal placee,   liste_placement[2]= les couleurs pas presentes
     #########  METTRE UN IF POUR ETRE SUR QUE LA LIGNE EST COMPLETEE
     #if len(essai)!=4:###### Marche pas
         #erreur=tk.Label(fenetre,text="Attention vous ne pouvez pas valider\nsans avoir remplie toute la ligne",fg="red",font=("Impact",15))
         #erreur.pack(side="right")
-    for i in range(4):
-        if essai[i]==code_secret[i]:#verifie si cette couleur est a la comme place
-            canvas.itemconfig(petits_ronds[nb_essai][index_rond], fill="grey") #changement de la couleur du rond
-        elif essai[i]!=code_secret[i] and essai[i] in code_secret:#regarde si cette couleur est dans la liste mais pas a la bonne place
-            canvas.itemconfig(petits_ronds[nb_essai][index_rond], fill="grey") #changement de la couleur du rond
-        else:#sinon cette couleur est pas presente
-            canvas.itemconfig(petits_ronds[nb_essai][index_rond], fill="grey") #changement de la couleur du rond
+    if len(essai) == 4:
+        for i in range(4):
+            if essai[i]==code_secret[i]:#verifie si cette couleur est a la bonne place
+                canvas.itemconfig(petits_ronds[nb_essai][index_rond], fill="black") #changement de la couleur du rond
+                liste_placement[0]= 1
+
+            elif essai[i]!=code_secret[i] and essai[i] in code_secret:#regarde si cette couleur est dans la liste mais pas a la bonne place
+                canvas.itemconfig(petits_ronds[nb_essai][index_rond], fill="white") #changement de la couleur du rond
+                liste_placement[1]= 1
+
+            else:#sinon cette couleur est pas presente
+                canvas.itemconfig(petits_ronds[nb_essai][index_rond], fill="grey") #changement de la couleur du rond
+                liste_placement[2]= 1
+    else:
+        erreur=tk.Label(fenetre,text="Attention vous ne pouvez pas valider\nsans avoir remplie toute la ligne",fg="red",font=("Impact",15))
+        erreur.pack(side="right")
+
     nb_essai-=1
     print(liste_placement)
 
 
-
+verifie_couleur2()
 
 
 
@@ -220,28 +230,6 @@ bouton_valider.pack(pady=10)
 bouton_annuler = tk.Button(canvas_droit, text="Annuler", command=lambda c="grey": colorer_rond(c),font=("Arial",30),relief="solid")  
 bouton_annuler.pack(pady=10)
 
-   
-
-
-##############################################################################################
-# PARTIE 4 : Colorer les petits boutons
-##############################################################################################
-def colorer_petits_ronds(code_secret,couleur):
-    verifie_couleur
-    for petits_ronds in range (4):
-        if couleur[petits_ronds] in code_secret:
-            for couleur in code_secret:
-                if couleur[petits_ronds] == couleur:
-                    canvas.itemconfigure(petits_ronds, fill = "black")
-                else:
-                    canvas.itemconfigure(petits_ronds, fill = "white")
-        else:
-           canvas.itemconfigure(petits_ronds, fill = "grey")
-
-colorer_petits_ronds(code_secret,couleur)
-
-
-colorer_petits_ronds(code_secret, essai)
    
 #Affichage de la fenêtre
 fenetre.mainloop()
