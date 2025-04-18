@@ -1,37 +1,26 @@
 import tkinter as tk
-import random
+from tkinter import ttk
+import fenetre_choix_couleurs
+
+
 
 ##################variables global#####################
 nb_essai=9 #cette variable est modifier a chaque essai (servira peut etre plus tard)
 index_rond = 0
 couleurs = ["green", "blue", "pink", "yellow", "orange", "purple"]
 essai=[]#liste de 4 elements avec les couleur des rond de la ligne que l'on est entre de remplir
-code_genere=[] #comptient 4 couleurs parmis "couleurs" generrer aléatoirement et sera le code a deviner
 ronds = [[],[],[],[],[],[],[],[],[],[]]#liste intermériaire pour stocker les ronds
 liste_ronds=[] #liste contenant les ronds
 petits_ronds = [[],[],[],[],[],[],[],[],[],[]] #liste intermédiaire pour stocker les rondscontient (4 elem dans chaque sous liste)
 liste_petit_ronds=[] #liste contenant les petits ronds
 
-def couleur_code_genere():
-        """
-        Cette fonction sert a generer un code couleur qui sera le code couleur que l'utilistaeur devrait trouver
-        """
-        global couleurs
-        global code_genere
-        for _ in range(4):
-            code_genere.append(random.choice(couleurs))
-        print("Les couleurs a deviner dans cet ordre sont:", code_genere)
-        return code_genere
-
-
-
-    
-def ouvrir_jeu_solo(fenetre):
+def ouvrir_jeu_duo(fenetre):
+    print("je rentre dans fenetre jeu duo")
     for widget in fenetre.winfo_children():
         widget.destroy()  # Détruit les widgets existants
     fenetre.configure(bg='white')
-    
-
+    code_secret=fenetre_choix_couleurs.ouvrir_fenetre_Duo(fenetre)
+    print(code_secret)
     ##############################################################################################
     # PARTIE 1 : CREATION DE LA FENETRE + CANVAS
     ##############################################################################################
@@ -39,6 +28,7 @@ def ouvrir_jeu_solo(fenetre):
     # Récupére la largeur et hauteur de la fenetre (nous serivra pour le redimentionnement)
     largeur_fenetre = int(fenetre.winfo_width())
     hauteur_fenetre = int(fenetre.winfo_height())
+
 
 
 
@@ -170,7 +160,7 @@ def ouvrir_jeu_solo(fenetre):
 
 
     ###############################################################################################
-    # PARTIE 5 : GESTION DE LA VERIFICATION DES COULEUR RENTREES
+    # PARTIE 5 : GESTION DE LA VERIFICATION DES COULEUR RENTREES PAR LE JOUEUR 2
     ###############################################################################################
 
 
@@ -178,32 +168,70 @@ def ouvrir_jeu_solo(fenetre):
         global nb_essai
         global index_rond
         global essai
-        essai=[]
+        essai =[]
         index_rond=0
         nb_essai-=1
 
+
     def verifie_couleur2():
         """
-        Cette fonction permet de verifier apres l'appuis du bouton valider, si les coueleur existe/sont a la bonne place/ou sont presente
-        et modifie la couleur 
+        Cette fonction permet de au deuxieme joueur,(apres l'appuis du bouton valider) , de rentrer le code couleur des petit rond en fonction des couleur
         """
+        global code_secret
+        ##########partie pour la fenetre de selection du score
+        fenetre_score_duo = tk.Toplevel(fenetre)
+        fenetre_score_duo.title("Mode Deux Joueurs")
+        fenetre_score_duo.geometry("600x600")
+        fenetre_score_duo.configure(bg="pink")
+
+        titre = tk.Label(fenetre_score_duo, text="Entrer le code couleur du score", bg="pink", fg="black", font=("Arial", 30))
+        titre.pack(pady=20)
+
+        couleurs_disponibles = ["black", "white","red"]
+        code_score = []
+
+        def ajouter_couleur():
+            """
+            Cette fonction ouvre une nouvelle fenetre pour que le deuxieme joueur selection le code du score
+            """
+            while len(code_score) < 4:
+                couleur_choisie = combo.get()
+                if couleur_choisie:
+                    code_score.append(couleur_choisie)
+                    liste_couleurs.config(text="Code du score : " + " - ".join(code_score))
+
+                if len(code_secret) == 4:
+                    bouton_ajouter_score.config(state="disabled")
+                    bouton_lancer_score.config(state="normal")  # Active le bouton de lancement
+
+        label = tk.Label(fenetre_score_duo, text="Choisissez 4 couleurs :", bg="pink", font=("Arial", 16))
+        label.pack(pady=10)
+
+        combo = ttk.Combobox(fenetre_score_duo, values=couleurs_disponibles, state="readonly")
+        combo.pack(pady=5)
+
+        bouton_ajouter_score = tk.Button(fenetre_score_duo, text="Ajouter", command=ajouter_couleur, font=("Arial", 16), bg="white")
+        bouton_ajouter_score.pack(pady=10)
+
+        # Bouton pour lancer le jeu (désactivé au départ)
+        bouton_lancer_score = tk.Button(fenetre_score_duo, text="Continuer le jeu", font=("Arial", 16), bg="white", fg="black", state="disabled", command=fenetre_score_duo.destroy())
+        bouton_lancer_score.pack(pady=20)
+
+        liste_couleurs = tk.Label(fenetre_score_duo, text="Code secret : ", bg="pink", font=("Arial", 16))
+        liste_couleurs.pack(pady=10)
+
+
+
+        ##########partie de la coloration des petits boutons
+
+        global index_rond
         global nb_essai
-        global code_genere
-        liste_placement=[0,0,0]#liste_placement[0]= les couleurs bien placees,   liste_placement[1]= les couleurs presentes mais mal placee,   liste_placement[2]= les couleurs pas presentes
-        #########  METTRE UN IF POUR ETRE SUR QUE LA LIGNE EST COMPLETEE
-        #if len(essai)!=4:###### Marche pas
-            #erreur=tk.Label(fenetre,text="Attention vous ne pouvez pas valider\nsans avoir remplie toute la ligne",fg="red",font=("Impact",15))
-            #erreur.pack(side="right")
-        for i in range(4):
-            couleur=imput("")
-            if essai[i]==code_genere[i]:#verifie si cette couleur est a la comme place
-                canvas.itemconfig(petits_ronds[nb_essai][index_rond], fill="grey") #changement de la couleur du rond
-            elif essai[i]!=code_genere[i] and essai[i] in code_genere:#regarde si cette couleur est dans la liste mais pas a la bonne place
-                canvas.itemconfig(petits_ronds[nb_essai][index_rond], fill="grey") #changement de la couleur du rond
-            else:#sinon cette couleur est pas presente
-                canvas.itemconfig(petits_ronds[nb_essai][index_rond], fill="grey") #changement de la couleur du rond
+        for couleurs in code_score:
+                canvas.itemconfig(petits_ronds[nb_essai][index_rond], fill=couleurs) #changement de la couleur du rond
+                index_rond += 1
+        index_rond=0
         nb_essai-=1
-        print(liste_placement)
+
 
 
 
@@ -224,6 +252,8 @@ def ouvrir_jeu_solo(fenetre):
     bouton_annuler = tk.Button(canvas_droit, text="Annuler", command=lambda c="grey": colorer_rond(c),font=("Arial",30),relief="solid")  
     bouton_annuler.pack(pady=10)
 
+
+    
 
 
 

@@ -1,6 +1,6 @@
 import tkinter as tk
 import fenetre_jeu_solo
-import fenetre_choix_couleurs
+import fenetre_jeu_duo
 
 
 
@@ -141,10 +141,10 @@ bouton_inscription.pack(side="left", padx=50)
 bouton_connexion = tk.Button(cadre, text="Connexion", command=ouvrir_fenetre_connexion, font=("Arial", 20), bg=couleur_boutons, fg=couleur_fond)
 bouton_connexion.pack(side="left", padx=50)
 
-bouton_joueur_solo=tk.Button(cadre,text="jouer en solo",command=lambda: fenetre_jeu_solo.ouvrir_jeu_solo(fenetre),font=("Arial",20),bg=couleur_boutons,fg=couleur_fond)
+bouton_joueur_solo=tk.Button(cadre,text="Jouer en solo",command=lambda: fenetre_jeu_solo.ouvrir_jeu_solo(fenetre),font=("Arial",20),bg=couleur_boutons,fg=couleur_fond)
 bouton_joueur_solo.pack(side="left",padx=100)
 
-bouton_joueur_duo = tk.Button(cadre, text="Jouer en duo", command=lambda: fenetre_choix_couleurs.ouvrir_fenetre_Duo(fenetre), font=("Arial", 20), bg=couleur_boutons, fg=couleur_fond)
+bouton_joueur_duo = tk.Button(cadre, text="Jouer en duo", command=lambda: fenetre_jeu_duo.ouvrir_jeu_duo(fenetre), font=("Arial", 20), bg=couleur_boutons, fg=couleur_fond)
 bouton_joueur_duo.pack(side="left", padx=50)
 
 bouton_fermeture = tk.Button(fenetre, text="Fermer", command=fermer_fenetre, font=("Arial", 20), bg="red", fg="white")
@@ -169,9 +169,3 @@ bouton_fermeture.pack()
 
 
 
-
-
-
-
-
-fenetre.mainloop()
