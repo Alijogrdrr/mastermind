@@ -186,35 +186,37 @@ def verifie_couleur2():
     global nb_essai
     global code_secret
     global essai
-    liste_placement=[0,0,0]#liste_placement[0]= les couleurs bien placees,   liste_placement[1]= les couleurs presentes mais mal placee,   liste_placement[2]= les couleurs pas presentes
-    #########  METTRE UN IF POUR ETRE SUR QUE LA LIGNE EST COMPLETEE
-    #if len(essai)!=4:###### Marche pas
-        #erreur=tk.Label(fenetre,text="Attention vous ne pouvez pas valider\nsans avoir remplie toute la ligne",fg="red",font=("Impact",15))
-        #erreur.pack(side="right")
-    if len(essai) == 4:
-        for i in range(4):
-            if essai[i]==code_secret[i]:#verifie si cette couleur est a la bonne place
-                canvas.itemconfig(petits_ronds[nb_essai][index_rond], fill="black") #changement de la couleur du rond
-                liste_placement[0]= 1
+    print(f"nb_essai: {nb_essai}")
+    print(f"code_secret: {code_secret}")
+    print(f"essai: {essai}")
 
-            elif essai[i]!=code_secret[i] and essai[i] in code_secret:#regarde si cette couleur est dans la liste mais pas a la bonne place
-                canvas.itemconfig(petits_ronds[nb_essai][index_rond], fill="white") #changement de la couleur du rond
-                liste_placement[1]= 1
 
-            else:#sinon cette couleur est pas presente
-                canvas.itemconfig(petits_ronds[nb_essai][index_rond], fill="grey") #changement de la couleur du rond
-                liste_placement[2]= 1
-    else:
+    #si la ligne n'est pas complétée
+    if len(essai) != 4:
         erreur=tk.Label(fenetre,text="Attention vous ne pouvez pas valider\nsans avoir remplie toute la ligne",fg="red",font=("Impact",15))
         erreur.pack(side="right")
+        return #on arrête tout si c'est pas complet
+    
+    liste_placement=[0,0,0]#liste_placement[0]= les couleurs bien placees,   liste_placement[1]= les couleurs presentes mais mal placee,   liste_placement[2]= les couleurs pas presentes
+    #si la ligne est complétée
+    for i in range(4):
+            if essai[i]==code_secret[i]:#verifie si cette couleur est a la bonne place
+                canvas.itemconfig(petits_ronds[nb_essai][i], fill="black") #changement de la couleur du rond
+                liste_placement[0] += 1
 
-    nb_essai-=1
-    print(liste_placement)
+            elif essai[i]!=code_secret[i] and essai[i] in code_secret:#regarde si cette couleur est dans la liste mais pas a la bonne place
+                canvas.itemconfig(petits_ronds[nb_essai][i], fill="white") #changement de la couleur du rond
+                liste_placement[1] += 1
 
+            else:#sinon cette couleur est pas presente
+                canvas.itemconfig(petits_ronds[nb_essai][i], fill="grey") #changement de la couleur du rond
+                liste_placement[2] += 1
 
-verifie_couleur2()
-
-
+    nb_essai -= 1
+    essai=[]
+    index_rond=0
+    print("Resultat de la vérification:",liste_placement)
+    
 
 ##############################################################################################
 # PARTIE 3 : AJOUT DES BOUTONS DANS LE CANVAS DROIT
@@ -225,11 +227,11 @@ verifie_couleur2()
 for couleur in couleurs:
     bouton = tk.Button(canvas_droit, text=couleur, bg=couleur, command=lambda c=couleur: colorer_rond(c),font=("Arial",30))   #???
     bouton.pack(pady=10)
-bouton_valider = tk.Button(canvas_droit, text="Valider", command=verifie_couleur,font=("Arial",30),relief="solid")  
+bouton_valider = tk.Button(canvas_droit, text="Valider", command=verifie_couleur2,font=("Arial",30),relief="solid")  
 bouton_valider.pack(pady=10)
 bouton_annuler = tk.Button(canvas_droit, text="Annuler", command=lambda c="grey": colorer_rond(c),font=("Arial",30),relief="solid")  
 bouton_annuler.pack(pady=10)
-
    
+
 #Affichage de la fenêtre
 fenetre.mainloop()
