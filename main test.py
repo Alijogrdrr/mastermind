@@ -182,45 +182,43 @@ def verifie_couleur():
 
 def verifie_couleur2():
     """
-    Cette fonction permet de verifier apres l'appuis du bouton valider, si les coueleur existe/sont a la bonne place/ou sont presente
-    et modifie la couleur 
+    Cette fonction permet de verifier apres l'appui du bouton valider, si les couleurs existent/sont à la bonne place/sont présentes
+    et modifie la couleur des petits ronds.
     """
     global nb_essai
     global code_secret
     global essai
+    global index_rond
 
-
-    #si la ligne n'est pas complétée
+    # Si la ligne n'est pas complétée
     if len(essai) != 4:
-        erreur=tk.Label(fenetre,text="Attention vous ne pouvez pas valider\nsans avoir remplie toute la ligne",fg="red",font=("Impact",15))
+        erreur = tk.Label(fenetre, text="Attention vous ne pouvez pas valider\nsans avoir rempli toute la ligne", fg="red", font=("Impact", 15))
         erreur.pack(side="right")
-        return #on arrête tout si c'est pas complet
-    
-    liste_placement=[0,0,0]#liste_placement[0]= les couleurs bien placees,   liste_placement[1]= les couleurs presentes mais mal placee,   liste_placement[2]= les couleurs pas presentes
-    #si la ligne est complétée
+        return  # On arrête tout si ce n'est pas complet
+
+    liste_placement = [0, 0, 0]  # liste_placement[0]= bien placées, liste_placement[1]= présentes mais mal placées, liste_placement[2]= absentes
+
+    # Vérification des couleurs
     for i in range(4):
-            if essai[i]==code_secret[i]:#verifie si cette couleur est a la bonne place
-                canvas.itemconfig(petits_ronds[nb_essai][i], fill="black") #changement de la couleur du rond
-                liste_placement[0] += 1
+        if essai[i] == code_secret[i]:  # Vérifie si cette couleur est à la bonne place
+            canvas.itemconfig(petits_ronds[nb_essai][i], fill="black")  # Changement de la couleur du rond
+            liste_placement[0] += 1
+        elif essai[i] in code_secret:  # Vérifie si cette couleur est dans la liste mais pas à la bonne place
+            canvas.itemconfig(petits_ronds[nb_essai][i], fill="white")  # Changement de la couleur du rond
+            liste_placement[1] += 1
+        else:  # Sinon cette couleur est absente
+            canvas.itemconfig(petits_ronds[nb_essai][i], fill="grey")  # Changement de la couleur du rond
+            liste_placement[2] += 1
 
-            elif essai[i]!=code_secret[i] and essai[i] in code_secret:#regarde si cette couleur est dans la liste mais pas a la bonne place
-                canvas.itemconfig(petits_ronds[nb_essai][i], fill="white") #changement de la couleur du rond
-                liste_placement[1] += 1
-
-            else:#sinon cette couleur est pas presente
-                canvas.itemconfig(petits_ronds[nb_essai][i], fill="grey") #changement de la couleur du rond
-                liste_placement[2] += 1
-
-    #il faut pas que les petits ronds de vérification soient dans le même ordre que les ronds qu'on a rempli pour trouver le code secret, sinon c'est trop facile on devine quelle couleur 
-    #est pas à la bonne place et tout, trop facile, donc on mélange la liste
-    import random
+    # Mélange des résultats pour éviter de deviner l'ordre
     random.shuffle(liste_placement)
 
-
+    # Mise à jour des variables globales pour passer à la ligne suivante
     nb_essai -= 1
-    essai=[]
-    index_rond=0
-    print("Resultat de la vérification:",liste_placement)
+    essai = []
+    index_rond = 0
+
+    print("Résultat de la vérification :", liste_placement)
 
 
 
