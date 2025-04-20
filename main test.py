@@ -112,33 +112,36 @@ petit_cercle_y2=1/12*hauteur_canvas+1/2*(1/12*hauteur_canvas)-3   #une ligne du 
 
 
 #position des cercles de verification pour chaque ligne
+# Position des cercles de vérification pour chaque ligne
 for i in range(10):
-    petit_cercle_x1=25
-    petit_cercle_x2=1/2*(1/5*largeur_canvas)-25
-    for j in range (2):#boucle pour les 2 ronds du haut du rectangle
-        rond_verification=canvas.create_oval(petit_cercle_x1,petit_cercle_y1,petit_cercle_x2,petit_cercle_y2,width=1,fill="white")
+    petit_cercle_x1 = 25
+    petit_cercle_x2 = 1/2 * (1/5 * largeur_canvas) - 25
+
+    # Boucle pour les 4 petits ronds (2 en haut, 2 en bas)
+    for j in range(4):
+        rond_verification = canvas.create_oval(
+            petit_cercle_x1, petit_cercle_y1, petit_cercle_x2, petit_cercle_y2, width=1, fill="pink"
+        )
         petits_ronds[i].append(rond_verification)
-        petit_cercle_x1+=1/2*(1/5*largeur_canvas)
-        petit_cercle_x2+=1/2*(1/5*largeur_canvas)
-    #on remet les X au bord du canvas et on descend les Y
-    petit_cercle_x1=25                       
-    petit_cercle_x2=1/2*(1/5*largeur_canvas)-25
-    petit_cercle_y1+=1/2*(1/12*hauteur_canvas)
-    petit_cercle_y2+=1/2*(1/12*hauteur_canvas)
-    for j in range (2):#boucle pour les 2 ronds du bas du rectangle
-        rond_verification=canvas.create_oval(petit_cercle_x1,petit_cercle_y1,petit_cercle_x2,petit_cercle_y2,width=1,fill="white")
-        petit_cercle_x1+=1/2*(1/5*largeur_canvas)
-        petit_cercle_x2+=1/2*(1/5*largeur_canvas)
-    petit_cercle_y1+=1/2*(1/12*hauteur_canvas)
-    petit_cercle_y2+=1/2*(1/12*hauteur_canvas)
-for elem in petits_ronds:#sert a renverser la liste
-    liste_petit_ronds.insert(0,elem)
+
+        # Avancer les coordonnées pour les ronds suivants
+        petit_cercle_x1 += 1/2 * (1/5 * largeur_canvas)
+        petit_cercle_x2 += 1/2 * (1/5 * largeur_canvas)
+
+        # Après 2 ronds, descendre pour les 2 ronds du bas
+        if j == 1:
+            petit_cercle_x1 = 25
+            petit_cercle_x2 = 1/2 * (1/5 * largeur_canvas) - 25
+            petit_cercle_y1 += 1/2 * (1/12 * hauteur_canvas)
+            petit_cercle_y2 += 1/2 * (1/12 * hauteur_canvas)
+
+    # Remettre les Y pour la prochaine ligne
+    petit_cercle_y1 += 1/2 * (1/12 * hauteur_canvas)
+    petit_cercle_y2 += 1/2 * (1/12 * hauteur_canvas)
 
 ###############################################################################################
 # PARTIE 4 : GESTION DU CHANGEMENT DE COULEUR DES RONDS
 ###############################################################################################
-
-
 
 
 
@@ -177,7 +180,6 @@ def verifie_couleur():
     index_rond=0
     nb_essai-=1
 
-
 def verifie_couleur2():
     """
     Cette fonction permet de verifier apres l'appuis du bouton valider, si les coueleur existe/sont a la bonne place/ou sont presente
@@ -186,9 +188,6 @@ def verifie_couleur2():
     global nb_essai
     global code_secret
     global essai
-    print(f"nb_essai: {nb_essai}")
-    print(f"code_secret: {code_secret}")
-    print(f"essai: {essai}")
 
 
     #si la ligne n'est pas complétée
@@ -212,11 +211,18 @@ def verifie_couleur2():
                 canvas.itemconfig(petits_ronds[nb_essai][i], fill="grey") #changement de la couleur du rond
                 liste_placement[2] += 1
 
+    #il faut pas que les petits ronds de vérification soient dans le même ordre que les ronds qu'on a rempli pour trouver le code secret, sinon c'est trop facile on devine quelle couleur 
+    #est pas à la bonne place et tout, trop facile, donc on mélange la liste
+    import random
+    random.shuffle(liste_placement)
+
+
     nb_essai -= 1
     essai=[]
     index_rond=0
     print("Resultat de la vérification:",liste_placement)
-    
+
+
 
 ##############################################################################################
 # PARTIE 3 : AJOUT DES BOUTONS DANS LE CANVAS DROIT
