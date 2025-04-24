@@ -190,36 +190,43 @@ def verifie_couleur2():
     global essai
     global index_rond
 
-    # Si la ligne n'est pas complétée
+    # Si la ligne est pas complétée
     if len(essai) != 4:
-        erreur = tk.Label(fenetre, text="Attention vous ne pouvez pas valider\nsans avoir rempli toute la ligne", fg="red", font=("Impact", 15))
-        erreur.pack(side="right")
-        return  # On arrête tout si ce n'est pas complet
+        return  # On arrête tout si cest pas complet
 
-    liste_placement = [0, 0, 0]  # liste_placement[0]= bien placées, liste_placement[1]= présentes mais mal placées, liste_placement[2]= absentes
+    # Copie temporaire code secret pour suivre couleurs déjà vérifiées, éviter les doublons
+    code_secret_temp = code_secret[:]
+    petits_ronds_temp = []
 
-    # Vérification des couleurs
+    # couleurs bien placées
     for i in range(4):
-        if essai[i] == code_secret[i]:  # Vérifie si cette couleur est à la bonne place
-            canvas.itemconfig(petits_ronds[nb_essai][i], fill="black")  # Changement de la couleur du rond
-            liste_placement[0] += 1
-        elif essai[i] in code_secret:  # Vérifie si cette couleur est dans la liste mais pas à la bonne place
-            canvas.itemconfig(petits_ronds[nb_essai][i], fill="white")  # Changement de la couleur du rond
-            liste_placement[1] += 1
-        else:  # Sinon cette couleur est absente
-            canvas.itemconfig(petits_ronds[nb_essai][i], fill="grey")  # Changement de la couleur du rond
-            liste_placement[2] += 1
+        if essai[i] == code_secret_temp[i]:
+            petits_ronds_temp.append("black")
+            code_secret_temp[i] = None  # Marque cette couleur comme utilisée
+        else:
+            petits_ronds_temp.append(None)  # en gros ça ajoute dans la liste petits_ronds_temp un "None" pour dire que 
+            #la couleu est pas mise en noir, mais qu'lle sera soit en gris soit en blanc, pour pas laisser de vide quoi
 
-    # Mélange des résultats pour éviter de deviner l'ordre
-    random.shuffle(liste_placement)
+    # couleurs présentes mais mal placées
+    for i in range(4):
+        if petits_ronds_temp[i] is None:  # du cp si c'est pas noir (donc None)
+            if essai[i] in code_secret_temp:  # Si la couleur est dans le code secret mais pas à la bonne place
+                petits_ronds_temp[i] = "white"
+                code_secret_temp[code_secret_temp.index(essai[i])] = None  # Marque la couleur comme utilisée, évite que le couleur
+                #soir comptée plusieures fois comle présente ms mal placée pdt la vérification
+            else:  # Sinon la couleur est absente
+                petits_ronds_temp[i] = "grey"
 
-    # Mise à jour des variables globales pour passer à la ligne suivante
+    # Mélange les couleurs des petits ronds
+    random.shuffle(petits_ronds_temp)
+
+    # Applique les couleurs mélangées aux petits ronds
+    for i in range(4):
+        canvas.itemconfig(petits_ronds[nb_essai][i], fill=petits_ronds_temp[i])
+
     nb_essai -= 1
     essai = []
     index_rond = 0
-
-    print("Résultat de la vérification :", liste_placement)
-
 
 
 ##############################################################################################
