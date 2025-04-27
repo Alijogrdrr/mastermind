@@ -1,41 +1,47 @@
 import tkinter as tk
 import random
 
-##################variables global#####################
-nb_essai=9 #cette variable est modifier a chaque essai (servira peut etre plus tard)
-index_rond = 0
-couleurs = ["green", "blue", "pink", "yellow", "orange", "purple"]
-essai=[]#liste de 4 elements avec les couleur des rond de la ligne que l'on est entre de remplir
-code_genere=[] #comptient 4 couleurs parmis "couleurs" generrer aléatoirement et sera le code a deviner
-ronds = [[],[],[],[],[],[],[],[],[],[]]#liste intermériaire pour stocker les ronds
-liste_ronds=[] #liste contenant les ronds
-petits_ronds = [[],[],[],[],[],[],[],[],[],[]] #liste intermédiaire pour stocker les rondscontient (4 elem dans chaque sous liste)
-liste_petit_ronds=[] #liste contenant les petits ronds
-
-def couleur_code_genere():
-        """
-        Cette fonction sert a generer un code couleur qui sera le code couleur que l'utilistaeur devrait trouver
-        """
-        global couleurs
-        global code_genere
-        for _ in range(4):
-            code_genere.append(random.choice(couleurs))
-        print("Les couleurs a deviner dans cet ordre sont:", code_genere)
-        return code_genere
 
 
 
     
 def ouvrir_jeu_solo(fenetre):
-    for widget in fenetre.winfo_children():
-        widget.destroy()  # Détruit les widgets existants
-    fenetre.configure(bg='white')
+    """
+    Cette fonction sert a l'ouverture et a l'execution de la page du jeu solo
+    """
+    print("je rentre dans fenetre jeu solo 3")
+    ##################variables global#####################
+    nb_essai=9 #cette variable est modifier a chaque essai 
+    index_rond = 0
+    couleurs = ["green", "blue", "pink", "yellow", "orange", "purple"]
+    essai=[]#liste de 4 elements avec les couleur des rond de la ligne que l'on est entre de remplir
+    code_genere=[] #comptient 4 couleurs parmis "couleurs" generrer aléatoirement et sera le code a deviner
+    ronds = [[],[],[],[],[],[],[],[],[],[]]#liste intermériaire pour stocker les ronds
+    liste_ronds=[] #liste contenant les ronds
+    petits_ronds = [[],[],[],[],[],[],[],[],[],[]] #liste intermédiaire pour stocker les rondscontient (4 elem dans chaque sous liste)
+    liste_petit_ronds=[] #liste contenant les petits ronds
+
+    def couleur_code_genere():
+            """
+            Cette fonction sert a generer un code couleur qui sera le code couleur que l'utilistaeur devrait trouver
+            """
+            for _ in range(4):
+                code_genere.append(random.choice(couleurs))
+            print("Les couleurs a deviner dans cet ordre sont:", code_genere)
+            return code_genere
+
+    couleur_code_genere()
+
     
 
     ##############################################################################################
     # PARTIE 1 : CREATION DE LA FENETRE + CANVAS
     ##############################################################################################
 
+    for widget in fenetre.winfo_children():
+        widget.destroy()  # Détruit les widgets existants
+    fenetre.configure(bg='white')
+    
     # Récupére la largeur et hauteur de la fenetre (nous serivra pour le redimentionnement)
     largeur_fenetre = int(fenetre.winfo_width())
     hauteur_fenetre = int(fenetre.winfo_height())
@@ -145,14 +151,11 @@ def ouvrir_jeu_solo(fenetre):
 
 
 
-    def colorer_rond(couleur):
+    def colorer_rond(couleur,nb_essai):
         """
         Cette fonction prend en parametre la couleur du bouton qui a ete cliquer et
         change le couleur des rond correspondant
         """
-        global index_rond
-        global nb_essai
-        global essai
         if 0<=nb_essai<=9:
             if couleur=="grey":
                 if essai!=[]:
@@ -175,9 +178,6 @@ def ouvrir_jeu_solo(fenetre):
 
 
     def verifie_couleur():
-        global nb_essai
-        global index_rond
-        global essai
         essai=[]
         index_rond=0
         nb_essai-=1
@@ -217,11 +217,11 @@ def ouvrir_jeu_solo(fenetre):
 
     # Ajout de boutons correspondant aux couleurs
     for couleur in couleurs:
-        bouton = tk.Button(canvas_droit, text=couleur, bg=couleur, command=lambda c=couleur: colorer_rond(c),font=("Arial",30))   #???
+        bouton = tk.Button(canvas_droit, text=couleur, bg=couleur, command=lambda c=couleur: colorer_rond(c, nb_essai),font=("Arial",30))   #???
         bouton.pack(pady=10)
     bouton_valider = tk.Button(canvas_droit, text="Valider", command=verifie_couleur,font=("Arial",30),relief="solid")  
     bouton_valider.pack(pady=10)
-    bouton_annuler = tk.Button(canvas_droit, text="Annuler", command=lambda c="grey": colorer_rond(c),font=("Arial",30),relief="solid")  
+    bouton_annuler = tk.Button(canvas_droit, text="Annuler", command=lambda c="grey": colorer_rond(c,nb_essai),font=("Arial",30),relief="solid")  
     bouton_annuler.pack(pady=10)
 
 
