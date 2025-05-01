@@ -5,7 +5,6 @@ import itertools
 
 
 
-
 ####TACHES A FAIRE############
 #gerer l'aspect visuel
 #boutton reles du jeu
@@ -79,6 +78,7 @@ bouton_fermeture.pack()
 
 
 
+
 ####################################################################################################################################
 #############    FENETRE JEU SOLO
 ###################################################################################################################################
@@ -105,6 +105,7 @@ def ouvrir_jeu_solo(fenetre,mode_de_jeu):
     temp_couleur_bien_place=0
     temp_couleur_mauvaise_posi=0
     combi_encore_possible=[]
+    temp_essai=[]
 
     def couleur_code_genere():
             """
@@ -310,6 +311,8 @@ def ouvrir_jeu_solo(fenetre,mode_de_jeu):
         nonlocal petits_ronds
         nonlocal couleur_mauvaise_posi
         nonlocal couleur_bien_place
+        nonlocal temp_essai
+        nonlocal erreur_label
         # Si la ligne est pas complétée
         if len(essai) != 4:
             if erreur_label:
@@ -353,9 +356,10 @@ def ouvrir_jeu_solo(fenetre,mode_de_jeu):
             canvas.itemconfig(petits_ronds[nb_essai][i], fill=petits_ronds_temp[i])
 
         nb_essai -= 1
+        temp_essai=essai.copy()
         essai = []
         index_rond = 0
-
+        
     #######################  VERIFICATION POUR LE JEU DUO 
 
     def choisir_couleur_verif(couleur):
@@ -382,7 +386,7 @@ def ouvrir_jeu_solo(fenetre,mode_de_jeu):
         verification_en_cours = True
         print("Joueur 1 a validé son essai :", essai)
         print("Joueur 2, choisis les couleurs de vérification.")
-
+        
     
     def valider_verification_joueur2():
         """
@@ -407,91 +411,88 @@ def ouvrir_jeu_solo(fenetre,mode_de_jeu):
     #####################################################
     frame_aide = tk.Frame(canvas_gauche,bg= "white")
     frame_aide.pack(side="bottom", pady=10)
+    aide_label = None
     def aide():
-        nonlocal essai
-        nonlocal couleur_bien_place
-        nonlocal couleur_mauvaise_posi
-        nonlocal temp_couleur_bien_place
-        nonlocal temp_couleur_mauvaise_posi
-        nonlocal nb_essai
-        nonlocal combi_encore_possible
-        temp_liste = []
-        couleurs = ["green", "blue", "pink", "yellow", "orange", "purple"]
-        combinaison =list(itertools.product(couleurs, repeat=4))
-        list_max_diff=[]
-        max_diff=0
-
-
+        nonlocal temp_essai, couleur_bien_place, couleur_mauvaise_posi, nb_essai, combi_encore_possible, aide_label
 
         
-        index_combinaison_actuelle = 0
-        if nb_essai==9:
-            if aide_label: 
-                aide_label.destroy()
-            aide_label = tk.Label(frame_erreur, text="Remplissez les 4 couleurs\Vert,Bleu,Rose,Jaune.", fg="green", font=("Arial", 15))
+        couleurs = ["green", "blue", "pink", "yellow", "orange", "purple"]
+        combinaison = [list(c) for c in itertools.product(couleurs, repeat=4)]
+        list_max_diff = []
+        max_diff = 0
+
+        if aide_label is not None:
+            aide_label.destroy()
+
+            
+        if nb_essai == 9:
+            aide_label = tk.Label(frame_erreur, text="Remplissez les 4 couleurs Vert,Bleu,Rose,Jaune.", fg="green", font=("Arial", 15))
             aide_label.pack()
             return
-            
-        if nb_essai==8:
-            for i in combinaison:
-                temp_couleur_bien_place=0
-                temp_couleur_mauvaise_posi=0
-                for j in range(4):
-                    if i[j]==essai[j]:
-                        temp_couleur_bien_place+=1
-                        
-                
-                    elif i[j] in essai:
-                        combinaison[index_combinaison_actuelle][j] = None
-                        temp_couleur_mauvaise_posi+=1
-                index_combinaison_actuelle += 1
-                if temp_couleur_bien_place==couleur_bien_place and temp_couleur_mauvaise_posi==couleur_mauvaise_posi:
-                    combi_encore_possible.append(i)
-            
-            
 
+        index_combinaison_actuelle = 0
+
+        if nb_essai == 8:
+            combi_encore_possible.clear()
+            for i in combinaison:
+                temp_couleur_bien_place = 0
+                temp_couleur_mauvaise_posi = 0
+                copie_combinaison = i.copy()
+                copie_essai = temp_essai.copy()
+
+                for j in range(4):
+                    if copie_combinaison[j] == copie_essai[j]:
+                        temp_couleur_bien_place += 1
+                        copie_combinaison[j] = None
+                        copie_essai[j] = None
+
+                for j in range(4):
+                    if copie_combinaison[j] is not None and copie_combinaison[j] in copie_essai:
+                        temp_couleur_mauvaise_posi += 1
+                        copie_essai[copie_essai.index(copie_combinaison[j])] = None
+
+                if temp_couleur_bien_place == couleur_bien_place and temp_couleur_mauvaise_posi == couleur_mauvaise_posi:
+                    combi_encore_possible.append(i)
 
         else:
-            temp_couleur_bien_place=0
-            temp_couleur_mauvaise_posi=0
-            temp_liste = combi_encore_possible.copy() # crée une copie de la liste pour éviter de la modifier pendant l'itération
-            combi_encore_possible = []  # Réinitialise la liste pour stocker les combinaisons possibles
+            temp_liste = combi_encore_possible.copy()
+            combi_encore_possible.clear()
             for i in temp_liste:
-                
+                temp_couleur_bien_place = 0
+                temp_couleur_mauvaise_posi = 0
+                copie_combinaison = i.copy()
+                copie_essai = temp_essai.copy()
+
                 for j in range(4):
-                    if i[j]==essai[j]:
-                        temp_couleur_bien_place+=1
-                        
-                
-                    elif i[j] in essai:
-                        temp_liste[temp_liste][j] = None
-                        temp_couleur_mauvaise_posi+=1
-                index_combinaison_actuelle += 1
-                        
-                
+                    if copie_combinaison[j] == copie_essai[j]:
+                        temp_couleur_bien_place += 1
+                        copie_combinaison[j] = None
+                        copie_essai[j] = None
 
-                if temp_couleur_bien_place==couleur_bien_place and temp_couleur_mauvaise_posi==couleur_mauvaise_posi:
+                for j in range(4):
+                    if copie_combinaison[j] is not None and copie_combinaison[j] in copie_essai:
+                        temp_couleur_mauvaise_posi += 1
+                        copie_essai[copie_essai.index(copie_combinaison[j])] = None
+
+                if temp_couleur_bien_place == couleur_bien_place and temp_couleur_mauvaise_posi == couleur_mauvaise_posi:
                     combi_encore_possible.append(i)
-            #on cherche la combinaison avec le plus de couleurs différentes pour l'aide
-            for i in combi_encore_possible:
-                list_max_diff.append(len(set(i)))
-            max_diff=max(list_max_diff)
-            for i in combi_encore_possible:
-                if len(set(i))==max_diff:
-                    combinaison_aide=i
-                    break
+
             
+        for i in combi_encore_possible:
+            list_max_diff.append(len(set(i)))
+        max_diff = max(list_max_diff)
+        for i in combi_encore_possible:
+            if len(set(i)) == max_diff:
+                combinaison_aide = i
+                break
+
+        aide_texte = ", ".join(combinaison_aide)
+        aide_label = tk.Label(frame_erreur, text=f"Remplissez les 4 couleurs : {aide_texte}", fg="green", font=("Arial", 15))
+        aide_label.pack()
+            
+
+
         
-            
-                
-
-            if aide_label: 
-                aide_label.destroy()
-            aide_label = tk.Label(frame_erreur, text="Remplissez les 4 couleurs\Vert,Bleu,Rose,Jaune.", fg="green", font=("Arial", 15))
-            aide_label.pack()
-
-        combi_posi=0
-        combi_coul=0
 
 
 
@@ -521,8 +522,9 @@ def ouvrir_jeu_solo(fenetre,mode_de_jeu):
     bouton_valider.pack(pady=10)
     bouton_annuler = tk.Button(canvas_droit, text="Annuler", command=lambda c=couleur_fond: colorer_rond(c,nb_essai),font=("Consoloas",27),relief="groove",bd=5, width=7, height=1)  
     bouton_annuler.pack(pady=10)
-
-
+    bouton_aide = tk.Button(fenetre,text="Aide",command=aide,font=("Arial", 14),bg="lightgrey")
+    bouton_aide.place(relx=0.0,rely=1.0,anchor="se", x=100,y=-30)
+    bouton_aide.lift()
 
     
 
@@ -594,6 +596,7 @@ def ouvrir_fenetre_choix_couleur(fenetre):
 
     liste_couleurs = tk.Label(fenetre_Duo, text="Code secret : ", bg=couleur_fond, font=("Fixedsys", 23),fg=couleur_ecriture)
     liste_couleurs.pack(pady=10)
+
 
 
     
