@@ -64,7 +64,7 @@ bouton_joueur_solo.pack(side="left",padx=50,pady=50)
 bouton_joueur_duo = tk.Button(cadre, text="Jouer en duo", command=lambda: ouvrir_fenetre_choix_couleur(fenetre), font=("Fixedsys", 30), bg=couleur_boutons, fg=couleur_ecriture,width=17, height=3, relief="groove", bd=10)
 bouton_joueur_duo.pack(side="left", padx=50,pady=50)
 
-bouton_regles_jeu = tk.Button(cadre, text="Règles du jeu", font=("Fixedsys", 30),command=lambda: regle_du_jeu, bg=couleur_boutons, fg=couleur_ecriture,width=17, height=3, relief="groove", bd=10)
+bouton_regles_jeu = tk.Button(cadre, text="Règles du jeu", font=("Fixedsys", 30),command=lambda: regle_du_jeu(), bg=couleur_boutons, fg=couleur_ecriture,width=17, height=3, relief="groove", bd=10)
 bouton_regles_jeu.pack(side="left", padx=50,pady=50)
 
 bouton_fermeture = tk.Button(fenetre, text="Fermer", command=fermer_fenetre, font=("Fixedsys", 20), bg=couleur_boutons, fg=couleur_ecriture,width=10, height=2, relief="ridge", bd=6)
@@ -640,13 +640,13 @@ def regle_du_jeu():
     fenetre_règle.geometry("250x170")
     Text= tk.Text(fenetre_règle, height = 5, width = 52)
 
-    titre_règle = tk.Label(fenetre_règle, text = "règle du jeu").config(font =("Fixedsys", 14))
-
+    titre_règle = tk.Label(fenetre_règle, text = "règle du jeu", font =("Fixedsys", 14))
+    titre_règle.pack(pady=5)
     règle_mastermind = """test"""
 
     quiter_règle = tk.Button(fenetre_règle, text = "Quiter",
             command = fenetre_règle.destroy) 
-
+    print("je")
     titre_règle.pack()
     Text.pack()
     quiter_règle.pack()
@@ -655,7 +655,7 @@ def regle_du_jeu():
     # Insert The Fact.
     Text.insert(tk.END, règle_mastermind)
 
-    tk.mainloop()
+    fenetre_règle.mainloop()
     
 
 
