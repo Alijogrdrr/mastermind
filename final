@@ -439,7 +439,7 @@ def ouvrir_jeu(fenetre,mode_de_jeu):
 
             
         if nb_essai == 9:
-            aide_label = tk.Label(frame_aide, text="Remplissez les 4 couleurs Vert,Bleu,Rose,Jaune.", fg="green", font=("Arial", 15))
+            aide_label = tk.Label(frame_aide, text="Remplissez les 4 couleurs :\nVert,Bleu,Rose,Jaune.", fg="green", font=("Arial", 15),bg="white")
             aide_label.pack()
             return
 
@@ -501,7 +501,7 @@ def ouvrir_jeu(fenetre,mode_de_jeu):
                 break
 
         aide_texte = ", ".join(combinaison_aide)
-        aide_label = tk.Label(frame_aide, text=f"Remplissez les 4 couleurs : {aide_texte}", fg="green", font=("Arial", 15))
+        aide_label = tk.Label(frame_aide, text=f"Remplissez les 4 couleurs : {aide_texte}", fg="green", font=("Arial", 15),bg="white")
         aide_label.pack()
             
 
@@ -530,9 +530,8 @@ def ouvrir_jeu(fenetre,mode_de_jeu):
     bouton_valider.pack(pady=10)
     bouton_annuler = tk.Button(canvas_droit, text="Annuler", command=lambda c=couleur_fond: colorer_rond(c,nb_essai),font=("Consoloas",27),relief="groove",bd=5, width=7, height=1)  
     bouton_annuler.pack(pady=10)
-    bouton_aide = tk.Button(fenetre,text="Aide",command=aide,font=("Consoloas",27),relief="groove",bd=5, width=5, height=1)
-    bouton_aide.place(relx=0.0,rely=1.0,anchor="se", x=250,y=-30)
-    bouton_aide.lift()
+    bouton_aide = tk.Button(canvas_gauche,text="Aide",command=aide,font=("Consoloas",27),relief="groove",bd=5, width=5, height=1)
+    bouton_aide.pack(padx=80,pady=700)
     
 
 
