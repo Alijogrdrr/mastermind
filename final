@@ -106,6 +106,7 @@ def ouvrir_jeu(fenetre,mode_de_jeu):
     temp_couleur_mauvaise_posi=0
     combi_encore_possible=[]
     temp_essai=[]
+    combinaison_optimal= [] 
 
     def couleur_code_genere():
             """
@@ -151,6 +152,9 @@ def ouvrir_jeu(fenetre,mode_de_jeu):
     #Récupere la largeur et la heuteur du canvas central
     largeur_canvas=int(canvas.cget('width'))
     hauteur_canvas=int(canvas.cget('height'))
+    frame_boutons = tk.Frame(fenetre, bg="white")
+    frame_boutons.place(x=0, y=hauteur_fenetre - 60, width=largeur_fenetre*(1/8), height=60)
+
 
 
     # je vais creer le canevas droit et gauche
@@ -290,12 +294,18 @@ def ouvrir_jeu(fenetre,mode_de_jeu):
         Cette fonction permet de verifier apres l'appui du bouton valider, si les couleurs existent/sont à la bonne place/sont présentes
         et modifie la couleur des petits ronds.
         """
-        nonlocal nb_essai, code_secret, essai, index_rond, petits_ronds, erreur_label1, temp_essai,aide_label,bouton_aide
+        nonlocal nb_essai, code_secret, essai, index_rond, petits_ronds, erreur_label1, temp_essai,aide_label,bouton_aide,couleur_mauvaise_posi,couleur_bien_place
         aide_label.destroy()
         # Si la ligne est pas complétée
         if len(essai) != 4:
             erreur_label1.pack(pady=360)
             return  # On arrête tout si cest pas complet
+        
+
+        couleur_bien_place=0
+        couleur_mauvaise_posi=0
+        
+
 
         # Copie temporaire code secret pour suivre couleurs déjà vérifiées, éviter les doublons
         code_secret_temp = code_secret[:]
@@ -306,16 +316,18 @@ def ouvrir_jeu(fenetre,mode_de_jeu):
             if essai[i] == code_secret_temp[i]:
                 petits_ronds_temp.append("#229954")
                 code_secret_temp[i] = None  # Marque cette couleur comme utilisée
+                couleur_bien_place += 1
             else:
                 petits_ronds_temp.append(None)  # en gros ça ajoute dans la liste petits_ronds_temp un "None" pour dire que 
                 #la couleu est pas mise en noir, mais qu'lle sera soit en gris soit en blanc, pour pas laisser de vide quoi
-
+                
         # couleurs présentes mais mal placées
         for i in range(4):
             if petits_ronds_temp[i] is None:  # du cp si c'est pas noir (donc None)
                 if essai[i] in code_secret_temp:  # Si la couleur est dans le code secret mais pas à la bonne place
                     petits_ronds_temp[i] = "#ffa600"
                     code_secret_temp[code_secret_temp.index(essai[i])] = None  # Marque la couleur comme utilisée, évite que le couleur
+                    couleur_mauvaise_posi += 1
                     #soir comptée plusieures fois comle présente ms mal placée pdt la vérification
                 else:  # Sinon la couleur est absente
                     petits_ronds_temp[i] = "#A93226"
@@ -335,7 +347,7 @@ def ouvrir_jeu(fenetre,mode_de_jeu):
             return None
         
         #gestion de le fin de partie (quand c'est perdu)
-        if nb_essai==0:
+        if nb_essai == 0:
             bouton_aide.pack_forget()
             bouton_fin_perdu = tk.Button(canvas_gauche, text="Retourner au\nmenu principal", command=page_acceuil,font=("Consoloas",25),relief="groove",bd=5, width=12, height=2) 
             bouton_fin_perdu.pack(pady=350 ,padx=0)
@@ -353,7 +365,7 @@ def ouvrir_jeu(fenetre,mode_de_jeu):
         if verification_en_cours:
             for i in range(4):
                 couleur_actuelle = canvas.itemcget(petits_ronds[nb_essai][i], "fill")
-                if couleur=="white":
+                if couleur == "white":
                     canvas.itemconfig(petits_ronds[nb_essai][i], fill=couleur) #changement de la couleur du rond
                     
                 if couleur_actuelle == "white":
@@ -400,8 +412,8 @@ def ouvrir_jeu(fenetre,mode_de_jeu):
         bouton_rouge.pack_forget()
         bouton_annuler_verif.pack_forget()
         bouton_valide_verif.pack_forget()
-        if couleurs_utilisees==["#229954","#229954","#229954","#229954"]:
-            bouton_fin_gagne = tk.Button(canvas_gauche, text="Finir la partie", command=fin_de_partie,font=("Consoloas",27),relief="groove",bd=5, width=10, height=2) 
+        if couleurs_utilisees == ["#229954","#229954","#229954","#229954"]:
+            bouton_fin_gagne = tk.Button(canvas_gauche, text = "Finir la partie", command=fin_de_partie,font=("Consoloas",27),relief="groove",bd=5, width=10, height=2) 
             bouton_fin_gagne.pack(pady=360,padx=20)
             return None
         if nb_essai==0:
@@ -430,7 +442,9 @@ def ouvrir_jeu(fenetre,mode_de_jeu):
         Cette fonction sert a la gestion de l'aide pour le joueur
         """
 
-        nonlocal temp_essai, couleur_bien_place, couleur_mauvaise_posi, nb_essai, combi_encore_possible, aide_label, couleurs
+        nonlocal temp_essai, couleur_bien_place, couleur_mauvaise_posi
+        nonlocal nb_essai, combi_encore_possible, aide_label
+        nonlocal couleurs,combinaison_optimal
         
         combinaison = [list(c) for c in itertools.product(couleurs, repeat=4)]
         list_max_diff = []
@@ -443,6 +457,7 @@ def ouvrir_jeu(fenetre,mode_de_jeu):
         if nb_essai == 9:
             aide_label = tk.Label(frame_aide, text="Remplissez les 4 couleurs :\nVert,Bleu,Rose,Jaune.", fg="green", font=("Arial", 15),bg="white")
             aide_label.pack()
+            combinaison_optimal=["green", "blue", "pink", "yellow"]
             return
 
         index_combinaison_actuelle = 0
@@ -501,16 +516,34 @@ def ouvrir_jeu(fenetre,mode_de_jeu):
             if len(set(i)) == max_diff:
                 combinaison_aide = i
                 break
-
+        combinaison_optimal=combinaison_aide.copy()
         aide_texte = ", ".join(combinaison_aide)
         aide_label = tk.Label(frame_aide, text=f"Remplissez les 4 couleurs :\n{aide_texte}", fg="green", font=("Arial", 15),bg="white")
         aide_label.pack()
         
+    
+    ####################################################
+    # PARTIE 7 : IA
+    ####################################################
+
+    def IA():
+        nonlocal nb_essai, combinaison_optimal,couleur_bien_place
+        nonlocal temp_essai, combi_encore_possible,couleur_mauvaise_posi
+        aide()
+
+        for i in combinaison_optimal:
+            colorer_rond(i, nb_essai)
             
+        verifie_couleur_solo()
+
+        if couleur_bien_place==4:
+            return
+        else:
+            IA()
 
 
     ####################################################
-    # PARTIE 7 : AJOUT DES BOUTONS DANS LE CANVAS DROIT
+    # PARTIE 8 : AJOUT DES BOUTONS DANS LE CANVAS DROIT
     ####################################################
 
 
@@ -533,10 +566,10 @@ def ouvrir_jeu(fenetre,mode_de_jeu):
     bouton_valider.pack(pady=10)
     bouton_annuler = tk.Button(canvas_droit, text="Annuler", command=lambda c=couleur_fond: colorer_rond(c,nb_essai),font=("Consoloas",27),relief="groove",bd=5, width=7, height=1)  
     bouton_annuler.pack(pady=10)
-    bouton_aide = tk.Button(canvas_gauche,text="Aide",command=aide,font=("Consoloas",27),relief="groove",bd=5, width=5, height=1)
-    bouton_aide.pack(padx=80,pady=680)
-    
-
+    bouton_aide = tk.Button(frame_boutons, text="Aide", command=aide, font=("Consolas",27), relief="groove", bd=5)
+    bouton_aide.pack(side="left", padx=10, pady=5)
+    bouton_IA = tk.Button(frame_boutons, text="IA", command=IA, font=("Consolas",27), relief="groove", bd=5)
+    bouton_IA.pack(side="left", padx=10, pady=7)
 
     
 
