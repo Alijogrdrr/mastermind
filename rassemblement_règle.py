@@ -504,7 +504,7 @@ def ouvrir_jeu_solo(fenetre,mode_de_jeu):
             Sauvegarde.destroy()
 
         #fenetre de sauvegarde
-        Sauvegarde = tk.Tk()
+        Sauvegarde = tk.Toplevel
 
         #bouton pour valider le nom du fichier
         tk.Button(Sauvegarde, height=1, width=10, text="Valider", command=valider_sauvegarde).grid(row=1,column=1,sticky=tk.W,pady=4)
@@ -564,7 +564,7 @@ def ouvrir_jeu_solo(fenetre,mode_de_jeu):
     bouton_aide.place(relx=0.0,rely=1.0,anchor="se", x=100,y=-30)
     bouton_aide.lift()
     bouton_aide = tk.Button(fenetre,text="Sauvegarde",command=sauvegarder_partie,font=("Arial", 14),bg="lightgrey")
-    bouton_aide.place(relx=0.0,rely=1.0,anchor="se", x=100,y=-40)
+    bouton_aide.place(relx=0.0,rely=1.0,anchor="se", x=150,y=-100)
     bouton_aide.lift()
 
     
@@ -638,6 +638,9 @@ def ouvrir_fenetre_choix_couleur(fenetre):
     liste_couleurs = tk.Label(fenetre_Duo, text="Code secret : ", bg=couleur_fond, font=("Fixedsys", 23),fg=couleur_ecriture)
     liste_couleurs.pack(pady=10)
 
+########################################
+## REGLE DU JEU
+########################################
 
 def regle_du_jeu():
 
@@ -657,7 +660,7 @@ def regle_du_jeu():
     quiter_règle.pack()
     
 
-    # Insert The Fact.
+  
     Text.insert(tk.END, règle_mastermind)
 
     
