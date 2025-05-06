@@ -514,11 +514,8 @@ def ouvrir_jeu_solo(fenetre,mode_de_jeu):
     # PARTIE 8 : CHARGER
     ####################################################
     
-    def charger():
-        root = tk.Tk()
-        root.withdraw()
-
-        chemin_fichier= filedialog.askopenfilename(title="Choisis la partie existante",filetypes=[("JSON files", "*.json")])
+        def charger():
+        
         
 
 
