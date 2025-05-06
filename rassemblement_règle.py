@@ -491,33 +491,23 @@ def ouvrir_jeu_solo(fenetre,mode_de_jeu):
     ####################################################
     def sauvegarder_partie():
 
-        def valider_sauvegarde():
-            global sauvegarde_essai, code_secret
-            nom_du_fichier = input_nom_du_fichier.get().strip()
+        
+        nonlocal sauvegarde_essai, code_secret
             
-            sauvegarde = {
-                "sauvegarde_essai": sauvegarde_essai,
-                "code_secret": code_secret}
 
-            with open(nom_du_fichier+".json", 'w') as f:
-                json.dump(sauvegarde, f, indent=4)
-            Sauvegarde.destroy()
+        fichier = filedialog.asksaveasfilename(
+        title="Enregistrer la partie",
+        defaultextension=".json",
+        filetypes=[("JSON files", "*.json")],
+        )
+        if not fichier:
+            return
+        
+        sauvegarde = {"sauvegarde_essai": sauvegarde_essai,
+                      "code_secret": code_secret}
 
-        #fenetre de sauvegarde
-        Sauvegarde = tk.Toplevel
-
-        #bouton pour valider le nom du fichier
-        tk.Button(Sauvegarde, height=1, width=10, text="Valider", command=valider_sauvegarde).grid(row=1,column=1,sticky=tk.W,pady=4)
-        
-        #Input pour le nom du fichier
-        input_nom_du_fichier = tk.Entry(Sauvegarde)
-        input_nom_du_fichier.grid(row=0,column=1,sticky=tk.W,pady=4)
-        
-        #Bouton pour annuler la sauvegarde
-        tk.Button(Sauvegarde, height=1, width=10,text="Annuler",command=Sauvegarde.quit).grid(row=2,column=0,sticky=tk.W,pady=4)
-        tk.Label(Sauvegarde,text="Nom du fichier").grid(row=0,column=0,sticky=tk.W,pady=4)
-        
-        Sauvegarde.mainloop()
+        with open(fichier, 'w') as f:
+            json.dump(sauvegarde, f, indent=4)
 
             
     ####################################################
