@@ -3,25 +3,14 @@ import random
 from tkinter import ttk
 import itertools
 import json
-
+from tkinter import filedialog
 
 
 ####TACHES A FAIRE############
-#gerer l'aspect visuel
-#boutton reles du jeu
 
 #bouton retour pour le jeu
-
-#flouter les bouttons de verification quand je joueur 1 est entrain de remplir
 #boutton retour pour la verification du mode duo
 #boutton retour pour le choix des couleur de code secret en mode duo
-
-
-
-
-
-
-
 
 
 #####################################################################################################################
@@ -254,6 +243,7 @@ def ouvrir_jeu_solo(fenetre,mode_de_jeu):
         """
         nonlocal index_rond
         nonlocal essai
+
         if 0<=nb_essai<=9:
             if couleur==couleur_fond and essai!=[]:
                 essai.pop()
@@ -264,6 +254,9 @@ def ouvrir_jeu_solo(fenetre,mode_de_jeu):
                 essai.append(couleur)
                 canvas.itemconfig(ronds[nb_essai][index_rond], fill=couleur) #changement de la couleur du rond
                 index_rond += 1
+
+        if len(essai)==4:
+            bouton
 
 
 
@@ -527,13 +520,21 @@ def ouvrir_jeu_solo(fenetre,mode_de_jeu):
         Sauvegarde.mainloop()
 
             
+    ####################################################
+    # PARTIE 8 : CHARGER
+    ####################################################
+    
+    def charger():
+        root = tk.Tk()
+        root.withdraw()
 
+        chemin_fichier= filedialog.askopenfilename(title="Choisis la partie existante",filetypes=[("JSON files", "*.json")])
         
 
 
 
     ####################################################
-    # PARTIE 8 : AJOUT DES BOUTONS DANS LE CANVAS DROIT
+    # PARTIE 9 : AJOUT DES BOUTONS DANS LE CANVAS DROIT
     ####################################################
 
 
@@ -542,6 +543,7 @@ def ouvrir_jeu_solo(fenetre,mode_de_jeu):
         bouton = tk.Button(canvas_droit, text=couleur, bg=couleur, command=lambda c=couleur: colorer_rond(c, nb_essai),font=("Consolas",27),relief="groove",bd=5,fg="white", width=7, height=1)  
         bouton.pack(pady=10)
     
+
     if mode_de_jeu=="mode_solo":
         bouton_valider = tk.Button(canvas_droit, text="Valider", command=verifie_couleur_solo,font=("Consoloas",27),relief="groove",bd=5, width=7, height=1)  
     else:
@@ -560,6 +562,9 @@ def ouvrir_jeu_solo(fenetre,mode_de_jeu):
     bouton_annuler.pack(pady=10)
     bouton_aide = tk.Button(fenetre,text="Aide",command=aide,font=("Arial", 14),bg="lightgrey")
     bouton_aide.place(relx=0.0,rely=1.0,anchor="se", x=100,y=-30)
+    bouton_aide.lift()
+    bouton_aide = tk.Button(fenetre,text="Sauvegarde",command=sauvegarder_partie,font=("Arial", 14),bg="lightgrey")
+    bouton_aide.place(relx=0.0,rely=1.0,anchor="se", x=100,y=-40)
     bouton_aide.lift()
 
     
@@ -636,7 +641,7 @@ def ouvrir_fenetre_choix_couleur(fenetre):
 
 def regle_du_jeu():
 
-    fenetre_règle = tk.Tk()
+    fenetre_règle = tk.Toplevel()
     fenetre_règle.geometry("250x170")
     Text= tk.Text(fenetre_règle, height = 5, width = 52)
 
@@ -655,7 +660,6 @@ def regle_du_jeu():
     # Insert The Fact.
     Text.insert(tk.END, règle_mastermind)
 
-    fenetre_règle.mainloop()
     
 
 
