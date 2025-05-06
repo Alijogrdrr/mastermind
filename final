@@ -11,7 +11,6 @@ import itertools
 #bouton retour pour le jeu
 #fonction sauvegarde
 #bouton retour pour le choix des couleur de code secret en mode duo
-#bouton aide dans le canvas gauche qui dois rester tout le temps la meme quand on detruit les boutton de la verif
 
 
 
@@ -291,8 +290,8 @@ def ouvrir_jeu(fenetre,mode_de_jeu):
         Cette fonction permet de verifier apres l'appui du bouton valider, si les couleurs existent/sont à la bonne place/sont présentes
         et modifie la couleur des petits ronds.
         """
-        nonlocal nb_essai, code_secret, essai, index_rond, petits_ronds, erreur_label1, temp_essai
-
+        nonlocal nb_essai, code_secret, essai, index_rond, petits_ronds, erreur_label1, temp_essai,aide_label,bouton_aide
+        aide_label.destroy()
         # Si la ligne est pas complétée
         if len(essai) != 4:
             erreur_label1.pack(pady=360)
@@ -330,14 +329,16 @@ def ouvrir_jeu(fenetre,mode_de_jeu):
 
         #gestion de la fin de partie (quand c'est gagné)
         if petits_ronds_temp==["#229954","#229954","#229954","#229954"]:
+            bouton_aide.pack_forget()
             bouton_fin_gagne = tk.Button(canvas_gauche, text="Finir la partie", command=fin_de_partie,font=("Consoloas",27),relief="groove",bd=5, width=10, height=2) 
-            bouton_fin_gagne.pack(pady=360,padx=20)
+            bouton_fin_gagne.pack(pady=350,padx=20)
             return None
         
         #gestion de le fin de partie (quand c'est perdu)
         if nb_essai==0:
+            bouton_aide.pack_forget()
             bouton_fin_perdu = tk.Button(canvas_gauche, text="Retourner au\nmenu principal", command=page_acceuil,font=("Consoloas",25),relief="groove",bd=5, width=12, height=2) 
-            bouton_fin_perdu.pack(pady=360 ,padx=0)
+            bouton_fin_perdu.pack(pady=350 ,padx=0)
         nb_essai -= 1
         temp_essai=essai.copy()
         essai = []
@@ -364,8 +365,8 @@ def ouvrir_jeu(fenetre,mode_de_jeu):
         """
         Fonction pour que le joueur 1 valide son essai
         """
-        nonlocal verification_en_cours, erreur_label1,canvas_gauche,bouton_aide
-        
+        nonlocal verification_en_cours, erreur_label1,canvas_gauche,bouton_aide,aide_label
+        aide_label.destroy()
         bouton_aide.pack_forget()
         if len(essai) != 4:
             erreur_label1.pack(pady=360)
@@ -420,8 +421,9 @@ def ouvrir_jeu(fenetre,mode_de_jeu):
     ####################################################
 
     frame_aide = tk.Frame(canvas_gauche,bg= "white")
-    frame_aide.pack(side="bottom", pady=10)
-    aide_label = None
+    frame_aide.pack()
+    aide_label = tk.Label(frame_aide, text="Remplissez les 4 couleurs :\nVert,Bleu,Rose,Jaune.", fg="white", font=("Arial", 15),bg="white")
+    aide_label.pack()
 
     def aide():
         """
@@ -501,8 +503,9 @@ def ouvrir_jeu(fenetre,mode_de_jeu):
                 break
 
         aide_texte = ", ".join(combinaison_aide)
-        aide_label = tk.Label(frame_aide, text=f"Remplissez les 4 couleurs : {aide_texte}", fg="green", font=("Arial", 15),bg="white")
+        aide_label = tk.Label(frame_aide, text=f"Remplissez les 4 couleurs :\n{aide_texte}", fg="green", font=("Arial", 15),bg="white")
         aide_label.pack()
+        
             
 
 
@@ -531,7 +534,7 @@ def ouvrir_jeu(fenetre,mode_de_jeu):
     bouton_annuler = tk.Button(canvas_droit, text="Annuler", command=lambda c=couleur_fond: colorer_rond(c,nb_essai),font=("Consoloas",27),relief="groove",bd=5, width=7, height=1)  
     bouton_annuler.pack(pady=10)
     bouton_aide = tk.Button(canvas_gauche,text="Aide",command=aide,font=("Consoloas",27),relief="groove",bd=5, width=5, height=1)
-    bouton_aide.pack(padx=80,pady=700)
+    bouton_aide.pack(padx=80,pady=680)
     
 
 
