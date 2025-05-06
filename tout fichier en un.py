@@ -1,77 +1,83 @@
 import tkinter as tk
 import random
 from tkinter import ttk
-
+import itertools
 
 
 
 ####TACHES A FAIRE############
 #gerer l'aspect visuel
-#boutton reles du jeu
+#bouton reles du jeu
 #bouton retour pour le jeu
-#fonction aide et sauvegarde
-#flouter les bouttons de verification quand je joueur 1 est entrain de remplir
-#boutton retour pour la verification du mode duo
-#boutton retour pour le choix des couleur de code secret en mode duo
+#fonction sauvegarde
+#bouton retour pour le choix des couleur de code secret en mode duo
+#bouton aide dans le canvas gauche qui dois rester tout le temps la meme quand on detruit les boutton de la verif
 
 
 
 
-
-
-
-
-
-#####################################################################################################################
-################### LA PAGE D'ACCUEIL
-#####################################################################################################################
+couleur_fond = "#C9DFE5"#"#900C3F"
+couleur_boutons = "white"
+couleur_ecriture="#283747"#"#000000"
 
 #Création de la fenêtre principale
 fenetre = tk.Tk()
 fenetre.update()
 fenetre.state("zoomed")  # Ouvre en plein écran
 fenetre.title("Mastermind")
-couleur_fond = "#C9DFE5"
-couleur_boutons = "white"
-couleur_ecriture="#283747"
+
 fenetre.configure(bg=couleur_fond)
 
-#Création du titre de la page
-titre = tk.Label(fenetre, text="Mastermind", font=("Segoe print", 70), fg=couleur_ecriture, bg=couleur_fond)
-titre.pack(pady=50)
-
-#Ajout d'une bordure lumineuse
-titre.config(highlightbackground=couleur_ecriture, highlightthickness=5)
-
-#Création des boutons dans un cadre
-cadre = tk.Frame(fenetre, bg=couleur_fond)
-cadre.pack(expand=True)
 
 
-def fermer_fenetre():
+#####################################################################################################################
+################### LA PAGE D'ACCUEIL
+#####################################################################################################################
+def page_acceuil():
     """
-    Cette foncton permet de fermer la fenetre d'acceuil
+    Cette fonction initialise la page d'acceuil
     """
-    fenetre.destroy()
+    
+    for widget in fenetre.winfo_children():
+        widget.destroy()  # Détruit les widgets existants
+    fenetre.configure(bg=couleur_fond)
+    
+    #Création du titre de la page
+    titre = tk.Label(fenetre, text="Mastermind", font=("Segoe print", 70), fg=couleur_ecriture, bg=couleur_fond)
+    titre.pack(pady=50)
+
+    #Ajout d'une bordure lumineuse
+    titre.config(highlightbackground=couleur_ecriture, highlightthickness=5)
+
+    #Création des boutons dans un cadre
+    cadre = tk.Frame(fenetre, bg=couleur_fond)
+    cadre.pack(expand=True)
+
+
+    def fermer_fenetre():
+        """
+        Cette foncton permet de fermer la fenetre d'acceuil
+        """
+        fenetre.destroy()
 
 
 
-bouton_joueur_solo=tk.Button(cadre,text="Jouer en solo",command=lambda: ouvrir_jeu_solo(fenetre,"mode_solo"),font=("Fixedsys",30),bg=couleur_boutons,fg=couleur_ecriture,width=17, height=3, relief="groove", bd=10)
-bouton_joueur_solo.pack(side="left",padx=50,pady=50)
+    bouton_joueur_solo=tk.Button(cadre,text="Jouer en solo",command=lambda: ouvrir_jeu(fenetre,"mode_solo"),font=("Fixedsys",30),bg=couleur_boutons,fg=couleur_ecriture,width=17, height=3, relief="groove", bd=10)
+    bouton_joueur_solo.pack(side="left",padx=50,pady=50)
 
-bouton_joueur_duo = tk.Button(cadre, text="Jouer en duo", command=lambda: ouvrir_fenetre_choix_couleur(fenetre), font=("Fixedsys", 30), bg=couleur_boutons, fg=couleur_ecriture,width=17, height=3, relief="groove", bd=10)
-bouton_joueur_duo.pack(side="left", padx=50,pady=50)
+    bouton_joueur_duo = tk.Button(cadre, text="Jouer en duo", command=lambda: ouvrir_fenetre_choix_couleur(fenetre), font=("Fixedsys", 30), bg=couleur_boutons, fg=couleur_ecriture,width=17, height=3, relief="groove", bd=10)
+    bouton_joueur_duo.pack(side="left", padx=50,pady=50)
 
-bouton_regles_jeu = tk.Button(cadre, text="Règles du jeu", font=("Fixedsys", 30), bg=couleur_boutons, fg=couleur_ecriture,width=17, height=3, relief="groove", bd=10)
-bouton_regles_jeu.pack(side="left", padx=50,pady=50)
+    bouton_regles_jeu = tk.Button(cadre, text="Règles du jeu", font=("Fixedsys", 30), bg=couleur_boutons, fg=couleur_ecriture,width=17, height=3, relief="groove", bd=10)
+    bouton_regles_jeu.pack(side="left", padx=50,pady=50)
 
-bouton_fermeture = tk.Button(fenetre, text="Fermer", command=fermer_fenetre, font=("Fixedsys", 20), bg=couleur_boutons, fg=couleur_ecriture,width=10, height=2, relief="ridge", bd=6)
-bouton_fermeture.pack()
-
-
+    bouton_fermeture = tk.Button(fenetre, text="Fermer", command=fermer_fenetre, font=("Fixedsys", 20), bg=couleur_boutons, fg=couleur_ecriture,width=10, height=2, relief="ridge", bd=6)
+    bouton_fermeture.pack()
 
 
 
+#appel de la page d'acceuil pour lancer le code
+page_acceuil()
 
 
 
@@ -79,7 +85,7 @@ bouton_fermeture.pack()
 #############    FENETRE JEU SOLO
 ###################################################################################################################################
     
-def ouvrir_jeu_solo(fenetre,mode_de_jeu):
+def ouvrir_jeu(fenetre,mode_de_jeu):
     """
     Cette fonction sert a l'ouverture et a l'execution de la page du jeu solo
     """
@@ -93,10 +99,14 @@ def ouvrir_jeu_solo(fenetre,mode_de_jeu):
     ronds = [[],[],[],[],[],[],[],[],[],[]]#liste intermériaire pour stocker les ronds
     liste_ronds=[] #liste contenant les ronds
     petits_ronds = [[],[],[],[],[],[],[],[],[],[]] #liste intermédiaire pour stocker les rondscontient (4 elem dans chaque sous liste)
-    erreur_label = None  # Label d'erreur
     verification_en_cours = False  # Si le joueur 2 vérifie les couleurs
     couleurs_verif = ["#229954","#ffa600", "#A93226",]
-    
+    couleur_bien_place=0
+    couleur_mauvaise_posi=0
+    temp_couleur_bien_place=0
+    temp_couleur_mauvaise_posi=0
+    combi_encore_possible=[]
+    temp_essai=[]
 
     def couleur_code_genere():
             """
@@ -142,15 +152,13 @@ def ouvrir_jeu_solo(fenetre,mode_de_jeu):
     #Récupere la largeur et la heuteur du canvas central
     largeur_canvas=int(canvas.cget('width'))
     hauteur_canvas=int(canvas.cget('height'))
-    print(largeur_canvas,hauteur_canvas)
-
 
 
     # je vais creer le canevas droit et gauche
-    canvas_droit = tk.Canvas(fenetre, width=1/8*largeur_fenetre, height=hauteur_fenetre,bg="white")
+    canvas_droit = tk.Canvas(fenetre, width=1/8*largeur_fenetre, height=hauteur_fenetre,bg="white",highlightbackground="white")
     canvas_droit.place(x=largeur_fenetre-(1.5/8*largeur_fenetre))
-    canvas_gauche=tk.Canvas(fenetre, width=1/8*largeur_fenetre, height=hauteur_fenetre,bg="white")
-    canvas_gauche.place(x=0)
+    canvas_gauche=tk.Canvas(fenetre, width=1/8*largeur_fenetre, height=hauteur_fenetre,bg="white",highlightbackground="white")
+    canvas_gauche.place(x=(0.3/8*largeur_fenetre))
 
 
 
@@ -160,7 +168,7 @@ def ouvrir_jeu_solo(fenetre,mode_de_jeu):
 
 
     #creation du grand rectangle global du plateau de jeu (prennant 4/5 du canvas centre decallé a droite)
-    rectangle=canvas.create_rectangle(1/5*largeur_canvas,1/12*hauteur_canvas ,largeur_canvas,11/12*hauteur_canvas ,width=4, outline=couleur_ecriture,fill=couleur_fond)
+    canvas.create_rectangle(1/5*largeur_canvas,1/12*hauteur_canvas ,largeur_canvas,11/12*hauteur_canvas ,width=4, outline=couleur_ecriture,fill=couleur_fond)
 
     #coordonnées pour les 9 lignes a tracer a l'interieur du recangle
     ligne_x1=0 #je les fait aller jusqu'au bout du canvas pour avoir la partie pour mettre les resultats de la ligne
@@ -245,7 +253,12 @@ def ouvrir_jeu_solo(fenetre,mode_de_jeu):
         """
         nonlocal index_rond
         nonlocal essai
+        nonlocal erreur_label1, aide_label
+        erreur_label1.pack_forget()
+        #aide_label.pack_forget()
         if 0<=nb_essai<=9:
+            if couleur==couleur_fond and essai==[]:
+                return
             if couleur==couleur_fond and essai!=[]:
                 essai.pop()
                 index_rond-=1
@@ -255,7 +268,7 @@ def ouvrir_jeu_solo(fenetre,mode_de_jeu):
                 essai.append(couleur)
                 canvas.itemconfig(ronds[nb_essai][index_rond], fill=couleur) #changement de la couleur du rond
                 index_rond += 1
-
+        
 
 
 
@@ -265,27 +278,10 @@ def ouvrir_jeu_solo(fenetre,mode_de_jeu):
     ##############################################################
     
     
-    # Frame pour afficher les erreurs
-    frame_erreur = tk.Frame(canvas_gauche,bg= "white")
-    frame_erreur.pack(side="bottom", pady=10)
-
-
-    def verifie_couleur_solo_test():
-        nonlocal essai
-        nonlocal index_rond
-        nonlocal nb_essai
-        essai=[]
-        index_rond=0
-        nb_essai-=1
-
-    def verifie_couleur_duo_test():
-        nonlocal essai
-        nonlocal index_rond
-        nonlocal nb_essai
-        essai=[]
-        index_rond=0
-        nb_essai-=1
-
+    
+    erreur_label1 = tk.Label(canvas_gauche, text="Remplissez 4 couleurs\navant de valider.", fg="red",bg="white", font=("Consolas",18))
+    erreur_label2 = tk.Label(canvas_gauche, text="Tous les petits ronds doivent\nêtre colorés par le joueur 2.",bg="white", fg="red", font=("Consolas",15))
+            
 
 
     #######################  VERIFICATION POUR LE JEU SOLO
@@ -295,17 +291,11 @@ def ouvrir_jeu_solo(fenetre,mode_de_jeu):
         Cette fonction permet de verifier apres l'appui du bouton valider, si les couleurs existent/sont à la bonne place/sont présentes
         et modifie la couleur des petits ronds.
         """
-        nonlocal nb_essai
-        nonlocal code_secret
-        nonlocal essai
-        nonlocal index_rond
-        nonlocal petits_ronds
+        nonlocal nb_essai, code_secret, essai, index_rond, petits_ronds, erreur_label1, temp_essai
+
         # Si la ligne est pas complétée
         if len(essai) != 4:
-            if erreur_label:
-                erreur_label.destroy()
-            erreur_label = tk.Label(frame_erreur, text="Remplissez 4 couleurs\navant de valider.", fg="red", font=("Arial", 15))
-            erreur_label.pack()
+            erreur_label1.pack(pady=360)
             return  # On arrête tout si cest pas complet
 
         # Copie temporaire code secret pour suivre couleurs déjà vérifiées, éviter les doublons
@@ -333,22 +323,38 @@ def ouvrir_jeu_solo(fenetre,mode_de_jeu):
 
         # Mélange les couleurs des petits ronds
         random.shuffle(petits_ronds_temp)
-
+        
         # Applique les couleurs mélangées aux petits ronds
         for i in range(4):
             canvas.itemconfig(petits_ronds[nb_essai][i], fill=petits_ronds_temp[i])
 
+        #gestion de la fin de partie (quand c'est gagné)
+        if petits_ronds_temp==["#229954","#229954","#229954","#229954"]:
+            bouton_fin_gagne = tk.Button(canvas_gauche, text="Finir la partie", command=fin_de_partie,font=("Consoloas",27),relief="groove",bd=5, width=10, height=2) 
+            bouton_fin_gagne.pack(pady=360,padx=20)
+            return None
+        
+        #gestion de le fin de partie (quand c'est perdu)
+        if nb_essai==0:
+            bouton_fin_perdu = tk.Button(canvas_gauche, text="Retourner au\nmenu principal", command=page_acceuil,font=("Consoloas",25),relief="groove",bd=5, width=12, height=2) 
+            bouton_fin_perdu.pack(pady=360 ,padx=0)
         nb_essai -= 1
+        temp_essai=essai.copy()
         essai = []
         index_rond = 0
+
 
     #######################  VERIFICATION POUR LE JEU DUO 
 
     def choisir_couleur_verif(couleur):
-        nonlocal petits_ronds
+        nonlocal petits_ronds,erreur_label2
+        erreur_label2.pack_forget()
         if verification_en_cours:
             for i in range(4):
                 couleur_actuelle = canvas.itemcget(petits_ronds[nb_essai][i], "fill")
+                if couleur=="white":
+                    canvas.itemconfig(petits_ronds[nb_essai][i], fill=couleur) #changement de la couleur du rond
+                    
                 if couleur_actuelle == "white":
                     canvas.itemconfig(petits_ronds[nb_essai][i], fill=couleur)
                     break
@@ -358,13 +364,19 @@ def ouvrir_jeu_solo(fenetre,mode_de_jeu):
         """
         Fonction pour que le joueur 1 valide son essai
         """
-        nonlocal verification_en_cours, erreur_label
+        nonlocal verification_en_cours, erreur_label1,canvas_gauche,bouton_aide
+        
+        bouton_aide.pack_forget()
         if len(essai) != 4:
-            if erreur_label:
-                erreur_label.destroy()
-            erreur_label = tk.Label(frame_erreur, text="Remplissez 4 couleurs\navant de valider.", fg="red", font=("Arial", 15))
-            erreur_label.pack()
+            erreur_label1.pack(pady=360)
             return
+        
+        ###les bouttons 
+        bouton_vert.pack(pady=10)
+        bouton_orange.pack(pady=10)
+        bouton_rouge.pack(pady=10)
+        bouton_valide_verif.pack(pady=20)
+        bouton_annuler_verif.pack(pady=10)
         verification_en_cours = True
         print("Joueur 1 a validé son essai :", essai)
         print("Joueur 2, choisis les couleurs de vérification.")
@@ -374,15 +386,27 @@ def ouvrir_jeu_solo(fenetre,mode_de_jeu):
         """
         Fonction pour que le joueur 2 valide les couleurs
         """
-        nonlocal nb_essai, index_rond, essai, verification_en_cours, erreur_label
+        nonlocal nb_essai, index_rond, essai, verification_en_cours, erreur_label2 ,canvas_gauche
         couleurs_utilisees = [canvas.itemcget(r, "fill") for r in petits_ronds[nb_essai]]
+
         if not all(c in couleurs_verif for c in couleurs_utilisees):
-            if erreur_label:
-                erreur_label.destroy()
-            erreur_label = tk.Label(frame_erreur, text="Tous les petits ronds doivent\nêtre colorés par le joueur 2.", fg="red", font=("Arial", 15))
-            erreur_label.pack()
+            erreur_label2.pack()
             return
+        
         print("Joueur 2 a validé :", couleurs_utilisees)
+        bouton_vert.pack_forget()
+        bouton_orange.pack_forget()
+        bouton_rouge.pack_forget()
+        bouton_annuler_verif.pack_forget()
+        bouton_valide_verif.pack_forget()
+        if couleurs_utilisees==["#229954","#229954","#229954","#229954"]:
+            bouton_fin_gagne = tk.Button(canvas_gauche, text="Finir la partie", command=fin_de_partie,font=("Consoloas",27),relief="groove",bd=5, width=10, height=2) 
+            bouton_fin_gagne.pack(pady=360,padx=20)
+            return None
+        if nb_essai==0:
+            print("j'ai gagné")
+            bouton_fin_perdu = tk.Button(canvas_gauche, text="Retourner au menu\nprincipal", command=page_acceuil,font=("Consoloas",27),relief="groove",bd=5, width=20, height=2) 
+            bouton_fin_perdu.pack(pady=360,padx=10)
         nb_essai -= 1
         index_rond = 0
         essai = []
@@ -392,7 +416,98 @@ def ouvrir_jeu_solo(fenetre,mode_de_jeu):
 
 
     ####################################################
-    # PARTIE 6 : AJOUT DES BOUTONS DANS LE CANVAS DROIT
+    # PARTIE 6 : GESTION DE L'AIDE
+    ####################################################
+
+    frame_aide = tk.Frame(canvas_gauche,bg= "white")
+    frame_aide.pack(side="bottom", pady=10)
+    aide_label = None
+
+    def aide():
+        """
+        Cette fonction sert a la gestion de l'aide pour le joueur
+        """
+
+        nonlocal temp_essai, couleur_bien_place, couleur_mauvaise_posi, nb_essai, combi_encore_possible, aide_label, couleurs
+        
+        combinaison = [list(c) for c in itertools.product(couleurs, repeat=4)]
+        list_max_diff = []
+        max_diff = 0
+
+        if aide_label is not None:
+            aide_label.destroy()
+
+            
+        if nb_essai == 9:
+            aide_label = tk.Label(frame_aide, text="Remplissez les 4 couleurs Vert,Bleu,Rose,Jaune.", fg="green", font=("Arial", 15))
+            aide_label.pack()
+            return
+
+        index_combinaison_actuelle = 0
+
+        if nb_essai == 8:
+            combi_encore_possible.clear()
+            for i in combinaison:
+                temp_couleur_bien_place = 0
+                temp_couleur_mauvaise_posi = 0
+                copie_combinaison = i.copy()
+                copie_essai = temp_essai.copy()
+
+                for j in range(4):
+                    if copie_combinaison[j] == copie_essai[j]:
+                        temp_couleur_bien_place += 1
+                        copie_combinaison[j] = None
+                        copie_essai[j] = None
+
+                for j in range(4):
+                    if copie_combinaison[j] is not None and copie_combinaison[j] in copie_essai:
+                        temp_couleur_mauvaise_posi += 1
+                        copie_essai[copie_essai.index(copie_combinaison[j])] = None
+
+                if temp_couleur_bien_place == couleur_bien_place and temp_couleur_mauvaise_posi == couleur_mauvaise_posi:
+                    combi_encore_possible.append(i)
+
+        else:
+            temp_liste = combi_encore_possible.copy()
+            combi_encore_possible.clear()
+            for i in temp_liste:
+                temp_couleur_bien_place = 0
+                temp_couleur_mauvaise_posi = 0
+                copie_combinaison = i.copy()
+                copie_essai = temp_essai.copy()
+
+                for j in range(4):
+                    print(copie_essai[j])
+                    if copie_combinaison[j] == copie_essai[j]:
+                        temp_couleur_bien_place += 1
+                        copie_combinaison[j] = None
+                        copie_essai[j] = None
+
+                for j in range(4):
+                    if copie_combinaison[j] is not None and copie_combinaison[j] in copie_essai:
+                        temp_couleur_mauvaise_posi += 1
+                        copie_essai[copie_essai.index(copie_combinaison[j])] = None
+
+                if temp_couleur_bien_place == couleur_bien_place and temp_couleur_mauvaise_posi == couleur_mauvaise_posi:
+                    combi_encore_possible.append(i)
+
+            
+        for i in combi_encore_possible:
+            list_max_diff.append(len(set(i)))
+        max_diff = max(list_max_diff)
+        for i in combi_encore_possible:
+            if len(set(i)) == max_diff:
+                combinaison_aide = i
+                break
+
+        aide_texte = ", ".join(combinaison_aide)
+        aide_label = tk.Label(frame_aide, text=f"Remplissez les 4 couleurs : {aide_texte}", fg="green", font=("Arial", 15))
+        aide_label.pack()
+            
+
+
+    ####################################################
+    # PARTIE 7 : AJOUT DES BOUTONS DANS LE CANVAS DROIT
     ####################################################
 
 
@@ -405,25 +520,68 @@ def ouvrir_jeu_solo(fenetre,mode_de_jeu):
         bouton_valider = tk.Button(canvas_droit, text="Valider", command=verifie_couleur_solo,font=("Consoloas",27),relief="groove",bd=5, width=7, height=1)  
     else:
         bouton_valider = tk.Button(canvas_droit, text="Valider", command=valider_essai_joueur1,font=("Consoloas",27),relief="groove",bd=5, width=7, height=1) 
+        bouton_vert = tk.Button(canvas_gauche, text="Est à la bonne\nplace", bg="#229954", command=lambda c="#229954": choisir_couleur_verif(c), font=("Consoloas", 25),relief="groove",bd=5, width=12, height=2)
+        bouton_orange = tk.Button(canvas_gauche, text="Est mal placé", bg="#ffa600", command=lambda c="#ffa600": choisir_couleur_verif(c), font=("Consoloas", 25),relief="groove",bd=5, width=12, height=2)
+        bouton_rouge = tk.Button(canvas_gauche, text="N'existe pas", bg="#A93226", command=lambda c="#A93226": choisir_couleur_verif(c), font=("Consoloas", 25),relief="groove",bd=5, width=12, height=2)
+        bouton_valide_verif=tk.Button(canvas_gauche, text="Valider \n la verification", command=valider_verification_joueur2, font=("Consoloas", 25), relief="groove",bd=5, width=12, height=2)
+        bouton_annuler_verif = tk.Button(canvas_gauche, text="Annuler", command=lambda c="white": choisir_couleur_verif(c),font=("Consoloas",25),relief="groove",bd=5, width=12, height=2)  
         
-        bouton = tk.Button(canvas_gauche, text="Est à la bonne\nplace", bg="#229954", command=lambda c="#229954": choisir_couleur_verif(c), font=("Consoloas", 20),relief="groove",bd=5)
-        bouton.pack(pady=10)
-        bouton = tk.Button(canvas_gauche, text="Est mal placé", bg="#ffa600", command=lambda c="#ffa600": choisir_couleur_verif(c), font=("Consoloas", 20),relief="groove",bd=5)
-        bouton.pack(pady=10)
-        bouton = tk.Button(canvas_gauche, text="N'existe pas", bg="#A93226", command=lambda c="#A93226": choisir_couleur_verif(c), font=("Consoloas", 20),relief="groove",bd=5)
-        bouton.pack(pady=10)
-        tk.Button(canvas_gauche, text="Valider \n la verification", command=valider_verification_joueur2, font=("Consoloas", 20), relief="groove",bd=5).pack(pady=20)
- 
+
     bouton_valider.pack(pady=10)
     bouton_annuler = tk.Button(canvas_droit, text="Annuler", command=lambda c=couleur_fond: colorer_rond(c,nb_essai),font=("Consoloas",27),relief="groove",bd=5, width=7, height=1)  
     bouton_annuler.pack(pady=10)
-
+    bouton_aide = tk.Button(fenetre,text="Aide",command=aide,font=("Consoloas",27),relief="groove",bd=5, width=5, height=1)
+    bouton_aide.place(relx=0.0,rely=1.0,anchor="se", x=250,y=-30)
+    bouton_aide.lift()
+    
 
 
     
 
+####################################################################################################################################
+#############    FENETRE FIN DE PARTIE
+####################################################################################################################################
+  
 
+def fin_de_partie():
+    """
+    Cette fonction est appeler quand le joueur a trouver la bonne combinaison et qu'il y a eu clic que le boutton fin de partie
+    """
+    for widget in fenetre.winfo_children():
+        widget.destroy()  
+    
+    fenetre.configure(bg=couleur_fond)
 
+    def fermer_fenetre():
+        """
+        Cette foncton permet de fermer la fenetre d'acceuil
+        """
+        fenetre.destroy()
+
+    
+
+    titre_page= tk.Label(fenetre, text="Fin de partie", font=("Segoe print", 70), fg=couleur_ecriture, bg=couleur_fond)
+    titre_page.pack(pady=50)
+    titre_page.config(highlightbackground=couleur_ecriture, highlightthickness=5)
+
+    cadre = tk.Frame(fenetre, bg=couleur_fond)
+    cadre.pack(expand=True)
+
+    bouton_rejouer=tk.Button(cadre,text="Rejouer",command=lambda: page_acceuil(),font=("Fixedsys",25),bg=couleur_boutons,fg=couleur_ecriture,width=15, height=3, relief="groove", bd=10)
+    bouton_rejouer.pack(side="left",padx=40,pady=50)
+
+    bouton_charger = tk.Button(cadre, text="Charger une\nancienne partie", font=("Fixedsys", 25), bg=couleur_boutons, fg=couleur_ecriture,width=15, height=3, relief="groove", bd=10)
+    bouton_charger.pack(side="left", padx=40,pady=50)
+
+    bouton_regles_jeu = tk.Button(cadre, text="Règles du jeu", font=("Fixedsys", 25), bg=couleur_boutons, fg=couleur_ecriture,width=15, height=3, relief="groove", bd=10)
+    bouton_regles_jeu.pack(side="left", padx=40,pady=50)
+
+    bouton_score = tk.Button(cadre, text="Voir votre\nscore", font=("Fixedsys", 25), bg=couleur_boutons, fg=couleur_ecriture,width=15, height=3, relief="groove", bd=10)
+    bouton_score.pack(side="left", padx=40,pady=50)
+
+    bouton_fermeture = tk.Button(fenetre, text="Fermer", command=fermer_fenetre, font=("Fixedsys", 20), bg=couleur_boutons, fg=couleur_ecriture,width=10, height=2, relief="ridge", bd=6)
+    bouton_fermeture.pack()
+    
 
 
 
@@ -458,7 +616,7 @@ def ouvrir_fenetre_choix_couleur(fenetre):
         """
         print("Le jeu commence avec le code :", code_secret)
         fenetre_Duo.destroy()
-        ouvrir_jeu_solo(fenetre,code_secret)
+        ouvrir_jeu(fenetre,code_secret)
 
     def ajouter_couleur(code_secret):
         """
@@ -478,7 +636,7 @@ def ouvrir_fenetre_choix_couleur(fenetre):
     label = tk.Label(fenetre_Duo, text="Le joueur doit choisir 4 couleurs\nqui formeront le code secret:", bg=couleur_fond,fg=couleur_ecriture, font=("Fixedsys", 30))
     label.pack(pady=10)
 
-    combo = ttk.Combobox(fenetre_Duo, values=couleurs_disponibles, state="readonly")
+    combo = ttk.Combobox(fenetre_Duo, values=couleurs_disponibles, state="readonly",justify="center",font=("Consolas", 20),width=16)
     combo.pack(pady=5)
 
     bouton_ajouter = tk.Button(fenetre_Duo, text="Ajouter", command=lambda: ajouter_couleur(code_secret), font=("Fixedsys", 20), bg=couleur_boutons,fg=couleur_ecriture,relief="groove",bd=5)
