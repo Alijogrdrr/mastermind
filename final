@@ -420,11 +420,15 @@ def ouvrir_jeu(fenetre,mode_de_jeu):
         if couleurs_utilisees == ["#229954","#229954","#229954","#229954"]:
             print("j'ai gagné")
             bouton_fin_gagne = tk.Button(canvas_gauche, text = "Finir la partie", command=fin_de_partie,font=("Consoloas",27),relief="groove",bd=5, width=10, height=2) 
+            fin_du_jeu_gagne = tk.Label(canvas_gauche, text = "Vous avez gagné !", font = ("Consolas", 30),bg = "white", fg = "green")
+            fin_du_jeu_gagne.pack(pady=30)
             bouton_fin_gagne.pack(pady=360,padx=20)
             return None
         if nb_essai==0:
             print("j'ai perdu")
             bouton_fin_perdu = tk.Button(canvas_gauche, text="Retourner au menu\nprincipal", command=page_acceuil,font=("Consoloas",27),relief="groove",bd=5, width=20, height=2) 
+            fin_du_jeu_perdu = tk.Label(canvas_gauche, text = "Vous avez perdu...", font = ("Consolas", 30), bg = "white", fg = "red")
+            fin_du_jeu_perdu.pack(pady=30)
             bouton_fin_perdu.pack(pady=360,padx=10)
         frame_bouton.pack(padx=20,pady=670)
         nb_essai -= 1
