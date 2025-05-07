@@ -107,6 +107,7 @@ def ouvrir_jeu(fenetre,mode_de_jeu):
     combi_encore_possible=[]
     temp_essai=[]
     combinaison_optimal= [] 
+    sauvegarde_essai=[]
 
     def couleur_code_genere():
             """
@@ -294,7 +295,7 @@ def ouvrir_jeu(fenetre,mode_de_jeu):
         Cette fonction permet de verifier apres l'appui du bouton valider, si les couleurs existent/sont à la bonne place/sont présentes
         et modifie la couleur des petits ronds.
         """
-        nonlocal nb_essai, code_secret, essai, index_rond, petits_ronds, erreur_label1, temp_essai,aide_label,bouton_aide,couleur_mauvaise_posi,couleur_bien_place
+        nonlocal nb_essai, code_secret, essai, index_rond, petits_ronds, erreur_label1, temp_essai,aide_label,bouton_aide,couleur_mauvaise_posi,couleur_bien_place,sauvegarde_essai
         aide_label.destroy()
         # Si la ligne est pas complétée
         if len(essai) != 4:
@@ -353,6 +354,7 @@ def ouvrir_jeu(fenetre,mode_de_jeu):
             bouton_fin_perdu.pack(pady=350 ,padx=0)
         nb_essai -= 1
         temp_essai=essai.copy()
+        sauvegarde_essai.append(essai)
         essai = []
         index_rond = 0
 
@@ -399,7 +401,7 @@ def ouvrir_jeu(fenetre,mode_de_jeu):
         """
         Fonction pour que le joueur 2 valide les couleurs
         """
-        nonlocal nb_essai, index_rond, essai, verification_en_cours, erreur_label2 ,canvas_gauche
+        nonlocal nb_essai, index_rond, essai, verification_en_cours, erreur_label2 ,canvas_gauche,sauvegarde_essai
         couleurs_utilisees = [canvas.itemcget(r, "fill") for r in petits_ronds[nb_essai]]
 
         if not all(c in couleurs_verif for c in couleurs_utilisees):
@@ -422,6 +424,7 @@ def ouvrir_jeu(fenetre,mode_de_jeu):
             bouton_fin_perdu.pack(pady=360,padx=10)
         nb_essai -= 1
         index_rond = 0
+        sauvegarde_essai.append(essai)
         essai = []
         verification_en_cours = False
 
@@ -543,7 +546,51 @@ def ouvrir_jeu(fenetre,mode_de_jeu):
 
 
     ####################################################
-    # PARTIE 8 : AJOUT DES BOUTONS DANS LE CANVAS DROIT
+    # PARTIE 8 : Sauvegarde
+    ####################################################
+    def sauvegarder_partie():
+
+        
+        nonlocal sauvegarde_essai, code_secret
+            
+
+        fichier = filedialog.asksaveasfilename(
+        title="Enregistrer la partie",
+        defaultextension=".json",
+        filetypes=[("JSON files", "*.json")],
+        )
+        if not fichier:
+            return
+        
+        sauvegarde = {"sauvegarde_essai": sauvegarde_essai,
+                      "code_secret": code_secret}
+
+        with open(fichier, 'w') as f:
+            json.dump(sauvegarde, f, indent=4)
+
+    ####################################################
+    # PARTIE 8 : Sauvegarde
+    ####################################################
+    
+    def charger_sauvegarde():
+        nonlocal code_secret, sauvegarde_essai, nb_essai, essai, index_rond
+        fichier = filedialog.askopenfilename(title="Charger une partie",defaultextension=".json",
+                                             filetypes=[("JSON files", "*.json")],)
+        if not fichier:
+            return
+        with open(fichier, 'r') as f:
+            dictionaire = json.load(f)
+        code_secret = dictionaire.get("code_secret", [])
+        sauvegarde_essai = dictionaire.get("sauvegarde_essai", [])
+        
+        nb_essai = 9
+        for essai_i in sauvegarde_essai:
+            for couleur in essai_i:
+                colorer_rond(couleur, nb_essai)
+            verifie_couleur_solo()
+
+    ####################################################
+    # PARTIE 9 : AJOUT DES BOUTONS DANS LE CANVAS DROIT
     ####################################################
 
 
