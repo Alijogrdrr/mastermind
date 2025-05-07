@@ -717,7 +717,19 @@ def ouvrir_fenetre_choix_couleur(fenetre):
             if len(code_secret) == 4:
                 bouton_ajouter.config(state="disabled")
                 bouton_lancer.config(state="normal")  # Active le bouton de lancement
-            
+    def annuler_couleur(code_secret):
+        
+       # Annule la dernière couleur ajoutée au code secret
+        
+        if len(code_secret) > 0:
+            code_secret.pop()  # Enlève la dernière couleur
+            liste_couleurs.config(text="Code secret : " + " - ".join(code_secret))
+
+            # Réactive le bouton "Ajouter" si une couleur a été supprimée
+            if len(code_secret) < 4:
+                bouton_ajouter.config(state="normal")
+                bouton_lancer.config(state="disabled")  # Désactive le bouton "Lancer" jusqu'à ce que 4 couleurs soient ajoutées
+
 
     label = tk.Label(fenetre_Duo, text="Le joueur doit choisir 4 couleurs\nqui formeront le code secret:", bg=couleur_fond,fg=couleur_ecriture, font=("Fixedsys", 30))
     label.pack(pady=10)
@@ -727,6 +739,9 @@ def ouvrir_fenetre_choix_couleur(fenetre):
 
     bouton_ajouter = tk.Button(fenetre_Duo, text="Ajouter", command=lambda: ajouter_couleur(code_secret), font=("Fixedsys", 20), bg=couleur_boutons,fg=couleur_ecriture,relief="groove",bd=5)
     bouton_ajouter.pack(pady=10)
+
+    bouton_annuler = tk.Button(fenetre_Duo, text="Annuler", command=lambda: annuler_couleur(code_secret), font=("Fixedsys", 20), bg=couleur_boutons, fg=couleur_ecriture, relief="groove", bd=5)
+    bouton_annuler.pack(pady=10)
 
     # Bouton pour lancer le jeu (désactivé au départ)
     bouton_lancer = tk.Button(fenetre_Duo, text="Lancer le jeu", font=("Fixedsys", 20), bg=couleur_boutons, state="disabled", command=lambda: lancer_jeu(code_secret),fg=couleur_ecriture,relief="groove",bd=5)
