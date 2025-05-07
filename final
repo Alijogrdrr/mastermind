@@ -343,6 +343,8 @@ def ouvrir_jeu(fenetre,mode_de_jeu):
         if petits_ronds_temp==["#229954","#229954","#229954","#229954"]:
             frame_bouton.pack_forget()
             bouton_fin_gagne = tk.Button(canvas_gauche, text="Finir la partie", command=fin_de_partie,font=("Consoloas",27),relief="groove",bd=5, width=10, height=2) 
+            fin_du_jeu_gagne = tk.Label(canvas_gauche, text = "Vous avez gagné !", font = ("Consolas", 30),bg = "white", fg = "green")
+            fin_du_jeu_gagne.pack(pady=30)
             bouton_fin_gagne.pack(pady=350,padx=20)
             return None
         
@@ -350,6 +352,8 @@ def ouvrir_jeu(fenetre,mode_de_jeu):
         if nb_essai == 0:
             frame_bouton.pack_forget()
             bouton_fin_perdu = tk.Button(canvas_gauche, text="Retourner au\nmenu principal", command=page_acceuil,font=("Consoloas",25),relief="groove",bd=5, width=12, height=2) 
+            fin_du_jeu_perdu = tk.Label(canvas_gauche, text = "Vous avez perdu...", font = ("Consolas", 30), bg = "white", fg = "red")
+            fin_du_jeu_perdu.pack(pady=30)
             bouton_fin_perdu.pack(pady=350 ,padx=0)
         nb_essai -= 1
         temp_essai=essai.copy()
