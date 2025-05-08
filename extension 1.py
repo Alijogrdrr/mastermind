@@ -86,7 +86,7 @@ def page_acceuil():
     bouton_regles_jeu = tk.Button(cadre2, text="Règles du jeu",  command=lambda: regle_du_jeu(fenetre,"page_acceuil"),font=("Fixedsys", 18), bg=couleur_boutons, fg=couleur_ecriture,width=17, height=3, relief="groove", bd=10)
     bouton_regles_jeu.pack(side="left", padx=50)
 
-    bouton_reglage = tk.Button(cadre2, text="Choisir les\nréglages", command=lambda: choisir_nombre_couleurs(fenetre), font=("Fixedsys", 18), bg=couleur_boutons, fg=couleur_ecriture,width=17, height=3, relief="groove", bd=10)
+    bouton_reglage = tk.Button(cadre2, text="Choisir les\nréglages", command=lambda: choisir_nombre_couleurs("mode_solo"), font=("Fixedsys", 18), bg=couleur_boutons, fg=couleur_ecriture,width=17, height=3, relief="groove", bd=10)
     bouton_reglage.pack(side="left", padx=50)
 
     bouton_fermeture = tk.Button(fenetre, text="Fermer", command=fenetre.destroy, font=("Fixedsys", 16), bg=couleur_boutons, fg=couleur_ecriture,width=8, height=2, relief="ridge", bd=5)
@@ -102,7 +102,7 @@ page_acceuil()
 #############    FENETRE JEU SOLO
 ###################################################################################################################################
     
-def ouvrir_jeu(fenetre,mode_de_jeu):
+def ouvrir_jeu(fenetre,mode_de_jeu,nb_couleurs=4):
 
     #Cette fonction sert a l'ouverture et a l'execution de la page du jeu solo
     
@@ -111,7 +111,7 @@ def ouvrir_jeu(fenetre,mode_de_jeu):
     ##################variables global#####################
     nb_essai=9 #cette variable est modifier a chaque essai 
     index_rond = 0
-    couleurs = ["green", "blue", "pink", "yellow", "orange", "purple"]
+    couleurs = ["green", "blue", "pink", "yellow", "orange", "purple","cyan","red","brown","magenta"][:nb_couleurs]
     essai=[]#liste de 4 elements avec les couleur des rond de la ligne que l'on est entre de remplir
     ronds = [[],[],[],[],[],[],[],[],[],[]]#liste intermériaire pour stocker les ronds
     liste_ronds=[] #liste contenant les ronds
@@ -131,13 +131,17 @@ def ouvrir_jeu(fenetre,mode_de_jeu):
             """
             Cette fonction sert a generer un code couleur qui sera le code couleur que l'utilistaeur devrait trouver
             """
-            code_genere=[]
-            for _ in range(4):
-                code_genere.append(random.choice(couleurs))
+            code_genere=[random.choice(couleurs[:nb_couleurs]) for _ in range(nb_couleurs)]
             print("Les couleurs a deviner dans cet ordre sont:", code_genere)
             return code_genere
 
-    
+    if mode_de_jeu=="mode_solo":
+        code_secret=couleur_code_genere()
+        
+        print("je rentre dans fenetre jeu solo")
+    else:#sinon le code secret est directement dans la variable mode de jeu
+        code_secret=mode_de_jeu
+        print("je rentre dans fenetre jeu duo")
 
 
     #############################################
@@ -204,48 +208,51 @@ def ouvrir_jeu(fenetre,mode_de_jeu):
 
     #dessin des 4 cercles des 10 lignes
     for i in range(10):
-        cercle_x1=1/5*largeur_canvas +50 #le 50 sert a faire des rond et non des oval, car les cases sont rectagulaire et non carré
-        cercle_x2=2/5*largeur_canvas-50
-        for j in range (4):
+        cercle_x1=1/5*largeur_canvas +30 #le 50 sert a faire des rond et non des oval, car les cases sont rectagulaire et non carré
+        cercle_x2=cercle_x1 + (2/5*largeur_canvas-50) / nb_couleurs
+        for j in range (nb_couleurs):
             rond=canvas.create_oval(cercle_x1,cercle_y1,cercle_x2,cercle_y2,width=3,fill=couleur_fond,outline=couleur_ecriture)
             ronds[i].append(rond)
-            cercle_x1+=1/5*largeur_canvas
-            cercle_x2+=1/5*largeur_canvas
+            cercle_x1+=(2/5*largeur_canvas - 50) / nb_couleurs + 10#décalage pr le prochain rond
+            cercle_x2+=(2/5*largeur_canvas - 50) / nb_couleurs + 10
         cercle_y1+=1/12*hauteur_canvas
         cercle_y2+=1/12*hauteur_canvas
+    
+    
     for elem in ronds:#sert a renverser la liste
         liste_ronds.insert(0,elem)
 
 
-
-
-
-    #coordonnées pour les petit cercles de verification
-    petit_cercle_y1=1/12*hauteur_canvas+3                             #une ligne du canvas 
-    petit_cercle_y2=1/12*hauteur_canvas+1/2*(1/12*hauteur_canvas)-3   #une ligne du canvas + une demi-ligne
-
+    ligne_y = 1.5/12 * hauteur_canvas
+    taille_petit_rond = min((1/5 * largeur_canvas - 50) / (nb_couleurs if nb_couleurs <= 4 else 4),20)
 
     #position des cercles de verification pour chaque ligne
     for i in range(10):
-        petit_cercle_x1=25
-        petit_cercle_x2=1/2*(1/5*largeur_canvas)-25
-        for j in range (2):#boucle pour les 2 ronds du haut du rectangle
-            rond_verification=canvas.create_oval(petit_cercle_x1,petit_cercle_y1,petit_cercle_x2,petit_cercle_y2,width=1,fill="white",outline=couleur_ecriture)
-            petits_ronds[i].append(rond_verification)
-            petit_cercle_x1+=1/2*(1/5*largeur_canvas)
-            petit_cercle_x2+=1/2*(1/5*largeur_canvas)
-        #on remet les X au bord du canvas et on descend les Y
-        petit_cercle_x1=25                       
-        petit_cercle_x2=1/2*(1/5*largeur_canvas)-25
-        petit_cercle_y1+=1/2*(1/12*hauteur_canvas)
-        petit_cercle_y2+=1/2*(1/12*hauteur_canvas)
-        for j in range (2):#boucle pour les 2 ronds du bas du rectangle
-            rond_verification=canvas.create_oval(petit_cercle_x1,petit_cercle_y1,petit_cercle_x2,petit_cercle_y2,width=1,fill="white",outline=couleur_ecriture)
-            petits_ronds[i].append(rond_verification)
-            petit_cercle_x1+=1/2*(1/5*largeur_canvas)
-            petit_cercle_x2+=1/2*(1/5*largeur_canvas)
-        petit_cercle_y1+=1/2*(1/12*hauteur_canvas)
-        petit_cercle_y2+=1/2*(1/12*hauteur_canvas)
+        petit_cercle_x1 = 1/20 * largeur_canvas - 10
+        petit_cercle_x2 = petit_cercle_x1 + taille_petit_rond
+        petit_cercle_y1= ligne_y - taille_petit_rond /2 - 8     
+        petit_cercle_y2= ligne_y + taille_petit_rond /2 - 8
+
+        for j in range(nb_couleurs):
+           rond_verification = canvas.create_oval(
+                petit_cercle_x1, petit_cercle_y1, petit_cercle_x2, petit_cercle_y2,
+                width=1, fill="white", outline=couleur_ecriture
+        )
+           petits_ronds[i].append(rond_verification)
+           petit_cercle_x1 += taille_petit_rond + 5
+           petit_cercle_x2 += taille_petit_rond + 5
+
+        # Passe à la deuxième ligne si nécessaire
+           if nb_couleurs > 4 and (j + 1) == nb_couleurs // 2:
+               petit_cercle_x1 = 1/20 *largeur_canvas -10
+               petit_cercle_x2 = petit_cercle_x1 + taille_petit_rond
+               petit_cercle_y1 += taille_petit_rond + 5
+               petit_cercle_y2 += taille_petit_rond + 5
+
+    # Réinitialise pour la ligne suivante
+        ligne_y += 1/12 * hauteur_canvas
+        petit_cercle_y1 = ligne_y - taille_petit_rond / 2
+        petit_cercle_y2 = ligne_y + taille_petit_rond / 2
   
 
 
@@ -305,7 +312,7 @@ def ouvrir_jeu(fenetre,mode_de_jeu):
         aide_label.destroy()
         
         # Si la ligne est pas complétée
-        if len(essai) != 4:
+        if len(essai) != nb_couleurs:
             erreur_label1.pack(pady=360)
             return  # On arrête tout si cest pas complet
         
@@ -320,7 +327,7 @@ def ouvrir_jeu(fenetre,mode_de_jeu):
         petits_ronds_temp = []
 
         # couleurs bien placées
-        for i in range(4):
+        for i in range(nb_couleurs):
             if essai[i] == code_secret_temp[i]:
                 petits_ronds_temp.append("#229954")
                 code_secret_temp[i] = None  # Marque cette couleur comme utilisée
@@ -330,7 +337,7 @@ def ouvrir_jeu(fenetre,mode_de_jeu):
                 #la couleu est pas mise en noir, mais qu'lle sera soit en gris soit en blanc, pour pas laisser de vide quoi
                 
         # couleurs présentes mais mal placées
-        for i in range(4):
+        for i in range(nb_couleurs):
             if petits_ronds_temp[i] is None:  # du cp si c'est pas noir (donc None)
                 if essai[i] in code_secret_temp:  # Si la couleur est dans le code secret mais pas à la bonne place
                     petits_ronds_temp[i] = "#ffa600"
@@ -344,11 +351,11 @@ def ouvrir_jeu(fenetre,mode_de_jeu):
         random.shuffle(petits_ronds_temp)
         
         # Applique les couleurs mélangées aux petits ronds
-        for i in range(4):
+        for i in range(nb_couleurs):
             canvas.itemconfig(petits_ronds[nb_essai][i], fill=petits_ronds_temp[i])
 
         #gestion de la fin de partie (quand c'est gagné)
-        if petits_ronds_temp==["#229954","#229954","#229954","#229954"]:
+        if petits_ronds_temp==["#229954"]*nb_couleurs:
             frame_bouton.pack_forget()
             fin_du_jeu_gagne = tk.Label(canvas_gauche, text = "Vous avez gagné !", font = ("Fixedsys", 23),bg = "white", fg = "green")
             fin_du_jeu_gagne.pack(pady=30)
@@ -415,7 +422,7 @@ def ouvrir_jeu(fenetre,mode_de_jeu):
         nonlocal nb_essai, index_rond, essai, verification_en_cours, erreur_label2 ,canvas_gauche,sauvegarde_essai,frame_bouton
         couleurs_utilisees = [canvas.itemcget(r, "fill") for r in petits_ronds[nb_essai]]
 
-        if not all(c in couleurs_verif for c in couleurs_utilisees):
+        if not all(c in couleurs_verif for c in couleurs_utilisees[:nb_couleurs]):
             erreur_label2.pack()
             return
         
@@ -618,8 +625,8 @@ def ouvrir_jeu(fenetre,mode_de_jeu):
 
     # Ajout de boutons correspondant aux couleurs
     for couleur in couleurs:
-        bouton = tk.Button(canvas_droit, text=couleur, bg=couleur, command=lambda c=couleur: colorer_rond(c, nb_essai),font=("Consolas",27),relief="groove",bd=5,fg="white", width=7, height=1)  
-        bouton.pack(pady=10)
+        bouton = tk.Button(canvas_droit, text=couleur, bg=couleur, command=lambda c=couleur: colorer_rond(c, nb_essai),font=("Consolas",20),relief="groove",bd=5,fg="white", width=7, height=1)  
+        bouton.pack(pady=4)
     
     if mode_de_jeu=="mode_solo":
         bouton_valider = tk.Button(canvas_droit, text="Valider", command=verifie_couleur_solo,font=("Consoloas",27),relief="groove",bd=5, width=7, height=1)  
@@ -631,10 +638,12 @@ def ouvrir_jeu(fenetre,mode_de_jeu):
         bouton_valide_verif=tk.Button(canvas_gauche, text="Valider \n la verification", command=valider_verification_joueur2, font=("Consoloas", 25), relief="groove",bd=5, width=12, height=2)
         bouton_annuler_verif = tk.Button(canvas_gauche, text="Annuler", command=lambda c="white": choisir_couleur_verif(c),font=("Consoloas",25),relief="groove",bd=5, width=12, height=2)  
         
-
-    bouton_valider.pack(pady=10)
-    bouton_annuler = tk.Button(canvas_droit, text="Annuler", command=lambda c=couleur_fond: colorer_rond(c,nb_essai),font=("Consoloas",27),relief="groove",bd=5, width=7, height=1)  
-    bouton_annuler.pack(pady=10)
+    frame_actions = tk.Frame(canvas_droit, bg="white")
+    frame_actions.pack(side="bottom", pady=20)
+    bouton_valider = tk.Button(frame_actions, text="Valider", command=verifie_couleur_solo, font=("Consolas", 20), bg=couleur_boutons, fg=couleur_ecriture, relief="groove", bd=5, width=10)
+    bouton_valider.pack(side ="left",padx=0)
+    bouton_annuler = tk.Button(frame_actions, text="Annuler", command=lambda c=couleur_fond: colorer_rond(c,nb_essai),font=("Consolas",20),relief="groove",bd=5, width=7, height=1)  
+    bouton_annuler.pack(side="left",padx=5)
     bouton_aide = tk.Button(frame_bouton, text="Aide", command=aide, font=("Consoloas",25), relief="groove", bd=5, width=5, height=1)
     bouton_aide.pack(side="left",padx=20)
     
@@ -701,10 +710,8 @@ def fin_de_partie():
   
 
 
-def ouvrir_fenetre_choix_couleur(fenetre):
-    """
-    Cette fonction ouvre la fenêtre du mode Duo pour choisir un code couleur secret
-    """
+def ouvrir_fenetre_choix_couleur(fenetre,nb_couleurs = 4):
+    #Cette fonction ouvre la fenêtre du mode Duo pour choisir un code couleur secret
     print("je rentre dans le choix du code secret")
     fenetre_Duo = tk.Toplevel(fenetre)
     fenetre_Duo.title("Mode Deux Joueurs")
@@ -714,7 +721,7 @@ def ouvrir_fenetre_choix_couleur(fenetre):
     titre = tk.Label(fenetre_Duo, text="Mode Deux Joueurs", bg=couleur_fond, fg=couleur_boutons, font=("Segoe print", 53))
     titre.pack(pady=20)
 
-    couleurs_disponibles = ["Rouge", "Bleu", "Vert", "Jaune", "Orange", "Violet"]
+    couleurs_disponibles = ["Rouge", "Bleu", "Vert", "Jaune", "Orange", "Violet""Cyan", "Rouge foncé","Marron","Magenta"][:nb_couleurs]
     code_secret = []
 
     def lancer_jeu(code_secret):
@@ -723,19 +730,19 @@ def ouvrir_fenetre_choix_couleur(fenetre):
         """
         print("Le jeu commence avec le code :", code_secret)
         fenetre_Duo.destroy()
-        ouvrir_jeu(fenetre,code_secret)
+        ouvrir_jeu(fenetre,code_secret,nb_couleurs)
 
     def ajouter_couleur(code_secret):
         """
         Ajoute une couleur au code secret
         """
-        if len(code_secret) < 4:
+        if len(code_secret) < nb_couleurs:
             couleur_choisie = combo.get()
             if couleur_choisie:
                 code_secret.append(couleur_choisie)
                 liste_couleurs.config(text="Code secret : " + " - ".join(code_secret))
 
-            if len(code_secret) == 4:
+            if len(code_secret) == nb_couleurs:
                 bouton_ajouter.config(state="disabled")
                 bouton_lancer.config(state="normal")  # Active le bouton de lancement
     def annuler_couleur(code_secret):
@@ -747,7 +754,7 @@ def ouvrir_fenetre_choix_couleur(fenetre):
             liste_couleurs.config(text="Code secret : " + " - ".join(code_secret))
 
             # Réactive le bouton "Ajouter" si une couleur a été supprimée
-            if len(code_secret) < 4:
+            if len(code_secret) < nb_couleurs:
                 bouton_ajouter.config(state="normal")
                 bouton_lancer.config(state="disabled")  # Désactive le bouton "Lancer" jusqu'à ce que 4 couleurs soient ajoutées
 
@@ -820,49 +827,6 @@ def regle_du_jeu(fenetre,page):
     quiter_règle.pack(side="bottom")
     
 
-
-
-
-
-####################################################################################################################################
-#############    Extension numéro 1
-####################################################################################################################################
-
-
-
-def choisir_nombre_couleurs(fenetre):
-    for widget in fenetre.winfo_children():
-        widget.destroy()
-    fenetre.configure(bg = couleur_fond)
-
-    titre = tk.Label(fenetre, text= "Choisir le nombre de couleurs", bg = couleur_fond, fg = couleur_ecriture, font = ("Segoe print",50))
-    titre.pack(pady=50)
-
-    def lancer_jeu_avec_nb_couleurs_choisi(nb_couleurs):
-        ouvrir_jeu(fenetre, "mode_solo", nb_couleurs)
-
-    choix = tk.Scale(fenetre, from_ = 1, to = 10, orient = "horizontal", length = 400, tickinterval = 1, bg = couleur_fond, fg = couleur_ecriture, font = ("Consolas",20))
-    choix.pack(pady = 20)
-
-    bouton_valider = tk.Button(fenetre, text = "Valider", command = lambda:lancer_jeu_avec_nb_couleurs_choisi(choix.get()),
-                        font = ("Fixedys", 25), bg = couleur_boutons, fg = couleur_ecriture, width = 15, height = 2,
-                        relief = "groove", bd = 10 )
-    bouton_valider.pack(pady = 50)
-
-
-def ouvrir_jeu_extension1(fenetre, mode_de_jeu, nb_couleurs=4):
-    nb_essai=9 #cette variable est modifier a chaque essai 
-    index_rond = 0
-    couleurs = ["green", "blue", "pink", "yellow", "red", "orange", "purple", "cyan", "magenta", "brown"][:nb_couleurs]
-    ronds = [[]for _ in range(10)] #liste intermédiaire pr stckage des ronds
-    petits_ronds = [[] for _ in range(10)] #liste pareil pr stockage des petits ronds
-
-    def couleur_code_genere():
-        code_genere = [random.choice(couleurs) for _ in range(nb_couleurs)]
-        print("Les couelurs du code secret sont :", code_genere)
-        return code_genere
-    
-    
 
 
 
