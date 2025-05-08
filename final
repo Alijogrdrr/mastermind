@@ -758,10 +758,31 @@ def ouvrir_fenetre_choix_couleur(fenetre):
     liste_couleurs = tk.Label(fenetre_Duo, text="Code secret : ", bg=couleur_fond, font=("Fixedsys", 23),fg=couleur_ecriture)
     liste_couleurs.pack(pady=10)
 
+####################################################################################################################################
+#############    Extension numéro 1
+####################################################################################################################################
+  
+    def choisir_nombre_couleurs():
+       for widget in fenetre.winfo_children():
+           widget.destroy()
+           fenetre.configure(bg = couleur_fond)
+
+    titre = tk.Label(fenetre, text= "Choisir le nombre de couleurs", bg = couleur_fond, fg = couleur_ecriture, font = ("Segoe print",50))
+    titre.pack(pady=50)
+
+    def lancer_jeu_avec_nb_couleurs_choisi((nb_couleurs)):
+        ouvrir_jeu(fenetre, "mode_solo", nb_couleurs)
+
+choix = tk.Scale(fenetre, from_ = 1, to = 10, orient = "horizontal", length = 400, tickinterval = 1, bg = couleur_fond, fg = couleur_ecriture, font = ("Consolas",20))
+choix.pack(pady = 20)
+
+bouton_valider = tk.Button(fenetre, text = "Valider", command = lambda:lancer_jeu_avec_nb_couleurs_choisi(choix.get()),
+                           font = ("Fixedys", 25), bg = couleur_boutons, fg = couleur_ecriture, width = 15, height = 2,
+                           relief = "groove", bd = 10 )
+bouton_valider.pack(pady = 50)
+
+
+
 
     
-
-
-
-
 fenetre.mainloop()
