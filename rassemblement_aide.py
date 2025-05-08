@@ -493,7 +493,7 @@ def ouvrir_jeu(fenetre,mode_de_jeu,code=None):
                     combi_encore_possible.append(i)
         for i in combi_encore_possible:
             list_max_diff.append(len(set(i)))
-        max_diff = max(list_max_diff) if list_max_diff else 0
+        max_diff = max(list_max_diff)
         for i in combi_encore_possible:
             if len(set(i)) == max_diff:
                 combinaison_aide = i
