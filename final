@@ -765,21 +765,38 @@ def ouvrir_fenetre_choix_couleur(fenetre):
     def choisir_nombre_couleurs():
        for widget in fenetre.winfo_children():
            widget.destroy()
-           fenetre.configure(bg = couleur_fond)
+       fenetre.configure(bg = couleur_fond)
 
-    titre = tk.Label(fenetre, text= "Choisir le nombre de couleurs", bg = couleur_fond, fg = couleur_ecriture, font = ("Segoe print",50))
-    titre.pack(pady=50)
+       titre = tk.Label(fenetre, text= "Choisir le nombre de couleurs", bg = couleur_fond, fg = couleur_ecriture, font = ("Segoe print",50))
+       titre.pack(pady=50)
 
-    def lancer_jeu_avec_nb_couleurs_choisi((nb_couleurs)):
-        ouvrir_jeu(fenetre, "mode_solo", nb_couleurs)
+       def lancer_jeu_avec_nb_couleurs_choisi((nb_couleurs)):
+           ouvrir_jeu(fenetre, "mode_solo", nb_couleurs)
 
-choix = tk.Scale(fenetre, from_ = 1, to = 10, orient = "horizontal", length = 400, tickinterval = 1, bg = couleur_fond, fg = couleur_ecriture, font = ("Consolas",20))
-choix.pack(pady = 20)
+       choix = tk.Scale(fenetre, from_ = 1, to = 10, orient = "horizontal", length = 400, tickinterval = 1, bg = couleur_fond, fg = couleur_ecriture, font = ("Consolas",20))
+       choix.pack(pady = 20)
 
-bouton_valider = tk.Button(fenetre, text = "Valider", command = lambda:lancer_jeu_avec_nb_couleurs_choisi(choix.get()),
+       bouton_valider = tk.Button(fenetre, text = "Valider", command = lambda:lancer_jeu_avec_nb_couleurs_choisi(choix.get()),
                            font = ("Fixedys", 25), bg = couleur_boutons, fg = couleur_ecriture, width = 15, height = 2,
                            relief = "groove", bd = 10 )
-bouton_valider.pack(pady = 50)
+       bouton_valider.pack(pady = 50)
+
+
+    def ouvrir_jeu_extension1(fenetre, mode_de_jeu, nb_couleurs=4):
+        nb_essai=9 #cette variable est modifier a chaque essai 
+        index_rond = 0
+        couleurs = ["green", "blue", "pink", "yellow", "red", "orange", "purple", "cyan", "magenta", "brown"][:nb_couleurs]
+        ronds = [[]for _ in range(10)] #liste intermédiaire pr stckage des ronds
+        petits_ronds = [[] for _ in range(10)] #liste pareil pr stockage des petits ronds
+
+        def couleur_code_genere():
+            code_genere = [random.choice(couleurs) for _ in range(nb_couleurs)]
+            print("Les couelurs du code secret sont :", code_genere)
+            return code_genere
+        
+        
+
+
 
 
 
