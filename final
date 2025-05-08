@@ -580,10 +580,27 @@ def ouvrir_jeu(fenetre,mode_de_jeu,code=None):
     ####################################################
     
     def charger_sauvegarde():
-        nonlocal code_secret, sauvegarde_essai, nb_essai, essai, index_rond
+        nonlocal code_secret, sauvegarde_essai, nb_essai, essai
+        nonlocal index_rond,ronds,petits_ronds
+
         fichier = filedialog.askopenfilename(title="Charger une partie",defaultextension=".json",
                                              filetypes=[("JSON files", "*.json")],)
-        if not fichier:
+        if fichier:
+            for i in range(len(ronds)):
+                for j in range(len(ronds[i])):
+                    canvas.itemconfig(ronds[i][j], fill="white")
+            for i in range(len(petits_ronds)):
+                for j in range(len(petits_ronds[i])):
+                    canvas.itemconfig(petits_ronds[i][j], fill="white")
+
+        fichier = filedialog.askopenfilename(title="Charger une partie",defaultextension=".json",
+                                             filetypes=[("JSON files", "*.json")],)
+        
+        nb_essai = 9
+        essai = []
+        index_rond = 0
+
+        if not fichier :
             return
         with open(fichier, 'r') as f:
             dictionaire = json.load(f)
@@ -591,7 +608,7 @@ def ouvrir_jeu(fenetre,mode_de_jeu,code=None):
         sauvegarde_essai = dictionaire.get("sauvegarde_essai", [])
         
         nb_essai = 9
-        for essai_i in sauvegarde_essai:
+        for essai_i in sauvegarde_essai.copy():
             for couleur in essai_i:
                 colorer_rond(couleur, nb_essai)
             verifie_couleur_solo()
