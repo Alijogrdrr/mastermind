@@ -73,7 +73,8 @@ def page_acceuil():
     bouton_fermeture = tk.Button(fenetre, text="Fermer", command=fermer_fenetre, font=("Fixedsys", 20), bg=couleur_boutons, fg=couleur_ecriture,width=10, height=2, relief="ridge", bd=6)
     bouton_fermeture.pack()
 
-
+    bouton_reglage = = tk.Button(cadre, text="choisir les réglages", command=lambda: ouvrir_fenetre_reglage(fenetre), font=("Fixedsys", 30), bg=couleur_boutons, fg=couleur_ecriture,width=17, height=3, relief="groove", bd=10)
+    bouton_reglage.pack(side="left", padx=50,pady=50)
 
 #appel de la page d'acceuil pour lancer le code
 page_acceuil()
@@ -85,9 +86,9 @@ page_acceuil()
 ###################################################################################################################################
     
 def ouvrir_jeu(fenetre,mode_de_jeu):
-    """
-    Cette fonction sert a l'ouverture et a l'execution de la page du jeu solo
-    """
+
+    #Cette fonction sert a l'ouverture et a l'execution de la page du jeu solo
+    
 
 
     ##################variables global#####################
