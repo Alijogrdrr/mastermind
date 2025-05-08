@@ -6,11 +6,8 @@ import itertools
 
 
 ####TACHES A FAIRE############
-#gerer l'aspect visuel
-#bouton reles du jeu
 #bouton retour pour le jeu
 #fonction sauvegarde
-#bouton retour pour le choix des couleur de code secret en mode duo
 
 
 
@@ -51,30 +48,27 @@ def page_acceuil():
     #Création des boutons dans un cadre
     cadre = tk.Frame(fenetre, bg=couleur_fond)
     cadre.pack(expand=True)
-
-
-    def fermer_fenetre():
-        """
-        Cette foncton permet de fermer la fenetre d'acceuil
-        """
-        fenetre.destroy()
-
-
+    cadre2 = tk.Frame(fenetre, bg=couleur_fond)
+    cadre2.pack(expand=True)
 
     bouton_joueur_solo=tk.Button(cadre,text="Jouer en solo",command=lambda: ouvrir_jeu(fenetre,"mode_solo"),font=("Fixedsys",30),bg=couleur_boutons,fg=couleur_ecriture,width=17, height=3, relief="groove", bd=10)
-    bouton_joueur_solo.pack(side="left",padx=50,pady=50)
+    bouton_joueur_solo.pack(side="left",padx=50)
 
     bouton_joueur_duo = tk.Button(cadre, text="Jouer en duo", command=lambda: ouvrir_fenetre_choix_couleur(fenetre), font=("Fixedsys", 30), bg=couleur_boutons, fg=couleur_ecriture,width=17, height=3, relief="groove", bd=10)
-    bouton_joueur_duo.pack(side="left", padx=50,pady=50)
+    bouton_joueur_duo.pack(side="left", padx=50)
 
-    bouton_regles_jeu = tk.Button(cadre, text="Règles du jeu", font=("Fixedsys", 30), bg=couleur_boutons, fg=couleur_ecriture,width=17, height=3, relief="groove", bd=10)
-    bouton_regles_jeu.pack(side="left", padx=50,pady=50)
+    bouton_IA = tk.Button(cadre, text="Mode IA",  command=lambda:ouvrir_jeu(fenetre,"mode_IA"),font=("Fixedsys", 30), bg=couleur_boutons, fg=couleur_ecriture,width=17, height=3, relief="groove", bd=10)
+    bouton_IA.pack(side="left", padx=50)
 
-    bouton_fermeture = tk.Button(fenetre, text="Fermer", command=fermer_fenetre, font=("Fixedsys", 20), bg=couleur_boutons, fg=couleur_ecriture,width=10, height=2, relief="ridge", bd=6)
+    bouton_regles_jeu = tk.Button(cadre2, text="Règles du jeu",  command=lambda: regle_du_jeu(fenetre,"page_acceuil"),font=("Fixedsys", 18), bg=couleur_boutons, fg=couleur_ecriture,width=17, height=3, relief="groove", bd=10)
+    bouton_regles_jeu.pack(side="left", padx=50)
+
+    bouton_reglage = tk.Button(cadre2, text="Choisir les\nréglages", command=lambda: choisir_nombre_couleurs(fenetre), font=("Fixedsys", 18), bg=couleur_boutons, fg=couleur_ecriture,width=17, height=3, relief="groove", bd=10)
+    bouton_reglage.pack(side="left", padx=50)
+
+    bouton_fermeture = tk.Button(fenetre, text="Fermer", command=fenetre.destroy, font=("Fixedsys", 16), bg=couleur_boutons, fg=couleur_ecriture,width=8, height=2, relief="ridge", bd=5)
     bouton_fermeture.pack()
 
-    bouton_reglage = = tk.Button(cadre, text="choisir les réglages", command=lambda: ouvrir_fenetre_reglage(fenetre), font=("Fixedsys", 30), bg=couleur_boutons, fg=couleur_ecriture,width=17, height=3, relief="groove", bd=10)
-    bouton_reglage.pack(side="left", padx=50,pady=50)
 
 #appel de la page d'acceuil pour lancer le code
 page_acceuil()
@@ -120,21 +114,11 @@ def ouvrir_jeu(fenetre,mode_de_jeu):
             print("Les couleurs a deviner dans cet ordre sont:", code_genere)
             return code_genere
 
-
-
-    if mode_de_jeu=="mode_solo":
-        code_secret=couleur_code_genere()
-        
-        print("je rentre dans fenetre jeu solo")
-    else:#sinon le code secret est directement dans la variable mode de jeu
-        code_secret=mode_de_jeu
-        print("je rentre dans fenetre jeu duo")
-
-
+    
 
 
     #############################################
-    # PARTIE 1 : CREATION DE LA FENETRE + CANVAS
+    # PARTIE : CREATION DE LA FENETRE + CANVAS
     #############################################
 
     for widget in fenetre.winfo_children():
@@ -160,13 +144,13 @@ def ouvrir_jeu(fenetre,mode_de_jeu):
     # je vais creer le canevas droit et gauche
     canvas_droit = tk.Canvas(fenetre, width=1/8*largeur_fenetre, height=hauteur_fenetre,bg="white",highlightbackground="white")
     canvas_droit.place(x=largeur_fenetre-(1.5/8*largeur_fenetre))
-    canvas_gauche=tk.Canvas(fenetre, width=1/8*largeur_fenetre, height=hauteur_fenetre,bg="pink",highlightbackground="white")
+    canvas_gauche=tk.Canvas(fenetre, width=1/8*largeur_fenetre, height=hauteur_fenetre,bg="white",highlightbackground="white")
     canvas_gauche.place(x=(0.3/8*largeur_fenetre))
 
 
 
     ################################################################
-    # PARTIE 2 : CREATION DE LA GRILLE DU JEU DANS LE CANVAS CENTRAL
+    # PARTIE : CREATION DE LA GRILLE DU JEU DANS LE CANVAS CENTRAL
     ################################################################
 
 
@@ -187,7 +171,7 @@ def ouvrir_jeu(fenetre,mode_de_jeu):
 
 
     ##################################################
-    # PARTIE 3 : CREATION DES RONDS DU CANVAS CENTRAL
+    # PARTIE : CREATION DES RONDS DU CANVAS CENTRAL
     ##################################################
 
 
@@ -243,7 +227,7 @@ def ouvrir_jeu(fenetre,mode_de_jeu):
 
 
     #########################################################
-    # PARTIE 4 : GESTION DU CHANGEMENT DE COULEUR DES RONDS
+    # PARTIE : GESTION DU CHANGEMENT DE COULEUR DES RONDS
     #########################################################
 
 
@@ -277,7 +261,7 @@ def ouvrir_jeu(fenetre,mode_de_jeu):
 
 
     ##############################################################
-    # PARTIE 5 : GESTION DE LA VERIFICATION DES COULEUR RENTREES
+    # PARTIE : GESTION DE LA VERIFICATION DES COULEUR RENTREES
     ##############################################################
     
     
@@ -343,19 +327,19 @@ def ouvrir_jeu(fenetre,mode_de_jeu):
         #gestion de la fin de partie (quand c'est gagné)
         if petits_ronds_temp==["#229954","#229954","#229954","#229954"]:
             frame_bouton.pack_forget()
-            bouton_fin_gagne = tk.Button(canvas_gauche, text="Finir la partie", command=fin_de_partie,font=("Consoloas",27),relief="groove",bd=5, width=10, height=2) 
-            fin_du_jeu_gagne = tk.Label(canvas_gauche, text = "Vous avez gagné !", font = ("Consolas", 30),bg = "white", fg = "green")
+            fin_du_jeu_gagne = tk.Label(canvas_gauche, text = "Vous avez gagné !", font = ("Fixedsys", 23),bg = "white", fg = "green")
             fin_du_jeu_gagne.pack(pady=30)
-            bouton_fin_gagne.pack(pady=350,padx=20)
+            bouton_fin_gagne = tk.Button(canvas_gauche, text="Finir la partie", command=fin_de_partie,font=("Consoloas",27),relief="groove",bd=5, width=10, height=2) 
+            bouton_fin_gagne.pack(pady=350,padx=15)
             return None
         
         #gestion de le fin de partie (quand c'est perdu)
         if nb_essai == 0:
             frame_bouton.pack_forget()
-            bouton_fin_perdu = tk.Button(canvas_gauche, text="Retourner au\nmenu principal", command=page_acceuil,font=("Consoloas",25),relief="groove",bd=5, width=12, height=2) 
-            fin_du_jeu_perdu = tk.Label(canvas_gauche, text = "Vous avez perdu...", font = ("Consolas", 30), bg = "white", fg = "red")
+            fin_du_jeu_perdu = tk.Label(canvas_gauche, text = "Vous avez perdu...",font = ("Fixedsys", 23), bg = "white", fg = "red")
             fin_du_jeu_perdu.pack(pady=30)
-            bouton_fin_perdu.pack(pady=350 ,padx=0)
+            bouton_fin_perdu = tk.Button(canvas_gauche, text="Retourner au\nmenu principal", command=page_acceuil,font=("Consoloas",25),relief="groove",bd=5, width=12, height=2) 
+            bouton_fin_perdu.pack(pady=350 ,padx=5)
         nb_essai -= 1
         temp_essai=essai.copy()
         sauvegarde_essai.append(essai)
@@ -420,17 +404,17 @@ def ouvrir_jeu(fenetre,mode_de_jeu):
         bouton_valide_verif.pack_forget()
         if couleurs_utilisees == ["#229954","#229954","#229954","#229954"]:
             print("j'ai gagné")
-            bouton_fin_gagne = tk.Button(canvas_gauche, text = "Finir la partie", command=fin_de_partie,font=("Consoloas",27),relief="groove",bd=5, width=10, height=2) 
-            fin_du_jeu_gagne = tk.Label(canvas_gauche, text = "Vous avez gagné !", font = ("Consolas", 30),bg = "white", fg = "green")
+            fin_du_jeu_gagne = tk.Label(canvas_gauche, text = "Vous avez gagné !",font = ("Fixedsys", 23),bg = "white", fg = "green")
             fin_du_jeu_gagne.pack(pady=30)
-            bouton_fin_gagne.pack(pady=360,padx=20)
+            bouton_fin_gagne = tk.Button(canvas_gauche, text = "Finir la partie", command=fin_de_partie,font=("Consoloas",27),relief="groove",bd=5, width=10, height=2) 
+            bouton_fin_gagne.pack(pady=360,padx=15)
             return None
         if nb_essai==0:
             print("j'ai perdu")
-            bouton_fin_perdu = tk.Button(canvas_gauche, text="Retourner au menu\nprincipal", command=page_acceuil,font=("Consoloas",27),relief="groove",bd=5, width=20, height=2) 
-            fin_du_jeu_perdu = tk.Label(canvas_gauche, text = "Vous avez perdu...", font = ("Consolas", 30), bg = "white", fg = "red")
+            fin_du_jeu_perdu = tk.Label(canvas_gauche, text = "Vous avez perdu...", font = ("Fixedsys", 23),  bg = "white", fg = "red")
             fin_du_jeu_perdu.pack(pady=30)
-            bouton_fin_perdu.pack(pady=360,padx=10)
+            bouton_fin_perdu = tk.Button(canvas_gauche, text="Retourner au menu\nprincipal", command=page_acceuil,font=("Consoloas",27),relief="groove",bd=5, width=20, height=2) 
+            bouton_fin_perdu.pack(pady=360,padx=5)
         frame_bouton.pack(padx=20,pady=670)
         nb_essai -= 1
         index_rond = 0
@@ -442,7 +426,7 @@ def ouvrir_jeu(fenetre,mode_de_jeu):
 
 
     ####################################################
-    # PARTIE 6 : GESTION DE L'AIDE
+    # PARTIE : GESTION DE L'AIDE
     ####################################################
     
     frame_aide = tk.Frame(canvas_gauche,bg= "white")
@@ -486,7 +470,6 @@ def ouvrir_jeu(fenetre,mode_de_jeu):
                 copie_essai = temp_essai.copy()
 
                 for j in range(4):
-                    print(copie_essai)
                     if copie_combinaison[j] == copie_essai[j]:
                         temp_couleur_bien_place += 1
                         copie_combinaison[j] = None
@@ -536,9 +519,10 @@ def ouvrir_jeu(fenetre,mode_de_jeu):
         aide_label = tk.Label(frame_aide, text=f"Remplissez les 4 couleurs :\n{aide_texte}", fg="green", font=("Arial", 15),bg="white")
         aide_label.pack()
         
+
     
     ####################################################
-    # PARTIE 7 : IA
+    # PARTIE : IA
     ####################################################
 
     def IA():
@@ -555,13 +539,13 @@ def ouvrir_jeu(fenetre,mode_de_jeu):
             return
         else:
             IA()
-
+        
+    
 
     ####################################################
-    # PARTIE 8 : Sauvegarde
+    # PARTIE : Sauvegarde
     ####################################################
     def sauvegarder_partie():
-
         
         nonlocal sauvegarde_essai, code_secret
             
@@ -581,7 +565,7 @@ def ouvrir_jeu(fenetre,mode_de_jeu):
             json.dump(sauvegarde, f, indent=4)
 
     ####################################################
-    # PARTIE 8 : Sauvegarde
+    # PARTIE : Charger
     ####################################################
     
     def charger_sauvegarde():
@@ -601,8 +585,11 @@ def ouvrir_jeu(fenetre,mode_de_jeu):
                 colorer_rond(couleur, nb_essai)
             verifie_couleur_solo()
 
+
+    
+
     ####################################################
-    # PARTIE 9 : AJOUT DES BOUTONS DANS LE CANVAS DROIT
+    # PARTIE : AJOUT DES BOUTONS DANS LE CANVAS DROIT
     ####################################################
 
 
@@ -625,11 +612,26 @@ def ouvrir_jeu(fenetre,mode_de_jeu):
     bouton_valider.pack(pady=10)
     bouton_annuler = tk.Button(canvas_droit, text="Annuler", command=lambda c=couleur_fond: colorer_rond(c,nb_essai),font=("Consoloas",27),relief="groove",bd=5, width=7, height=1)  
     bouton_annuler.pack(pady=10)
-    bouton_IA = tk.Button(frame_bouton, text="IA", command=IA, font=("Consoloas",25), relief="groove", bd=5, width=5, height=1)
-    bouton_IA.pack(side="left")
     bouton_aide = tk.Button(frame_bouton, text="Aide", command=aide, font=("Consoloas",25), relief="groove", bd=5, width=5, height=1)
     bouton_aide.pack(side="left",padx=20)
     
+    
+    #############################################
+    # PARTIE : CHOIX DU MODE
+    #############################################
+
+
+    if mode_de_jeu=="mode_solo":
+        code_secret=couleur_code_genere()
+        
+        print("je rentre dans fenetre jeu solo")
+    elif mode_de_jeu=="mode_duo":#sinon le code secret est directement dans la variable mode de jeu
+        code_secret=mode_de_jeu
+        print("je rentre dans fenetre jeu duo")
+    elif mode_de_jeu=="mode_IA":
+        code_secret=couleur_code_genere()
+        IA()
+
 
     
 
@@ -646,13 +648,6 @@ def fin_de_partie():
         widget.destroy()  
     
     fenetre.configure(bg=couleur_fond)
-
-    def fermer_fenetre():
-        """
-        Cette foncton permet de fermer la fenetre d'acceuil
-        """
-        fenetre.destroy()
-
     
 
     titre_page= tk.Label(fenetre, text="Fin de partie", font=("Segoe print", 70), fg=couleur_ecriture, bg=couleur_fond)
@@ -663,18 +658,12 @@ def fin_de_partie():
     cadre.pack(expand=True)
 
     bouton_rejouer=tk.Button(cadre,text="Rejouer",command=lambda: page_acceuil(),font=("Fixedsys",25),bg=couleur_boutons,fg=couleur_ecriture,width=15, height=3, relief="groove", bd=10)
-    bouton_rejouer.pack(side="left",padx=40,pady=50)
+    bouton_rejouer.pack(side="left",padx=60,pady=50)
 
-    bouton_charger = tk.Button(cadre, text="Charger une\nancienne partie", font=("Fixedsys", 25), bg=couleur_boutons, fg=couleur_ecriture,width=15, height=3, relief="groove", bd=10)
-    bouton_charger.pack(side="left", padx=40,pady=50)
+    bouton_regles_jeu = tk.Button(cadre, text="Règles du jeu", command=lambda: regle_du_jeu(fenetre,"page_fin"), font=("Fixedsys", 25), bg=couleur_boutons, fg=couleur_ecriture,width=15, height=3, relief="groove", bd=10)
+    bouton_regles_jeu.pack(side="left", padx=60,pady=50)
 
-    bouton_regles_jeu = tk.Button(cadre, text="Règles du jeu", font=("Fixedsys", 25), bg=couleur_boutons, fg=couleur_ecriture,width=15, height=3, relief="groove", bd=10)
-    bouton_regles_jeu.pack(side="left", padx=40,pady=50)
-
-    bouton_score = tk.Button(cadre, text="Voir votre\nscore", font=("Fixedsys", 25), bg=couleur_boutons, fg=couleur_ecriture,width=15, height=3, relief="groove", bd=10)
-    bouton_score.pack(side="left", padx=40,pady=50)
-
-    bouton_fermeture = tk.Button(fenetre, text="Fermer", command=fermer_fenetre, font=("Fixedsys", 20), bg=couleur_boutons, fg=couleur_ecriture,width=10, height=2, relief="ridge", bd=6)
+    bouton_fermeture = tk.Button(fenetre, text="Fermer", command=fenetre.destroy, font=("Fixedsys", 20), bg=couleur_boutons, fg=couleur_ecriture,width=10, height=2, relief="ridge", bd=6)
     bouton_fermeture.pack()
     
 
@@ -739,63 +728,118 @@ def ouvrir_fenetre_choix_couleur(fenetre):
                 bouton_ajouter.config(state="normal")
                 bouton_lancer.config(state="disabled")  # Désactive le bouton "Lancer" jusqu'à ce que 4 couleurs soient ajoutées
 
-
+    
     label = tk.Label(fenetre_Duo, text="Le joueur doit choisir 4 couleurs\nqui formeront le code secret:", bg=couleur_fond,fg=couleur_ecriture, font=("Fixedsys", 30))
     label.pack(pady=10)
 
     combo = ttk.Combobox(fenetre_Duo, values=couleurs_disponibles, state="readonly",justify="center",font=("Consolas", 20),width=16)
     combo.pack(pady=5)
 
-    bouton_ajouter = tk.Button(fenetre_Duo, text="Ajouter", command=lambda: ajouter_couleur(code_secret), font=("Fixedsys", 20), bg=couleur_boutons,fg=couleur_ecriture,relief="groove",bd=5)
-    bouton_ajouter.pack(pady=10)
+    cadre3= tk.Frame(fenetre_Duo, bg=couleur_fond)
+    cadre3.pack(expand=True)
 
-    bouton_annuler = tk.Button(fenetre_Duo, text="Annuler", command=lambda: annuler_couleur(code_secret), font=("Fixedsys", 20), bg=couleur_boutons, fg=couleur_ecriture, relief="groove", bd=5)
-    bouton_annuler.pack(pady=10)
+    bouton_ajouter = tk.Button(cadre3, text="Ajouter", command=lambda: ajouter_couleur(code_secret), font=("Fixedsys", 20), bg=couleur_boutons,fg=couleur_ecriture,relief="groove",bd=5)
+    bouton_ajouter.pack(side="left",pady=25,padx=10)
+
+    bouton_annuler = tk.Button(cadre3, text="Annuler", command=lambda: annuler_couleur(code_secret), font=("Fixedsys", 20), bg=couleur_boutons, fg=couleur_ecriture, relief="groove", bd=5)
+    bouton_annuler.pack(side="left",pady=25,padx=10)
 
     # Bouton pour lancer le jeu (désactivé au départ)
     bouton_lancer = tk.Button(fenetre_Duo, text="Lancer le jeu", font=("Fixedsys", 20), bg=couleur_boutons, state="disabled", command=lambda: lancer_jeu(code_secret),fg=couleur_ecriture,relief="groove",bd=5)
-    bouton_lancer.pack(pady=20)
+    bouton_lancer.pack(pady=30)
 
     liste_couleurs = tk.Label(fenetre_Duo, text="Code secret : ", bg=couleur_fond, font=("Fixedsys", 23),fg=couleur_ecriture)
-    liste_couleurs.pack(pady=10)
+    liste_couleurs.pack()
+
+
+
+
+####################################################################################################################################
+#############    FENETRE REGLE DU JEU
+####################################################################################################################################
+  
+
+def regle_du_jeu(fenetre,page):
+
+
+    for widget in fenetre.winfo_children():
+        widget.destroy()  
+    
+    fenetre.configure(bg=couleur_fond)
+
+    titre_règle = tk.Label(fenetre, text="Les règles du jeu", font=("Segoe print", 70), fg=couleur_ecriture, bg=couleur_fond)
+    titre_règle.pack()
+
+    regle_mastermind = """But du jeu :
+    \nLe but est de découvrir la combinaison de couleurs cachée par l’adversaire. 
+    \nPour cela, il faut faire plusieurs essais pour choisir au fur et à mesure les bonnes couleurs et trouver leur place. 
+    \nMon adversaire me donne des indices pour savoir si je mets les bonnes couleurs et si elles sont à la bonne place.
+    \n
+    \nDéroulement du jeu : 
+    \nLa combinaison cachée Le joueur 1 réalise une combinaison de trois pions de couleurs (ou quatre pour les plus grands) 
+    \net la cache devant lui. Le joueur 2 propose une combinaison sur la ligne 1. 
+    \nLe joueur 1 trace au crayon une croix pour chaque pion bien placé et un rond pour chaque pion qui existe dans la combinaison mais qui n’est pas à la bonne place. 
+    \nLe joueur 2 regarde bien les indices et propose une nouvelle combinaison sur la ligne 2 etc.
+    \n
+    \nFin du jeu : 
+    \nLe jeu s’arrête quand le joueur 2 a trouvé la combinaison et dans ce cas il gagne. 
+    \nS’il n’a toujours pas trouvé lorsqu’il arrive à la ligne 12, c’est le joueur 1 qui gagne.
+    """
+    
+
+    text= tk.Label(fenetre, text=regle_mastermind, height = 30, width = 200,font=("Fixedsys", 12))
+    text.pack()
+    #bouton
+    if page=="page_fin":
+        quiter_règle = tk.Button(fenetre, text="Quitter", command=fin_de_partie, font=("Fixedsys", 20), bg=couleur_boutons, fg=couleur_ecriture,width=10, height=2, relief="ridge", bd=6)
+    elif page=="page_acceuil":
+        quiter_règle = tk.Button(fenetre, text="Quitter", command=page_acceuil, font=("Fixedsys", 20), bg=couleur_boutons, fg=couleur_ecriture,width=10, height=2, relief="ridge", bd=6)
+    quiter_règle.pack(side="bottom")
+    
+
+
+
+
 
 ####################################################################################################################################
 #############    Extension numéro 1
 ####################################################################################################################################
-  
-    def choisir_nombre_couleurs():
-       for widget in fenetre.winfo_children():
-           widget.destroy()
-       fenetre.configure(bg = couleur_fond)
-
-       titre = tk.Label(fenetre, text= "Choisir le nombre de couleurs", bg = couleur_fond, fg = couleur_ecriture, font = ("Segoe print",50))
-       titre.pack(pady=50)
-
-       def lancer_jeu_avec_nb_couleurs_choisi((nb_couleurs)):
-           ouvrir_jeu(fenetre, "mode_solo", nb_couleurs)
-
-       choix = tk.Scale(fenetre, from_ = 1, to = 10, orient = "horizontal", length = 400, tickinterval = 1, bg = couleur_fond, fg = couleur_ecriture, font = ("Consolas",20))
-       choix.pack(pady = 20)
-
-       bouton_valider = tk.Button(fenetre, text = "Valider", command = lambda:lancer_jeu_avec_nb_couleurs_choisi(choix.get()),
-                           font = ("Fixedys", 25), bg = couleur_boutons, fg = couleur_ecriture, width = 15, height = 2,
-                           relief = "groove", bd = 10 )
-       bouton_valider.pack(pady = 50)
 
 
-    def ouvrir_jeu_extension1(fenetre, mode_de_jeu, nb_couleurs=4):
-        nb_essai=9 #cette variable est modifier a chaque essai 
-        index_rond = 0
-        couleurs = ["green", "blue", "pink", "yellow", "red", "orange", "purple", "cyan", "magenta", "brown"][:nb_couleurs]
-        ronds = [[]for _ in range(10)] #liste intermédiaire pr stckage des ronds
-        petits_ronds = [[] for _ in range(10)] #liste pareil pr stockage des petits ronds
 
-        def couleur_code_genere():
-            code_genere = [random.choice(couleurs) for _ in range(nb_couleurs)]
-            print("Les couelurs du code secret sont :", code_genere)
-            return code_genere
-        
-        
+def choisir_nombre_couleurs(fenetre):
+    for widget in fenetre.winfo_children():
+        widget.destroy()
+    fenetre.configure(bg = couleur_fond)
+
+    titre = tk.Label(fenetre, text= "Choisir le nombre de couleurs", bg = couleur_fond, fg = couleur_ecriture, font = ("Segoe print",50))
+    titre.pack(pady=50)
+
+    def lancer_jeu_avec_nb_couleurs_choisi(nb_couleurs):
+        ouvrir_jeu(fenetre, "mode_solo", nb_couleurs)
+
+    choix = tk.Scale(fenetre, from_ = 1, to = 10, orient = "horizontal", length = 400, tickinterval = 1, bg = couleur_fond, fg = couleur_ecriture, font = ("Consolas",20))
+    choix.pack(pady = 20)
+
+    bouton_valider = tk.Button(fenetre, text = "Valider", command = lambda:lancer_jeu_avec_nb_couleurs_choisi(choix.get()),
+                        font = ("Fixedys", 25), bg = couleur_boutons, fg = couleur_ecriture, width = 15, height = 2,
+                        relief = "groove", bd = 10 )
+    bouton_valider.pack(pady = 50)
+
+
+def ouvrir_jeu_extension1(fenetre, mode_de_jeu, nb_couleurs=4):
+    nb_essai=9 #cette variable est modifier a chaque essai 
+    index_rond = 0
+    couleurs = ["green", "blue", "pink", "yellow", "red", "orange", "purple", "cyan", "magenta", "brown"][:nb_couleurs]
+    ronds = [[]for _ in range(10)] #liste intermédiaire pr stckage des ronds
+    petits_ronds = [[] for _ in range(10)] #liste pareil pr stockage des petits ronds
+
+    def couleur_code_genere():
+        code_genere = [random.choice(couleurs) for _ in range(nb_couleurs)]
+        print("Les couelurs du code secret sont :", code_genere)
+        return code_genere
+    
+    
 
 
 
