@@ -2,7 +2,8 @@ import tkinter as tk
 import random
 from tkinter import ttk
 import itertools
-
+import json
+from tkinter import filedialog
 
 
 ####TACHES A FAIRE############
@@ -89,7 +90,7 @@ def page_acceuil():
     bouton_reglage = tk.Button(cadre2, text="Choisir les\nréglages", command=lambda: choisir_nombre_couleurs("mode_solo"), font=("Fixedsys", 18), bg=couleur_boutons, fg=couleur_ecriture,width=17, height=3, relief="groove", bd=10)
     bouton_reglage.pack(side="left", padx=50)
 
-    bouton_fermeture = tk.Button(fenetre, text="Fermer", command=fenetre.destroy, font=("Fixedsys", 16), bg=couleur_boutons, fg=couleur_ecriture,width=8, height=2, relief="ridge", bd=5)
+    bouton_fermeture = tk.Button(fenetre, text="Fermer", command=fenetre.destroy, font=("Fixedsys", 18), bg=couleur_boutons, fg=couleur_ecriture,width=9, height=1, relief="ridge", bd=5)
     bouton_fermeture.pack()
 
 
@@ -102,7 +103,7 @@ page_acceuil()
 #############    FENETRE JEU SOLO
 ###################################################################################################################################
     
-def ouvrir_jeu(fenetre,mode_de_jeu,nb_couleurs=4):
+def ouvrir_jeu(fenetre,mode_de_jeu,nb_couleurs=4,code=None):
 
     #Cette fonction sert a l'ouverture et a l'execution de la page du jeu solo
     
@@ -308,7 +309,7 @@ def ouvrir_jeu(fenetre,mode_de_jeu,nb_couleurs=4):
         Cette fonction permet de verifier apres l'appui du bouton valider, si les couleurs existent/sont à la bonne place/sont présentes
         et modifie la couleur des petits ronds.
         """
-        nonlocal nb_essai, code_secret, essai, index_rond, petits_ronds, erreur_label1, temp_essai,aide_label,frame_bouton,couleur_mauvaise_posi,couleur_bien_place,sauvegarde_essai
+        nonlocal nb_essai, code_secret, essai, index_rond, petits_ronds, erreur_label1, temp_essai,aide_label,frame_bouton,frame_bouton2,couleur_mauvaise_posi,couleur_bien_place,sauvegarde_essai
         aide_label.destroy()
         
         # Si la ligne est pas complétée
@@ -357,6 +358,7 @@ def ouvrir_jeu(fenetre,mode_de_jeu,nb_couleurs=4):
         #gestion de la fin de partie (quand c'est gagné)
         if petits_ronds_temp==["#229954"]*nb_couleurs:
             frame_bouton.pack_forget()
+            frame_bouton2.pack_forget()
             fin_du_jeu_gagne = tk.Label(canvas_gauche, text = "Vous avez gagné !", font = ("Fixedsys", 23),bg = "white", fg = "green")
             fin_du_jeu_gagne.pack(pady=30)
             bouton_fin_gagne = tk.Button(canvas_gauche, text="Finir la partie", command=fin_de_partie,font=("Consoloas",27),relief="groove",bd=5, width=10, height=2) 
@@ -366,6 +368,7 @@ def ouvrir_jeu(fenetre,mode_de_jeu,nb_couleurs=4):
         #gestion de le fin de partie (quand c'est perdu)
         if nb_essai == 0:
             frame_bouton.pack_forget()
+            frame_bouton2.pack_forget()
             fin_du_jeu_perdu = tk.Label(canvas_gauche, text = "Vous avez perdu...",font = ("Fixedsys", 23), bg = "white", fg = "red")
             fin_du_jeu_perdu.pack(pady=30)
             bouton_fin_perdu = tk.Button(canvas_gauche, text="Retourner au\nmenu principal", command=page_acceuil,font=("Consoloas",25),relief="groove",bd=5, width=12, height=2) 
@@ -397,9 +400,10 @@ def ouvrir_jeu(fenetre,mode_de_jeu,nb_couleurs=4):
         """
         Fonction pour que le joueur 1 valide son essai
         """
-        nonlocal verification_en_cours, erreur_label1,canvas_gauche,frame_bouton,aide_label
+        nonlocal verification_en_cours, erreur_label1,canvas_gauche,frame_bouton,frame_bouton2,aide_label
         aide_label.destroy()
         frame_bouton.pack_forget()
+        frame_bouton2.pack_forget()
         if len(essai) != 4:
             erreur_label1.pack(pady=360)
             return
@@ -419,7 +423,7 @@ def ouvrir_jeu(fenetre,mode_de_jeu,nb_couleurs=4):
         """
         Fonction pour que le joueur 2 valide les couleurs
         """
-        nonlocal nb_essai, index_rond, essai, verification_en_cours, erreur_label2 ,canvas_gauche,sauvegarde_essai,frame_bouton
+        nonlocal nb_essai, index_rond, essai, verification_en_cours, erreur_label2 ,canvas_gauche,sauvegarde_essai,frame_bouton,frame_bouton2
         couleurs_utilisees = [canvas.itemcget(r, "fill") for r in petits_ronds[nb_essai]]
 
         if not all(c in couleurs_verif for c in couleurs_utilisees[:nb_couleurs]):
@@ -445,7 +449,9 @@ def ouvrir_jeu(fenetre,mode_de_jeu,nb_couleurs=4):
             fin_du_jeu_perdu.pack(pady=30)
             bouton_fin_perdu = tk.Button(canvas_gauche, text="Retourner au menu\nprincipal", command=page_acceuil,font=("Consoloas",27),relief="groove",bd=5, width=20, height=2) 
             bouton_fin_perdu.pack(pady=360,padx=5)
-        frame_bouton.pack(padx=20,pady=670)
+        frame_bouton.place(x=20, rely=0.99, anchor="sw")
+        frame_bouton2.pack(pady=600)
+
         nb_essai -= 1
         index_rond = 0
         sauvegarde_essai.append(essai)
@@ -461,9 +467,11 @@ def ouvrir_jeu(fenetre,mode_de_jeu,nb_couleurs=4):
     
     frame_aide = tk.Frame(canvas_gauche,bg= "white")
     frame_aide.pack()
-    frame_bouton = tk.Frame(canvas_gauche,bg= "white")
-    frame_bouton.pack(padx=20,pady=670)
-    aide_label = tk.Label(frame_aide, text="Remplissez les 4 couleurs :\nVert,Bleu,Rose,Jaune.", fg="white", font=("Arial", 15),bg="white")
+    frame_bouton = tk.Frame(fenetre,bg= "white")
+    frame_bouton.place(x=20, rely=0.99, anchor="sw")
+    frame_bouton2 = tk.Frame(canvas_gauche,bg= "white")
+    frame_bouton2.pack(pady=600)
+    aide_label = tk.Label(frame_aide, text="Remplissez les 4 couleurs :\ngreen, blue, pink, yellow", fg="white", font=("Arial", 15),bg="white")
     aide_label.pack()
 
     def aide():
@@ -539,7 +547,10 @@ def ouvrir_jeu(fenetre,mode_de_jeu,nb_couleurs=4):
             
         for i in combi_encore_possible:
             list_max_diff.append(len(set(i)))
-        max_diff = max(list_max_diff)
+        if list_max_diff:
+                max_diff = max(list_max_diff)
+        else:
+                max_diff = 0  
         for i in combi_encore_possible:
             if len(set(i)) == max_diff:
                 combinaison_aide = i
@@ -599,10 +610,25 @@ def ouvrir_jeu(fenetre,mode_de_jeu,nb_couleurs=4):
     ####################################################
     
     def charger_sauvegarde():
-        nonlocal code_secret, sauvegarde_essai, nb_essai, essai, index_rond
+        nonlocal code_secret, sauvegarde_essai, nb_essai, essai
+        nonlocal index_rond,ronds,petits_ronds
+
         fichier = filedialog.askopenfilename(title="Charger une partie",defaultextension=".json",
                                              filetypes=[("JSON files", "*.json")],)
-        if not fichier:
+        if fichier:
+            for i in range(len(ronds)):
+                for j in range(len(ronds[i])):
+                    canvas.itemconfig(ronds[i][j], fill="white")
+            for i in range(len(petits_ronds)):
+                for j in range(len(petits_ronds[i])):
+                    canvas.itemconfig(petits_ronds[i][j], fill="white")
+
+        
+        nb_essai = 9
+        essai = []
+        index_rond = 0
+
+        if not fichier :
             return
         with open(fichier, 'r') as f:
             dictionaire = json.load(f)
@@ -610,12 +636,10 @@ def ouvrir_jeu(fenetre,mode_de_jeu,nb_couleurs=4):
         sauvegarde_essai = dictionaire.get("sauvegarde_essai", [])
         
         nb_essai = 9
-        for essai_i in sauvegarde_essai:
+        for essai_i in sauvegarde_essai.copy():
             for couleur in essai_i:
                 colorer_rond(couleur, nb_essai)
             verifie_couleur_solo()
-
-
     
 
     ####################################################
@@ -630,23 +654,36 @@ def ouvrir_jeu(fenetre,mode_de_jeu,nb_couleurs=4):
     
     if mode_de_jeu=="mode_solo":
         bouton_valider = tk.Button(canvas_droit, text="Valider", command=verifie_couleur_solo,font=("Consoloas",27),relief="groove",bd=5, width=7, height=1)  
-    else:
+        bouton_sauvegarder = tk.Button(frame_bouton, text="Sauvegarder", command=sauvegarder_partie, font=("Consoloas",20), relief="groove", bd=5, width=10, height=1)
+        bouton_sauvegarder.pack(side="left")
+        bouton_charger= tk.Button(frame_bouton, text="Charger", command=charger_sauvegarde, font=("Consoloas",20), relief="groove", bd=5, width=7, height=1)
+        bouton_charger.pack(padx=30)
+        bouton_aide = tk.Button(frame_bouton2, text="Aide", command=aide, font=("Consoloas",20), relief="groove", bd=5, width=5, height=1)
+        bouton_aide.pack(padx=10,pady=20)
+    elif mode_de_jeu=="mode_duo":
         bouton_valider = tk.Button(canvas_droit, text="Valider", command=valider_essai_joueur1,font=("Consoloas",27),relief="groove",bd=5, width=7, height=1) 
         bouton_vert = tk.Button(canvas_gauche, text="Est à la bonne\nplace", bg="#229954", command=lambda c="#229954": choisir_couleur_verif(c), font=("Consoloas", 25),relief="groove",bd=5, width=12, height=2)
         bouton_orange = tk.Button(canvas_gauche, text="Est mal placé", bg="#ffa600", command=lambda c="#ffa600": choisir_couleur_verif(c), font=("Consoloas", 25),relief="groove",bd=5, width=12, height=2)
         bouton_rouge = tk.Button(canvas_gauche, text="N'existe pas", bg="#A93226", command=lambda c="#A93226": choisir_couleur_verif(c), font=("Consoloas", 25),relief="groove",bd=5, width=12, height=2)
         bouton_valide_verif=tk.Button(canvas_gauche, text="Valider \n la verification", command=valider_verification_joueur2, font=("Consoloas", 25), relief="groove",bd=5, width=12, height=2)
         bouton_annuler_verif = tk.Button(canvas_gauche, text="Annuler", command=lambda c="white": choisir_couleur_verif(c),font=("Consoloas",25),relief="groove",bd=5, width=12, height=2)  
-        
+        bouton_sauvegarder = tk.Button(frame_bouton, text="Sauvegarder", command=sauvegarder_partie, font=("Consoloas",20), relief="groove", bd=5, width=10, height=1)
+        bouton_sauvegarder.pack(side="left")
+        bouton_charger= tk.Button(frame_bouton, text="Charger", command=charger_sauvegarde, font=("Consoloas",20), relief="groove", bd=5, width=7, height=1)
+        bouton_charger.pack(padx=30)
+    elif mode_de_jeu=="mode_IA":
+        bouton_valider = tk.Button(canvas_droit, text="Valider",font=("Consoloas",27),relief="groove",bd=5, width=7, height=1) 
+
+
     frame_actions = tk.Frame(canvas_droit, bg="white")
     frame_actions.pack(side="bottom", pady=20)
     bouton_valider = tk.Button(frame_actions, text="Valider", command=verifie_couleur_solo, font=("Consolas", 20), bg=couleur_boutons, fg=couleur_ecriture, relief="groove", bd=5, width=10)
     bouton_valider.pack(side ="left",padx=0)
     bouton_annuler = tk.Button(frame_actions, text="Annuler", command=lambda c=couleur_fond: colorer_rond(c,nb_essai),font=("Consolas",20),relief="groove",bd=5, width=7, height=1)  
     bouton_annuler.pack(side="left",padx=5)
-    bouton_aide = tk.Button(frame_bouton, text="Aide", command=aide, font=("Consoloas",25), relief="groove", bd=5, width=5, height=1)
-    bouton_aide.pack(side="left",padx=20)
-    
+    bouton_menu=tk.Button(fenetre, text="Menu", command=lambda: page_acceuil(),font=("Consoloas",15),relief="groove",bd=4, width=5, height=1) 
+    bouton_menu.place(relx=0.99, rely=0.99, anchor="se")
+
     
     #############################################
     # PARTIE : CHOIX DU MODE
@@ -658,7 +695,7 @@ def ouvrir_jeu(fenetre,mode_de_jeu,nb_couleurs=4):
         
         print("je rentre dans fenetre jeu solo")
     elif mode_de_jeu=="mode_duo":#sinon le code secret est directement dans la variable mode de jeu
-        code_secret=mode_de_jeu
+        code_secret=code
         print("je rentre dans fenetre jeu duo")
     elif mode_de_jeu=="mode_IA":
         code_secret=couleur_code_genere()
@@ -730,7 +767,7 @@ def ouvrir_fenetre_choix_couleur(fenetre,nb_couleurs = 4):
         """
         print("Le jeu commence avec le code :", code_secret)
         fenetre_Duo.destroy()
-        ouvrir_jeu(fenetre,code_secret,nb_couleurs)
+        ouvrir_jeu(fenetre,"mode_duo",code_secret,nb_couleurs)
 
     def ajouter_couleur(code_secret):
         """
