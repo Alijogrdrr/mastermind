@@ -593,8 +593,6 @@ def ouvrir_jeu(fenetre,mode_de_jeu,code=None):
                 for j in range(len(petits_ronds[i])):
                     canvas.itemconfig(petits_ronds[i][j], fill="white")
 
-        fichier = filedialog.askopenfilename(title="Charger une partie",defaultextension=".json",
-                                             filetypes=[("JSON files", "*.json")],)
         
         nb_essai = 9
         essai = []
