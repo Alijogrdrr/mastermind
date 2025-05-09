@@ -85,7 +85,7 @@ def ouvrir_jeu(fenetre,mode_de_jeu,code=None):
 
     #Cette fonction sert a l'ouverture et a l'execution de la page du jeu solo
     
-
+    code_secret=[]
 
     ##################variables global#####################
     nb_essai=9 #cette variable est modifier a chaque essai 
@@ -347,6 +347,7 @@ def ouvrir_jeu(fenetre,mode_de_jeu,code=None):
         nb_essai -= 1
         temp_essai=essai.copy()
         sauvegarde_essai.append(essai)
+        principale_aide()
         essai = []
         index_rond = 0
 
@@ -453,7 +454,7 @@ def ouvrir_jeu(fenetre,mode_de_jeu,code=None):
         list_max_diff = []
         if nb_essai == 9:
             combinaison_optimal = ["green", "blue", "pink", "yellow"]
-            return 
+            return combinaison_aide
         if nb_essai == 8:
             combi_encore_possible.clear()
             for i in combinaison:
@@ -493,13 +494,16 @@ def ouvrir_jeu(fenetre,mode_de_jeu,code=None):
                     combi_encore_possible.append(i)
         for i in combi_encore_possible:
             list_max_diff.append(len(set(i)))
-        max_diff = max(list_max_diff)
+        if list_max_diff:
+            max_diff = max(list_max_diff)
+        else:
+            max_diff = 0
         for i in combi_encore_possible:
             if len(set(i)) == max_diff:
                 combinaison_aide = i
                 break
         combinaison_optimal = combinaison_aide.copy()
-        return 
+        return combinaison_aide
 
 
     def affiche_aide():
@@ -619,7 +623,7 @@ def ouvrir_jeu(fenetre,mode_de_jeu,code=None):
         bouton_sauvegarder.pack(side="left")
         bouton_charger= tk.Button(frame_bouton, text="Charger", command=charger_sauvegarde, font=("Consoloas",20), relief="groove", bd=5, width=7, height=1)
         bouton_charger.pack(padx=30)
-        bouton_aide = tk.Button(frame_bouton2, text="Aide", command=aide, font=("Consoloas",20), relief="groove", bd=5, width=5, height=1)
+        bouton_aide = tk.Button(frame_bouton2, text="Aide", command=affiche_aide, font=("Consoloas",20), relief="groove", bd=5, width=5, height=1)
         bouton_aide.pack(padx=10,pady=20)
     elif mode_de_jeu=="mode_duo":
         bouton_valider = tk.Button(canvas_droit, text="Valider", command=valider_essai_joueur1,font=("Consoloas",27),relief="groove",bd=5, width=7, height=1) 
