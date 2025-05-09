@@ -5,6 +5,15 @@ import itertools
 import json
 from tkinter import filedialog
 
+
+
+####TACHES A FAIRE############
+#bouton retour pour le jeu
+#fonction sauvegarde
+
+
+
+
 couleur_fond = "#C9DFE5"#"#900C3F"
 couleur_boutons = "white"
 couleur_ecriture="#283747"#"#000000"
@@ -16,6 +25,8 @@ fenetre.state("zoomed")  # Ouvre en plein écran
 fenetre.title("Mastermind")
 
 fenetre.configure(bg=couleur_fond)
+
+
 
 #####################################################################################################################
 ################### LA PAGE D'ACCUEIL
@@ -60,8 +71,11 @@ def page_acceuil():
     bouton_fermeture = tk.Button(fenetre, text="Fermer", command=fenetre.destroy, font=("Fixedsys", 18), bg=couleur_boutons, fg=couleur_ecriture,width=9, height=1, relief="ridge", bd=5)
     bouton_fermeture.pack()
 
+
 #appel de la page d'acceuil pour lancer le code
 page_acceuil()
+
+
 
 ####################################################################################################################################
 #############    FENETRE JEU SOLO
@@ -71,7 +85,7 @@ def ouvrir_jeu(fenetre,mode_de_jeu,code=None):
 
     #Cette fonction sert a l'ouverture et a l'execution de la page du jeu solo
     
-    code_secret=[]
+
 
     ##################variables global#####################
     nb_essai=9 #cette variable est modifier a chaque essai 
@@ -101,6 +115,9 @@ def ouvrir_jeu(fenetre,mode_de_jeu,code=None):
                 code_genere.append(random.choice(couleurs))
             print("Les couleurs a deviner dans cet ordre sont:", code_genere)
             return code_genere
+
+    
+
 
     #############################################
     # PARTIE : CREATION DE LA FENETRE + CANVAS
@@ -178,9 +195,14 @@ def ouvrir_jeu(fenetre,mode_de_jeu,code=None):
     for elem in ronds:#sert a renverser la liste
         liste_ronds.insert(0,elem)
 
+
+
+
+
     #coordonnées pour les petit cercles de verification
     petit_cercle_y1=1/12*hauteur_canvas+3                             #une ligne du canvas 
     petit_cercle_y2=1/12*hauteur_canvas+1/2*(1/12*hauteur_canvas)-3   #une ligne du canvas + une demi-ligne
+
 
     #position des cercles de verification pour chaque ligne
     for i in range(10):
@@ -203,10 +225,15 @@ def ouvrir_jeu(fenetre,mode_de_jeu,code=None):
             petit_cercle_x2+=1/2*(1/5*largeur_canvas)
         petit_cercle_y1+=1/2*(1/12*hauteur_canvas)
         petit_cercle_y2+=1/2*(1/12*hauteur_canvas)
+  
+
 
     #########################################################
     # PARTIE : GESTION DU CHANGEMENT DE COULEUR DES RONDS
     #########################################################
+
+
+
 
     def colorer_rond(couleur,nb_essai):
         """
@@ -231,13 +258,21 @@ def ouvrir_jeu(fenetre,mode_de_jeu,code=None):
                 canvas.itemconfig(ronds[nb_essai][index_rond], fill=couleur) #changement de la couleur du rond
                 index_rond += 1
         
+
+
+
+
     ##############################################################
     # PARTIE : GESTION DE LA VERIFICATION DES COULEUR RENTREES
     ##############################################################
     
+    
+    
     erreur_label1 = tk.Label(canvas_gauche, text="Remplissez 4 couleurs\navant de valider.", fg="red",bg="white", font=("Consolas",18))
     erreur_label2 = tk.Label(canvas_gauche, text="Tous les petits ronds doivent\nêtre colorés par le joueur 2.",bg="white", fg="red", font=("Consolas",15))
-    
+            
+
+
     #######################  VERIFICATION POUR LE JEU SOLO
 
     def verifie_couleur_solo():
@@ -257,6 +292,8 @@ def ouvrir_jeu(fenetre,mode_de_jeu,code=None):
         couleur_bien_place=0
         couleur_mauvaise_posi=0
         
+
+
         # Copie temporaire code secret pour suivre couleurs déjà vérifiées, éviter les doublons
         code_secret_temp = code_secret[:]
         petits_ronds_temp = []
@@ -310,9 +347,9 @@ def ouvrir_jeu(fenetre,mode_de_jeu,code=None):
         nb_essai -= 1
         temp_essai=essai.copy()
         sauvegarde_essai.append(essai)
-        principale_aide()
         essai = []
         index_rond = 0
+
 
     #######################  VERIFICATION POUR LE JEU DUO 
 
@@ -352,6 +389,7 @@ def ouvrir_jeu(fenetre,mode_de_jeu,code=None):
         print("Joueur 1 a validé son essai :", essai)
         print("Joueur 2, choisis les couleurs de vérification.")
 
+    
     def valider_verification_joueur2():
         """
         Fonction pour que le joueur 2 valide les couleurs
@@ -387,9 +425,11 @@ def ouvrir_jeu(fenetre,mode_de_jeu,code=None):
         nb_essai -= 1
         index_rond = 0
         sauvegarde_essai.append(essai)
-        sauvegarder_partie()
         essai = []
         verification_en_cours = False
+
+
+
 
     ####################################################
     # PARTIE : GESTION DE L'AIDE
@@ -404,14 +444,31 @@ def ouvrir_jeu(fenetre,mode_de_jeu,code=None):
     aide_label = tk.Label(frame_aide, text="Remplissez les 4 couleurs :\ngreen, blue, pink, yellow", fg="white", font=("Arial", 15),bg="white")
     aide_label.pack()
 
-    def principale_aide():
+    def aide():
+        """
+        Cette fonction sert a la gestion de l'aide pour le joueur
+        """
+
         nonlocal temp_essai, couleur_bien_place, couleur_mauvaise_posi
-        nonlocal nb_essai, combi_encore_possible, couleurs, combinaison_optimal
+        nonlocal nb_essai, combi_encore_possible, aide_label
+        nonlocal couleurs,combinaison_optimal
+        
         combinaison = [list(c) for c in itertools.product(couleurs, repeat=4)]
         list_max_diff = []
+        max_diff = 0
+
+        if aide_label is not None:
+            aide_label.destroy()
+
+            
         if nb_essai == 9:
-            combinaison_optimal = ["green", "blue", "pink", "yellow"]
-            return combinaison_aide
+            aide_label = tk.Label(frame_aide, text="Remplissez les 4 couleurs :\nVert,Bleu,Rose,Jaune.", fg="green", font=("Arial", 15),bg="white")
+            aide_label.pack()
+            combinaison_optimal=["green", "blue", "pink", "yellow"]
+            return
+
+        index_combinaison_actuelle = 0
+
         if nb_essai == 8:
             combi_encore_possible.clear()
             for i in combinaison:
@@ -419,17 +476,21 @@ def ouvrir_jeu(fenetre,mode_de_jeu,code=None):
                 temp_couleur_mauvaise_posi = 0
                 copie_combinaison = i.copy()
                 copie_essai = temp_essai.copy()
+
                 for j in range(4):
                     if copie_combinaison[j] == copie_essai[j]:
                         temp_couleur_bien_place += 1
                         copie_combinaison[j] = None
                         copie_essai[j] = None
+
                 for j in range(4):
                     if copie_combinaison[j] is not None and copie_combinaison[j] in copie_essai:
                         temp_couleur_mauvaise_posi += 1
                         copie_essai[copie_essai.index(copie_combinaison[j])] = None
+
                 if temp_couleur_bien_place == couleur_bien_place and temp_couleur_mauvaise_posi == couleur_mauvaise_posi:
                     combi_encore_possible.append(i)
+
         else:
             temp_liste = combi_encore_possible.copy()
             combi_encore_possible.clear()
@@ -438,47 +499,39 @@ def ouvrir_jeu(fenetre,mode_de_jeu,code=None):
                 temp_couleur_mauvaise_posi = 0
                 copie_combinaison = i.copy()
                 copie_essai = temp_essai.copy()
+
                 for j in range(4):
                     if copie_combinaison[j] == copie_essai[j]:
                         temp_couleur_bien_place += 1
                         copie_combinaison[j] = None
                         copie_essai[j] = None
+
                 for j in range(4):
                     if copie_combinaison[j] is not None and copie_combinaison[j] in copie_essai:
                         temp_couleur_mauvaise_posi += 1
                         copie_essai[copie_essai.index(copie_combinaison[j])] = None
+
                 if temp_couleur_bien_place == couleur_bien_place and temp_couleur_mauvaise_posi == couleur_mauvaise_posi:
                     combi_encore_possible.append(i)
+
+            
         for i in combi_encore_possible:
             list_max_diff.append(len(set(i)))
         if list_max_diff:
             max_diff = max(list_max_diff)
         else:
-            max_diff = 0
+            max_diff = 0  
         for i in combi_encore_possible:
             if len(set(i)) == max_diff:
                 combinaison_aide = i
                 break
-        combinaison_optimal = combinaison_aide.copy()
-        return combinaison_aide
-
-    def affiche_aide():
-        nonlocal aide_label, frame_aide, nb_essai, combinaison_optimal
-        if aide_label is not None:
-            aide_label.destroy()
-        if nb_essai == 9:
-            aide_label = tk.Label(frame_aide,
-                                  text="Remplissez les 4 couleurs :\nVert,Bleu,Rose,Jaune.",
-                                  fg="green", font=("Arial", 15), bg="white")
-            aide_label.pack()
-            return
-        combinaison_aide = principale_aide()
+        combinaison_optimal=combinaison_aide.copy()
         aide_texte = ", ".join(combinaison_aide)
-        aide_label = tk.Label(frame_aide,
-                              text=f"Remplissez les 4 couleurs :\n{aide_texte}",
-                              fg="green", font=("Arial", 15), bg="white")
+        aide_label = tk.Label(frame_aide, text=f"Remplissez les 4 couleurs :\n{aide_texte}", fg="green", font=("Arial", 15),bg="white")
         aide_label.pack()
         
+
+    
     ####################################################
     # PARTIE : IA
     ####################################################
@@ -486,8 +539,8 @@ def ouvrir_jeu(fenetre,mode_de_jeu,code=None):
     def IA():
         nonlocal nb_essai, combinaison_optimal,couleur_bien_place
         nonlocal temp_essai, combi_encore_possible,couleur_mauvaise_posi
-        principale_aide()
-        print(combinaison_optimal)
+        aide()
+
         for i in combinaison_optimal:
             colorer_rond(i, nb_essai)
             
@@ -497,6 +550,8 @@ def ouvrir_jeu(fenetre,mode_de_jeu,code=None):
             return
         else:
             IA()
+        
+    
 
     ####################################################
     # PARTIE : Sauvegarde
@@ -505,6 +560,7 @@ def ouvrir_jeu(fenetre,mode_de_jeu,code=None):
 
         nonlocal sauvegarde_essai, code_secret
             
+
         fichier = filedialog.asksaveasfilename(
         title="Enregistrer la partie",
         defaultextension=".json",
@@ -524,24 +580,10 @@ def ouvrir_jeu(fenetre,mode_de_jeu,code=None):
     ####################################################
     
     def charger_sauvegarde():
-        nonlocal code_secret, sauvegarde_essai, nb_essai, essai
-        nonlocal index_rond,ronds,petits_ronds
-
+        nonlocal code_secret, sauvegarde_essai, nb_essai, essai, index_rond
         fichier = filedialog.askopenfilename(title="Charger une partie",defaultextension=".json",
                                              filetypes=[("JSON files", "*.json")],)
-        if fichier:
-            for i in range(len(ronds)):
-                for j in range(len(ronds[i])):
-                    canvas.itemconfig(ronds[i][j], fill="white")
-            for i in range(len(petits_ronds)):
-                for j in range(len(petits_ronds[i])):
-                    canvas.itemconfig(petits_ronds[i][j], fill="white")
-
-        nb_essai = 9
-        essai = []
-        index_rond = 0
-
-        if not fichier :
+        if not fichier:
             return
         with open(fichier, 'r') as f:
             dictionaire = json.load(f)
@@ -549,14 +591,18 @@ def ouvrir_jeu(fenetre,mode_de_jeu,code=None):
         sauvegarde_essai = dictionaire.get("sauvegarde_essai", [])
         
         nb_essai = 9
-        for essai_i in sauvegarde_essai.copy():
+        for essai_i in sauvegarde_essai:
             for couleur in essai_i:
                 colorer_rond(couleur, nb_essai)
             verifie_couleur_solo()
 
+
+    
+
     ####################################################
     # PARTIE : AJOUT DES BOUTONS DANS LE CANVAS DROIT
     ####################################################
+
 
     # Ajout de boutons correspondant aux couleurs
     for couleur in couleurs:
@@ -569,7 +615,7 @@ def ouvrir_jeu(fenetre,mode_de_jeu,code=None):
         bouton_sauvegarder.pack(side="left")
         bouton_charger= tk.Button(frame_bouton, text="Charger", command=charger_sauvegarde, font=("Consoloas",20), relief="groove", bd=5, width=7, height=1)
         bouton_charger.pack(padx=30)
-        bouton_aide = tk.Button(frame_bouton2, text="Aide", command=affiche_aide, font=("Consoloas",20), relief="groove", bd=5, width=5, height=1)
+        bouton_aide = tk.Button(frame_bouton2, text="Aide", command=aide, font=("Consoloas",20), relief="groove", bd=5, width=5, height=1)
         bouton_aide.pack(padx=10,pady=20)
     elif mode_de_jeu=="mode_duo":
         bouton_valider = tk.Button(canvas_droit, text="Valider", command=valider_essai_joueur1,font=("Consoloas",27),relief="groove",bd=5, width=7, height=1) 
@@ -585,6 +631,7 @@ def ouvrir_jeu(fenetre,mode_de_jeu,code=None):
     elif mode_de_jeu=="mode_IA":
         bouton_valider = tk.Button(canvas_droit, text="Valider",font=("Consoloas",27),relief="groove",bd=5, width=7, height=1) 
 
+
     bouton_valider.pack(pady=10)
     bouton_annuler = tk.Button(canvas_droit, text="Annuler", command=lambda c=couleur_fond: colorer_rond(c,nb_essai),font=("Consoloas",27),relief="groove",bd=5, width=7, height=1)  
     bouton_annuler.pack(pady=10)
@@ -594,6 +641,7 @@ def ouvrir_jeu(fenetre,mode_de_jeu,code=None):
     #############################################
     # PARTIE : CHOIX DU MODE
     #############################################
+
 
     if mode_de_jeu=="mode_solo":
         code_secret=couleur_code_genere()
@@ -606,10 +654,14 @@ def ouvrir_jeu(fenetre,mode_de_jeu,code=None):
         code_secret=couleur_code_genere()
         IA()
 
+
+    
+
 ####################################################################################################################################
 #############    FENETRE FIN DE PARTIE
 ####################################################################################################################################
   
+
 def fin_de_partie():
     """
     Cette fonction est appeler quand le joueur a trouver la bonne combinaison et qu'il y a eu clic que le boutton fin de partie
@@ -619,6 +671,7 @@ def fin_de_partie():
     
     fenetre.configure(bg=couleur_fond)
     
+
     titre_page= tk.Label(fenetre, text="Fin de partie", font=("Segoe print", 70), fg=couleur_ecriture, bg=couleur_fond)
     titre_page.pack(pady=50)
     titre_page.config(highlightbackground=couleur_ecriture, highlightthickness=5)
@@ -635,10 +688,18 @@ def fin_de_partie():
     bouton_fermeture = tk.Button(fenetre, text="Fermer", command=fenetre.destroy, font=("Fixedsys", 20), bg=couleur_boutons, fg=couleur_ecriture,width=10, height=2, relief="ridge", bd=6)
     bouton_fermeture.pack()
     
+
+
+
+
+
+
 ####################################################################################################################################
 #############    FENETRE CHOIX COULEUR DUO
 ####################################################################################################################################
   
+
+
 def ouvrir_fenetre_choix_couleur(fenetre):
     """
     Cette fonction ouvre la fenêtre du mode Duo pour choisir un code couleur secret
@@ -689,6 +750,7 @@ def ouvrir_fenetre_choix_couleur(fenetre):
                 bouton_ajouter.config(state="normal")
                 bouton_lancer.config(state="disabled")  # Désactive le bouton "Lancer" jusqu'à ce que 4 couleurs soient ajoutées
 
+    
     label = tk.Label(fenetre_Duo, text="Le joueur doit choisir 4 couleurs\nqui formeront le code secret:", bg=couleur_fond,fg=couleur_ecriture, font=("Fixedsys", 30))
     label.pack(pady=10)
 
@@ -711,11 +773,17 @@ def ouvrir_fenetre_choix_couleur(fenetre):
     liste_couleurs = tk.Label(fenetre_Duo, text="Code secret : ", bg=couleur_fond, font=("Fixedsys", 23),fg=couleur_ecriture)
     liste_couleurs.pack()
 
+
+
+
 ####################################################################################################################################
 #############    FENETRE REGLE DU JEU
 ####################################################################################################################################
   
+
 def regle_du_jeu(fenetre,page):
+
+
     for widget in fenetre.winfo_children():
         widget.destroy()  
     
@@ -739,6 +807,7 @@ def regle_du_jeu(fenetre,page):
     \nLe jeu s’arrête quand le joueur 2 a trouvé la combinaison et dans ce cas il gagne. 
     \nS’il n’a toujours pas trouvé lorsqu’il arrive à la ligne 12, c’est le joueur 1 qui gagne.
     """
+    
 
     text= tk.Label(fenetre, text=regle_mastermind, height = 30, width = 200,font=("Fixedsys", 12))
     text.pack()
@@ -749,9 +818,16 @@ def regle_du_jeu(fenetre,page):
         quiter_règle = tk.Button(fenetre, text="Quitter", command=page_acceuil, font=("Fixedsys", 20), bg=couleur_boutons, fg=couleur_ecriture,width=10, height=2, relief="ridge", bd=6)
     quiter_règle.pack(side="bottom")
     
+
+
+
+
+
 ####################################################################################################################################
 #############    Extension numéro 1
 ####################################################################################################################################
+
+
 
 def choisir_nombre_couleurs(fenetre):
     for widget in fenetre.winfo_children():
@@ -772,6 +848,7 @@ def choisir_nombre_couleurs(fenetre):
                         relief = "groove", bd = 10 )
     bouton_valider.pack(pady = 50)
 
+
 def ouvrir_jeu_extension1(fenetre, mode_de_jeu, nb_couleurs=4):
     nb_essai=9 #cette variable est modifier a chaque essai 
     index_rond = 0
@@ -783,5 +860,13 @@ def ouvrir_jeu_extension1(fenetre, mode_de_jeu, nb_couleurs=4):
         code_genere = [random.choice(couleurs) for _ in range(nb_couleurs)]
         print("Les couelurs du code secret sont :", code_genere)
         return code_genere
+    
+    
+
+
+
+
+
+
     
 fenetre.mainloop()
