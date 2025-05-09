@@ -467,26 +467,7 @@ def ouvrir_jeu(fenetre,mode_de_jeu,code=None):
                               text=f"Remplissez les 4 couleurs :\n{aide_texte}",
                               fg="green", font=("Arial", 15), bg="white")
         aide_label.pack()
-        
-    ####################################################
-    # PARTIE : IA
-    ####################################################
-
-    def IA():
-        nonlocal nb_essai, combinaison_optimal,couleur_bien_place
-        nonlocal temp_essai, combi_encore_possible,couleur_mauvaise_posi
-        aide()
-
-        for i in combinaison_optimal:
-            colorer_rond(i, nb_essai)
-            
-        verifie_couleur_solo()
-
-        if couleur_bien_place==4:
-            return
-        else:
-            IA()
-
+      
     ####################################################
     # PARTIE : Sauvegarde
     ####################################################
